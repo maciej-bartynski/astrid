@@ -1,7 +1,7 @@
 import React, { Component } from 'react';
 import AstridGroup from './astridGroup';
 import AstridNavigator from './astridNavigator';
-import AstridSlider from './astridSlider';
+import AstridSlider from './astridDataLayer';
 
 class App extends Component {
 
@@ -17,7 +17,7 @@ class App extends Component {
     }
 
     this.config = {
-      mode: 'finite',//'infinite'
+      mode: 'infinite',//'infinite'
       transition: {
         time: 300,
         curve: 'ease-in',
@@ -25,14 +25,14 @@ class App extends Component {
         mode: 'absolue' //relative
       },
       items: [
-        <div style={this.cell}>1</div>,
-        <div style={this.cell}>2</div>,
-        <div style={this.cell}>3</div>,
-        <div style={this.cell}>4</div>,
-        <div style={this.cell}>5</div>,
-        <div style={this.cell}>6</div>,
-        <div style={this.cell}>7</div>,
-        <div style={this.cell}>8</div>
+        <div style={this.cell} key={1}>1</div>,
+        <div style={this.cell} key={2}>2</div>,
+        <div style={this.cell} key={3}>3</div>,
+        <div style={this.cell} key={4}>4</div>,
+        <div style={this.cell} key={5}>5</div>,
+        <div style={this.cell} key={6}>6</div>,
+        <div style={this.cell} key={7}>7</div>,
+        <div style={this.cell} key={8}>8</div>
       ],
       columns: 4,
     }
@@ -64,7 +64,6 @@ class App extends Component {
       <div>
 
         <AstridGroup>
-
           <AstridSlider {...this.config}>
             <div style={cell}>a</div>
             <div style={cell}>b</div>

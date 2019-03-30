@@ -2,16 +2,41 @@ import React, { Component } from 'react';
 import { AstridContext } from './astridGroup';
 
 export default class AstridSlider extends Component {
+    constructor(props){
+        super(props);
+        this.position = 0;
+    }
 
-    getControlledContent = (position) => {
-        let { items, children, columns, transition } = this.props;
+    componentDidMount = () => {
+        let { validItems, isSlider, columns, transition } = this.props;
+        this.setMaxPosition( validItems.length - columns );
+    }
 
-        items = ( items && items.length && items.length > 0) ? items : children ;
-        
-        if (!items || items.length < 1) return null;
+    componentDidUpdate = () => {
+        let { validItems, isSlider, columns, transition } = this.props;
+        this.setMaxPosition( validItems.length - columns );
+    }
 
-        position = (position >= items.length - columns || position <= 0) ?
-            (position >= items.length - columns) ? items.length - columns: 0 : position ;
+    getControlledContent = (position, setMaxPosition, move) => {
+        let { validItems, isSlider, columns, transition } = this.props;
+  
+        this.setMaxPosition = setMaxPosition;
+
+        position = (position >= validItems.length - columns || position <= 0) ?
+            (position >= validItems.length - columns) ? validItems.length - columns: 0 : position ;
+
+        this.validItems = validItems.map((Item, idx)=>{
+            return (
+                <div 
+                    key={idx}
+                    style={{
+                    width: `${100/columns}%`,
+                    display: 'inline-block',
+                }}>
+                    {(typeof Item === 'function') ? <Item/> : Item }
+                </div>
+            )
+        })
 
         return (
             <div style={{
@@ -20,28 +45,20 @@ export default class AstridSlider extends Component {
                 transition: `transform ${transition.time}ms ${transition.curve}`,
                 whiteSpace: 'nowrap',
             }}>
-                {items.map((Item, idx)=>{
-                    return (
-                        <div style={{
-                            width: `${100/columns}%`,
-                            display: 'inline-block',
-                        }}>
-                            {(typeof Item === 'function') ? <Item key={idx}/> : Item }
-                        </div>
-                    )
-                })}
+                {this.validItems}
             </div>
         )
     }
        
     render() {
+        
         return (
             <AstridContext.Consumer>
-                {({ position }) => (
+                {({ position, setMaxPosition, move }) => (
                     <div style={{
                         overflow: 'hidden',
                     }}>
-                        {this.getControlledContent(position)}
+                        {this.getControlledContent(position, setMaxPosition, move)}
                     </div>
                 )}
             </AstridContext.Consumer>
