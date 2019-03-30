@@ -2,6 +2,7 @@ import React, { Component } from 'react';
 import { AstridContext } from './astridGroup';
 
 export default class AstridSlider extends Component {
+
     getControlledContent = (position) => {
         let { items, children, columns, transition } = this.props;
 
@@ -17,7 +18,7 @@ export default class AstridSlider extends Component {
                 width: '100%',
                 transform: `translate(${-1 * position * (100/columns)}%, 0)`,
                 transition: `transform ${transition.time}ms ${transition.curve}`,
-                whiteSpace: 'nowrap'
+                whiteSpace: 'nowrap',
             }}>
                 {items.map((Item, idx)=>{
                     return (
@@ -37,7 +38,9 @@ export default class AstridSlider extends Component {
         return (
             <AstridContext.Consumer>
                 {({ position }) => (
-                    <div>
+                    <div style={{
+                        overflow: 'hidden',
+                    }}>
                         {this.getControlledContent(position)}
                     </div>
                 )}

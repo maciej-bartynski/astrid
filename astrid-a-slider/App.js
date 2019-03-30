@@ -1,6 +1,4 @@
 import React, { Component } from 'react';
-import './App.css';
-
 import AstridGroup from './astridGroup';
 import AstridNavigator from './astridNavigator';
 import AstridSlider from './astridSlider';
@@ -77,9 +75,9 @@ class App extends Component {
             <div style={cell}>g</div>
             <div style={cell}>h</div>
           </AstridSlider>
-
+          <div>Some othern, no-astrid element</div>
           <AstridNavigator direction={'right'}><span>right</span></AstridNavigator>
-          <AstridNavigator direction={'left'}><span>let</span></AstridNavigator>
+          <AstridNavigator direction={'left'}><span>left</span></AstridNavigator>
         </AstridGroup>
 
         <AstridGroup>
@@ -94,7 +92,7 @@ class App extends Component {
             <div style={cell}>h</div>
           </AstridSlider>
           <AstridNavigator direction={'right'}><span>right</span></AstridNavigator>
-          <AstridNavigator direction={'left'}><span>let</span></AstridNavigator>
+          <AstridNavigator direction={'left'}><span>left</span></AstridNavigator>
         </AstridGroup>
       </div>
     );

@@ -6,7 +6,7 @@ export default class AstridNavigator extends Component {
         const { children, direction } = this.props;
         return (
             <AstridContext.Consumer>
-                {({ position, move }) => (
+                {({ move }) => (
                     <button
                         onClick={()=>move(direction)}>
                         {children}
