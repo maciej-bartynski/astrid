@@ -14,7 +14,7 @@ class AstridDataLayer extends Component {
     }
 
     componentDidUpdate = () => {
-        this.shouldRebuild();
+        //this.shouldRebuild();
     }
 
     shouldRebuild = () => {
@@ -45,7 +45,7 @@ class AstridDataLayer extends Component {
     }
 
     render = () => {
-        return (<AstridSlider {...this.state} />)
+        return (<AstridSlider {...this.props} />)
     }
 }
 

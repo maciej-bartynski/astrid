@@ -18,6 +18,17 @@ export default class AstridGroup extends Component {
             childrenCarousels: [],
             reportChildrenCarousel: this.reportChildrenCarousel
         }
+
+        this.stateClone = {
+            by: 'integer',
+            move_by: 'function',
+        }
+    }
+
+    move_by = (payload) => {
+        this.setState({
+            by: payload,
+        })
     }
 
     reportChildrenCarousel = (payload) => {
