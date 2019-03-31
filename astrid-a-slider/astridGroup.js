@@ -1,4 +1,5 @@
 import React, { Component, Fragment, createContext } from 'react';
+import { type } from 'os';
 
 export let AstridContext = createContext({
     position: null,
@@ -8,29 +9,36 @@ export let AstridContext = createContext({
 export default class AstridGroup extends Component {
     constructor(props) {
         super(props);
+        this.maxSliderLength = 0;
         this.state = {
             position: 0,
             maxPosition: 0,
             move: this.move,
-            setMaxPosition: this.setMaxPosition
+            setMaxPosition: this.setMaxPosition,
+            childrenCarousels: [],
+            reportChildrenCarousel: this.reportChildrenCarousel
         }
     }
 
-    move = (direction) => {
-        if (direction === 'secretely'){
-            this.setState({
-                position: 0
-            })
-        }
-        direction = direction === 'left' ? -1 : 1;
-        let newPosition = ((this.state.position + direction) > this.state.maxPosition) || ((this.state.position + direction) < 0) ?
-            ((this.state.position + direction) > this.state.maxPosition) ? this.state.maxPosition : 0 : (this.state.position + direction)
+    reportChildrenCarousel = (payload) => {
         this.setState({
-            position: newPosition
+            childrenCarousels: payload
         })
     }
 
+    move = (direction, by) => {
+        let mathDirection = direction === 'left' ? -1 : 1;
+        by = typeof by === 'number' ? Math.abs(by) : 1;
+        mathDirection = mathDirection * by;
+        let newPosition = ((this.state.position + mathDirection) > this.state.maxPosition) || ((this.state.position + mathDirection) < 0) ?
+            ((this.state.position + mathDirection) > this.state.maxPosition) ? this.state.maxPosition : 0 : (this.state.position + mathDirection)
 
+        this.setState({
+            position: newPosition,
+            direction,
+            by,
+        })
+    }
 
     setMaxPosition = (payload) => {
         this.setState({

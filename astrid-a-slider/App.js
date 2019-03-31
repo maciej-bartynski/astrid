@@ -1,7 +1,7 @@
 import React, { Component } from 'react';
 import AstridGroup from './astridGroup';
 import AstridNavigator from './astridNavigator';
-import AstridSlider from './astridDataLayer';
+import AstridSlider from './carousel';
 
 class App extends Component {
 
@@ -75,7 +75,7 @@ class App extends Component {
             <div style={cell}>h</div>
           </AstridSlider>
           <div>Some othern, no-astrid element</div>
-          <AstridNavigator direction={'right'}><span>right</span></AstridNavigator>
+          <AstridNavigator direction={'right'} by={3}><span>right</span></AstridNavigator>
           <AstridNavigator direction={'left'}><span>left</span></AstridNavigator>
         </AstridGroup>
 
