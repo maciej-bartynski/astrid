@@ -10,8 +10,8 @@ class AstridDisplayLayer extends Component {
     getControlledContent = () => {
         let { validItems, isSlider, columns, SETTINGS: { transition }, position } = this.props;
 
-        position = (position >= validItems.length - columns || position <= 0) ?
-            (position >= validItems.length - columns) ? validItems.length - columns : 0 : position;
+        //position = (position >= validItems.length - columns || position <= 0) ?
+        //    (position >= validItems.length - columns) ? validItems.length - columns : 0 : position;
 
         this.validItems = validItems.map((Item, idx) => {
             return (

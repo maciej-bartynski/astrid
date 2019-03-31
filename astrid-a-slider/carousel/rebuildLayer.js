@@ -32,26 +32,20 @@ class AstridDataLayer extends Component {
         };
 
         if (mode === 'infinite') {
-            const toHigh = (0 + ((this.position + by) - (validItems.length-1)))
-            const toLow = ((validItems.length-1) - (this.position + by))
+            const toHigh = (0 + ((this.position + by) - (validItems.length - 1)));
+            const toLow = ((validItems.length) + (this.position + by))
             
             newPosition = (demandedPositionToHigh || demandedPositionToLow) ?
                 demandedPositionToHigh ? toHigh : toLow : (this.position + by)
 
-            activeItem = newPosition;
-            console.log(toHigh, toLow)
+            activeItem = (demandedItemToHigh || demandedItemToLow) ?
+                demandedItemToHigh ? toHigh : toLow : (this.position + by)
+            console.log(demandedItemToHigh, demandedItemToLow, toHigh, toLow, validItems.length, newPosition)
         }
 
         this.position = newPosition;
         this.activeItem = activeItem;
         console.log(this.position, this.activeItem)
-        //this.setState({
-        //    position: newPosition
-        //})
-    }
-
-    componentDidUpdate = () => {
-        //this.shouldRebuild();
     }
 
     render = () => {
