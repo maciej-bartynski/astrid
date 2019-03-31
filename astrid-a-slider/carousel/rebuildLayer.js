@@ -6,46 +6,57 @@ class AstridDataLayer extends Component {
     constructor(props){
         super(props);
         this.position = 0;
+        this.activeItem = 0;
         this.state = {
-            ...this.props,
-            validItems: this.props.validItems,
-            position: this.props.position,
+            position: 0,
+            activeItem: 0,
         }
+    }
+
+    newPosition = () => {
+        const { SETTINGS: { mode }, validItems, by, columns } = this.props;
+        
+        const demandedPositionToHigh = ((this.position + by) >= validItems.length - columns);
+        const demandedPositionToLow = ((this.position + by) < 0);
+        const demandedItemToHigh = ((this.position + by) >= validItems.length - columns);
+        const demandedItemToLow = ((this.position + by) < 0);
+        let newPosition;
+        let activeItem;
+        
+        if (mode === 'finite') {
+            newPosition = (demandedPositionToHigh || demandedPositionToLow) ?
+                demandedPositionToHigh ? (validItems.length - columns) : 0 : (this.position + by)
+
+            activeItem = (demandedItemToHigh || demandedItemToLow) ?
+                demandedItemToHigh ? (validItems.length - 1) : 0 : (this.position + by)
+        };
+
+        if (mode === 'infinite') {
+            const toHigh = (0 + ((this.position + by) - (validItems.length-1)))
+            const toLow = ((validItems.length-1) - (this.position + by))
+            
+            newPosition = (demandedPositionToHigh || demandedPositionToLow) ?
+                demandedPositionToHigh ? toHigh : toLow : (this.position + by)
+
+            activeItem = newPosition;
+            console.log(toHigh, toLow)
+        }
+
+        this.position = newPosition;
+        this.activeItem = activeItem;
+        console.log(this.position, this.activeItem)
+        //this.setState({
+        //    position: newPosition
+        //})
     }
 
     componentDidUpdate = () => {
         //this.shouldRebuild();
     }
 
-    shouldRebuild = () => {
-        const {mode} = this.props;
-        if (mode !== 'infinite') return;
-
-        if (this.position === this.props.position) return;
-        this.position = this.props.position;
-
-        const { validItems, direction, position, columns, by } = this.props;
-
-        let newValidItems;
-        if (direction === 'left') {
-            newValidItems = validItems.slice(by).concat(validItems.slice(0, by))
-        } else {
-            newValidItems = validItems.slice(validItems.length - by).concat(validItems.slice(0, validItems.length - by))
-        }
-
-        setTimeout(
-            ()=>{
-                this.setState({ 
-                    validItems: newValidItems,
-                    position: 0,
-                });
-            },
-            300
-        )
-    }
-
     render = () => {
-        return (<AstridSlider {...this.props} />)
+        this.newPosition();
+        return (<AstridSlider {...this.props} { ...this }/>)
     }
 }
 

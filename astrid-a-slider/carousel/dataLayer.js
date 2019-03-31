@@ -27,7 +27,7 @@ class AstridDataLayer extends Component {
     }
 
     getInfiniteFriendlyArray = () => {
-        const { columns, mode } = this.props;
+        const { columns, SETTINGS: { mode } } = this.props;
         const { validItems, isSlider } = this;
         if (!isSlider || mode === 'finite') return;
 
@@ -44,13 +44,6 @@ class AstridDataLayer extends Component {
         }
 
         this.validItems = infiniteFriendlyArray;
-    }
-
-    componentDidMount = () => {
-        const { validItems } = this;
-        const { columns } = this.props;
-
-        this.props.setMaxPosition(validItems.length - columns);
     }
 
     render = () => {

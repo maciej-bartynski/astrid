@@ -8,7 +8,7 @@ class AstridDisplayLayer extends Component {
     }
 
     getControlledContent = () => {
-        let { validItems, isSlider, columns, transition, position, move } = this.props;
+        let { validItems, isSlider, columns, SETTINGS: { transition }, position } = this.props;
 
         position = (position >= validItems.length - columns || position <= 0) ?
             (position >= validItems.length - columns) ? validItems.length - columns : 0 : position;
@@ -21,6 +21,7 @@ class AstridDisplayLayer extends Component {
                         width: `${100 / columns}%`,
                         display: 'inline-block',
                     }}>
+                    { idx === this.props.activeItem ? 'current' : null }
                     {(typeof Item === 'function') ? <Item /> : Item}
                 </div>
             )

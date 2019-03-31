@@ -3,12 +3,12 @@ import { AstridContext } from './astridGroup';
 
 export default class AstridNavigator extends Component {
     render() {
-        const { children, direction, by } = this.props;
+        const { children, by, to } = this.props;
         return (
             <AstridContext.Consumer>
-                {({ move }) => (
+                {({ move_by }) => (
                     <button
-                        onClick={()=>move(direction, by)}>
+                        onClick={()=>move_by(by, to)}>
                         {children}
                     </button>
                 )}

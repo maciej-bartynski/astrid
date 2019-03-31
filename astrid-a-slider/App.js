@@ -8,7 +8,7 @@ class App extends Component {
   constructor(props) {
     super(props);
     this.cell = {
-      width: '25%',
+      width: '100%',
       height: 300,
       display: 'flex',
       justifyContent: 'center',
@@ -16,7 +16,7 @@ class App extends Component {
       border: 'solid 1px green'
     }
 
-    this.config = {
+    this.group_a = {
       mode: 'infinite',//'infinite'
       transition: {
         time: 300,
@@ -24,6 +24,9 @@ class App extends Component {
         style: 'translate', //or fade,
         mode: 'absolue' //relative
       },
+    }
+
+    this.group_a__slider_a = {
       items: [
         <div style={this.cell} key={1}>1</div>,
         <div style={this.cell} key={2}>2</div>,
@@ -37,7 +40,7 @@ class App extends Component {
       columns: 4,
     }
 
-    this.config_b = {
+    this.group_b = {
       mode: 'finite',//'infinite'
       transition: {
         time: 300,
@@ -45,14 +48,17 @@ class App extends Component {
         style: 'translate', //or fade
         mode: 'absolute'//relative
       },
+    }
+
+    this.group_b__slider_a = {
       items: [],
-      columns: 4,
+      columns: 3,
     }
   }
 
   render() {
     let cell = {
-      width: '25%',
+      width: '100%',
       height: 300,
       display: 'flex',
       justifyContent: 'center',
@@ -63,8 +69,8 @@ class App extends Component {
     return (
       <div>
 
-        <AstridGroup>
-          <AstridSlider {...this.config}>
+        <AstridGroup {...this.group_a}>
+          <AstridSlider {...this.group_a__slider_a}>
             <div style={cell}>a</div>
             <div style={cell}>b</div>
             <div style={cell}>c</div>
@@ -75,12 +81,12 @@ class App extends Component {
             <div style={cell}>h</div>
           </AstridSlider>
           <div>Some othern, no-astrid element</div>
-          <AstridNavigator direction={'right'} by={3}><span>right</span></AstridNavigator>
-          <AstridNavigator direction={'left'}><span>left</span></AstridNavigator>
+          <AstridNavigator by={-1}><span>left</span></AstridNavigator>
+          <AstridNavigator by={3}><span>right</span></AstridNavigator>
         </AstridGroup>
 
-        <AstridGroup>
-          <AstridSlider {...this.config_b}>
+        <AstridGroup {...this.group_b}>
+          <AstridSlider {...this.group_b__slider_a}>
             <div style={cell}>a</div>
             <div style={cell}>b</div>
             <div style={cell}>c</div>
@@ -90,9 +96,10 @@ class App extends Component {
             <div style={cell}>g</div>
             <div style={cell}>h</div>
           </AstridSlider>
-          <AstridNavigator direction={'right'}><span>right</span></AstridNavigator>
-          <AstridNavigator direction={'left'}><span>left</span></AstridNavigator>
+          <AstridNavigator by={-3}><span>left</span></AstridNavigator>
+          <AstridNavigator by={1}><span>right</span></AstridNavigator>
         </AstridGroup>
+
       </div>
     );
   }
