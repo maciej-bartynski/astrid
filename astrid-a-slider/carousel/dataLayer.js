@@ -1,8 +1,8 @@
 import React, { Component } from 'react';
-import AstridSlider from './positionLayer';
 import connect from '../astridConnect';
+import PositionLayer from './positionLayer';
 
-class AstridDataLayer extends Component {
+class DataLayer extends Component {
 
     constructor(props) {
         super(props);
@@ -35,19 +35,31 @@ class AstridDataLayer extends Component {
         const MINIMUM_CAROUSEL_ITEMS_AMOUNT = 3 * columns;
 
         if (validItems.length < MINIMUM_CAROUSEL_ITEMS_AMOUNT) {
+            let minSafeAmount = this.multipleSlidersFriendlyArrayLength(validItems.length, columns);
             let index = 0;
-            for (let i = 0; i < MINIMUM_CAROUSEL_ITEMS_AMOUNT; i++) {
+            for (let i = 0; i < minSafeAmount; i++) {
                 index = index >= validItems.length ? 0 : index;
                 infiniteFriendlyArray.push(validItems[index])
                 index++;
             }
+        } else {
+            infiniteFriendlyArray = this.validItems;
         }
 
         this.validItems = infiniteFriendlyArray;
     }
 
+    multipleSlidersFriendlyArrayLength(array, columns) {
+        let minSafeAmount = columns * 3;
+        let safeLen = array;
+        while (safeLen < minSafeAmount) {
+            safeLen += array
+        }
+        return safeLen;
+    }
+
     render = () => {
-        if (!this.validItems) {
+        if (!this.validItems || !this.validItems.length) {
             return (
                 <div>
                     Slider require array of data
@@ -55,8 +67,8 @@ class AstridDataLayer extends Component {
             )
         };
 
-        return (<AstridSlider {...this.props} {...this} />)
+        return (<PositionLayer {...this.props} {...this} />)
     }
 }
 
-export default connect(AstridDataLayer)
+export default connect(DataLayer)

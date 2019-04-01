@@ -37,7 +37,21 @@ class App extends Component {
         <div style={this.cell} key={7}>7</div>,
         <div style={this.cell} key={8}>8</div>
       ],
-      columns: 4,
+      columns: 2,
+    }
+
+    this.group_a__slider_b = {
+      items: [
+        <div style={this.cell} key={1}>1</div>,
+        <div style={this.cell} key={2}>2</div>,
+        <div style={this.cell} key={3}>3</div>,
+        <div style={this.cell} key={4}>4</div>,
+        <div style={this.cell} key={5}>5</div>,
+        <div style={this.cell} key={6}>6</div>,
+        <div style={this.cell} key={7}>7</div>,
+        <div style={this.cell} key={8}>8</div>
+      ],
+      columns: 5,
     }
 
     this.group_b = {
@@ -70,7 +84,22 @@ class App extends Component {
       <div>
 
         <AstridGroup {...this.group_a}>
-          <AstridSlider {...this.group_a__slider_a}>
+          <div style={{
+            width: '50%',
+            margin: '0 auto',
+          }}>
+            <AstridSlider {...this.group_a__slider_a}>
+              <div style={cell}>a</div>
+              <div style={cell}>b</div>
+              <div style={cell}>c</div>
+              <div style={cell}>d</div>
+              <div style={cell}>e</div>
+              <div style={cell}>f</div>
+              <div style={cell}>g</div>
+              <div style={cell}>h</div>
+            </AstridSlider>
+          </div>
+          <AstridSlider {...this.group_a__slider_b}>
             <div style={cell}>a</div>
             <div style={cell}>b</div>
             <div style={cell}>c</div>
@@ -80,11 +109,16 @@ class App extends Component {
             <div style={cell}>g</div>
             <div style={cell}>h</div>
           </AstridSlider>
-          <div>Some othern, no-astrid element</div>
+
           <AstridNavigator by={-1}><span>left</span></AstridNavigator>
           <AstridNavigator by={1}><span>right</span></AstridNavigator>
-        </AstridGroup>
 
+          <AstridNavigator by={-4}><span>left</span></AstridNavigator>
+          <AstridNavigator by={4}><span>right</span></AstridNavigator>
+
+
+        </AstridGroup>
+        <br /><br /><br /><br /><br /><br /><br /><br />
         <AstridGroup {...this.group_b}>
           <AstridSlider {...this.group_b__slider_a}>
             <div style={cell}>a</div>
