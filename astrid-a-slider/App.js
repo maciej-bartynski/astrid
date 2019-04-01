@@ -82,7 +82,7 @@ class App extends Component {
           </AstridSlider>
           <div>Some othern, no-astrid element</div>
           <AstridNavigator by={-1}><span>left</span></AstridNavigator>
-          <AstridNavigator by={3}><span>right</span></AstridNavigator>
+          <AstridNavigator by={1}><span>right</span></AstridNavigator>
         </AstridGroup>
 
         <AstridGroup {...this.group_b}>
@@ -96,7 +96,7 @@ class App extends Component {
             <div style={cell}>g</div>
             <div style={cell}>h</div>
           </AstridSlider>
-          <AstridNavigator by={-3}><span>left</span></AstridNavigator>
+          <AstridNavigator by={-1}><span>left</span></AstridNavigator>
           <AstridNavigator by={1}><span>right</span></AstridNavigator>
         </AstridGroup>
 

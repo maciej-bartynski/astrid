@@ -1,5 +1,5 @@
 import React, { Component } from 'react';
-import AstridSlider from './rebuildLayer';
+import AstridSlider from './positionLayer';
 import connect from '../astridConnect';
 
 class AstridDataLayer extends Component {
