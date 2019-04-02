@@ -4,14 +4,12 @@ import connect from '../astridConnect';
 class AstridDisplayLayer extends Component {
     constructor(props) {
         super(props);
+        
         this.position = 0;
     }
 
     getControlledContent = () => {
-        let { validItems, isSlider, columns, SETTINGS: { transition }, position } = this.props;
-
-        //position = (position >= validItems.length - columns || position <= 0) ?
-        //    (position >= validItems.length - columns) ? validItems.length - columns : 0 : position;
+        let { validItems, rebuildedItems, isSlider, columns, SETTINGS: { transition, mode }, position } = this.props;
 
         this.validItems = validItems.map((Item, idx) => {
             return (

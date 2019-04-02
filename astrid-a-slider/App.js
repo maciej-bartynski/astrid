@@ -42,14 +42,14 @@ class App extends Component {
 
     this.group_a__slider_b = {
       items: [
-        <div style={this.cell} key={1}>1</div>,
-        <div style={this.cell} key={2}>2</div>,
-        <div style={this.cell} key={3}>3</div>,
-        <div style={this.cell} key={4}>4</div>,
-        <div style={this.cell} key={5}>5</div>,
-        <div style={this.cell} key={6}>6</div>,
-        <div style={this.cell} key={7}>7</div>,
-        <div style={this.cell} key={8}>8</div>
+        <div style={this.cell} id={1} key={1}>1</div>,
+        <div style={this.cell} id={2} key={2}>2</div>,
+        <div style={this.cell} id={3} key={3}>3</div>,
+        <div style={this.cell} id={4} key={4}>4</div>,
+        <div style={this.cell} id={5} key={5}>5</div>,
+        <div style={this.cell} id={6} key={6}>6</div>,
+        <div style={this.cell} id={7} key={7}>7</div>,
+        <div style={this.cell} id={8} key={8}>8</div>
       ],
       columns: 5,
     }
@@ -118,6 +118,44 @@ class App extends Component {
 
 
         </AstridGroup>
+        <br /><br /><br /><br /><br /><br /><br /><br />
+
+          <button onClick={
+            ()=>{
+              this.group_a__slider_a = {
+                items: [
+                  <div style={this.cell} key={1}>1</div>,
+                  <div style={this.cell} key={2}>2</div>,
+                  <div style={this.cell} key={3}>3</div>,
+                  <div style={this.cell} key={4}>4</div>,
+                  <div style={this.cell} key={5}>5</div>,
+                  <div style={this.cell} key={6}>6</div>,
+                  <div style={this.cell} key={7}>7</div>,
+                  <div style={this.cell} key={8}>8</div>
+                ],
+                columns: 1,
+              }
+
+              this.group_a__slider_b = {
+                items: [
+                  <div style={this.cell} key={1}>1</div>,
+                  <div style={this.cell} key={2}>2</div>,
+                  <div style={this.cell} key={3}>3</div>,
+                  <div style={this.cell} key={4}>4</div>,
+                  <div style={this.cell} key={5}>5</div>,
+                  <div style={this.cell} key={6}>6</div>,
+                  <div style={this.cell} key={7}>7</div>,
+                  <div style={this.cell} key={8}>8</div>
+                ],
+                columns: 6,
+              }
+              this.setState({
+                bool: !this.bool
+              })
+            }
+          }>
+            Change props for upper slider
+          </button>
         <br /><br /><br /><br /><br /><br /><br /><br />
         <AstridGroup {...this.group_b}>
           <AstridSlider {...this.group_b__slider_a}>

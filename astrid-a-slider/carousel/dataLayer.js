@@ -67,7 +67,12 @@ class DataLayer extends Component {
             )
         };
 
-        return (<PositionLayer {...this.props} {...this} />)
+        return (
+            <PositionLayer
+                {...this.props}
+                {...this}
+            />
+        )
     }
 }
 

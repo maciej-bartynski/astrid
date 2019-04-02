@@ -1,5 +1,5 @@
 import React, { Component } from 'react';
-import DisplayLayer from './displayLayer';
+import RebuildLayer from './rebuildLayer';
 import connect from '../astridConnect';
 
 class PositionLayer extends Component {
@@ -75,11 +75,17 @@ class PositionLayer extends Component {
         } else {
             this.newPosition = validItems.length - columns;
         }
+        
     }
 
     render = () => {
         this.setNewPosition();
-        return (<DisplayLayer {...this.props} {...this} />)
+        return (
+            <RebuildLayer 
+                {...this.props}
+                {...this}
+            />
+        )
     }
 }
 
