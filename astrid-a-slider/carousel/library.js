@@ -3,11 +3,16 @@ export const library = {
         let newItems = null;
         newItems = (items && items.length && items.length > 0 && typeof items === 'object') ? items : children;
         newItems = (newItems && newItems.length && newItems.length > 0 && typeof newItems === 'object') ? newItems : null;
+        newItems = newItems.map((item, keyIndex)=>{
+            return {
+                Item: item, 
+                keyIndex, 
+            }
+        })
         return newItems;
     },
 
     getIsSlider: (columns, elementsArray) => {
-        
         return elementsArray.length <= columns ? false : true;
     },
 
