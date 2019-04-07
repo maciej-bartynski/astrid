@@ -2,15 +2,11 @@ import React, { Component } from 'react';
 import connect from '../astridConnect';
 
 class AstridDisplayLayer extends Component {
-    constructor(props) {
-        super(props);
-        
-        this.position = 0;
-    }
+    
 
     getControlledContent = () => {
-        let { validItems, rebuildedItems, isSlider, columns, SETTINGS: { transition, mode }, position } = this.props;
-
+        let { validItems, isSlider, columns, SETTINGS: { transition, mode }, position } = this.props;
+        
         this.validItems = validItems.map((Item, idx) => {
             return (
                 <div
@@ -19,7 +15,7 @@ class AstridDisplayLayer extends Component {
                         width: `${100 / columns}%`,
                         display: 'inline-block',
                     }}>
-                    { idx === this.props.activeItem ? 'current' : null }
+                    {idx === this.props.activeItem ? 'current' : null}
                     {(typeof Item === 'function') ? <Item /> : Item}
                 </div>
             )
@@ -35,6 +31,8 @@ class AstridDisplayLayer extends Component {
                 {this.validItems}
             </div>
         )
+
+
     }
 
     render() {

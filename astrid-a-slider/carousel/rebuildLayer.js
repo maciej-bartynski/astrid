@@ -3,38 +3,39 @@ import DisplayLayer from './displayLayer';
 import connect from '../astridConnect';
 
 class RebuildLayer extends Component {
-    
+
+    constructor(props) {
+        super(props);
+        this.newValidItems = this.props.validItems;
+    }
+
     getRebuildLayer = () => {
-        const { SETTINGS: { mode }, validItems, by } = this.props;
+        const { SETTINGS: { mode }, by } = this.props;
+        const { newValidItems } = this;
         if (mode !== 'infinite') return;
 
         let head;
         let tail;
-        if (by < 0){
-            head = validItems.slice(Math.abs(by));
-            tail = validItems.slice(0, Math.abs(by));
-
-            let newValidItems = head.concat(tail);
-            this.rebuildedItems = newValidItems;
+        if (by < 0) {
+            tail = newValidItems.slice(newValidItems.length - Math.abs(by));
+            head = newValidItems.slice(0, newValidItems.length - Math.abs(by));
+            let validItems = tail.concat(head);
+            this.newValidItems = validItems;
         } else {
-            head = validItems.slice(validItems.length - by);
-            tail = validItems.slice(0, validItems.length - by);
-
-            let newValidItems = tail.concat(head);
-            this.rebuildedItems = newValidItems;
+            head = newValidItems.slice(0, Math.abs(by));
+            tail = newValidItems.slice(Math.abs(by));
+            let validItems = tail.concat(head);
+            this.newValidItems = validItems;
         }
-
-        console.log(this.rebuildedItems)
-
     }
 
     render = () => {
-        this.getRebuildLayer();
+        //this.getRebuildLayer();
         
         return (
-            <DisplayLayer 
+            <DisplayLayer
                 {...this.props}
-                {...this.state}
+                //{...this.state}
             />
         )
     }

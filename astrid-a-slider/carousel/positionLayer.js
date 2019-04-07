@@ -5,8 +5,8 @@ import connect from '../astridConnect';
 class PositionLayer extends Component {
     constructor(props) {
         super(props);
-        this.position = 0;
-        this.activeItem = 0;
+        this.position = this.props.SETTINGS.mode === 'infinite' ? this.props.columns : 0;
+        this.activeItem = this.props.SETTINGS.mode === 'infinite' ? this.props.columns : 0;
     }
 
     setNewPosition = () => {
@@ -80,6 +80,7 @@ class PositionLayer extends Component {
 
     render = () => {
         this.setNewPosition();
+        
         return (
             <RebuildLayer 
                 {...this.props}

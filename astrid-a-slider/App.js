@@ -3,6 +3,8 @@ import AstridGroup from './astridGroup';
 import AstridNavigator from './astridNavigator';
 import AstridSlider from './carousel';
 
+import ExampleHook from './hooks/ExampleHook';
+
 class App extends Component {
 
   constructor(props) {
@@ -82,7 +84,18 @@ class App extends Component {
 
     return (
       <div>
+        <ExampleHook/>
+        <br/>
+        <br/>
+        <br/>
+        <br/>
+        <br/>
+        <br/>
+        <br/>
+        <br/>
+        <br/>
 
+        <br/>
         <AstridGroup {...this.group_a}>
           <div style={{
             width: '50%',
