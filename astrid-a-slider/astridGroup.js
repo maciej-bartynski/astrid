@@ -25,6 +25,7 @@ export default class AstridGroup extends Component {
 
         this.setState({
             by: payload,
+            by_percent: null,
         })
     }
 

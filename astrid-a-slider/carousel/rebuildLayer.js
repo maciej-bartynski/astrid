@@ -1,5 +1,5 @@
 import React, { Component } from 'react';
-import DisplayLayer from './displayLayer';
+import DragLayer from './dragLayer';
 import connect from '../astridConnect';
 
 class RebuildLayer extends Component {
@@ -33,10 +33,12 @@ class RebuildLayer extends Component {
         //this.getRebuildLayer();
         
         return (
-            <DisplayLayer
-                {...this.props}
-                //{...this.state}
-            />
+            <div>
+                <DragLayer
+                    {...this.props}
+                    //{...this.state}
+                />
+            </div>
         )
     }
 }

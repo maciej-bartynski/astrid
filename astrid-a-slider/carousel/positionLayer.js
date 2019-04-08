@@ -5,6 +5,7 @@ import connect from '../astridConnect';
 class PositionLayer extends Component {
     constructor(props) {
         super(props);
+        
         this.position = this.props.SETTINGS.mode === 'infinite' ? this.props.columns : 0;
         this.activeItem = this.props.SETTINGS.mode === 'infinite' ? this.props.columns : 0;
     }

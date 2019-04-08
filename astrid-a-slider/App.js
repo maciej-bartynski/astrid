@@ -2,7 +2,6 @@ import React, { Component } from 'react';
 import AstridGroup from './astridGroup';
 import AstridNavigator from './astridNavigator';
 import AstridSlider from './carousel';
-import ExampleHook from './hooks/ExampleHook';
 
 const GALLERY_PATH = './media-gallery/';
 const FORMAT = '.jpg';
