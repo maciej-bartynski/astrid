@@ -2,12 +2,6 @@ import React, { Component } from 'react';
 import connect from '../astridConnect';
 
 class AstridDisplayLayer extends Component {
-
-    constructor(props){
-        super(props);
-        this.dragRef = React.createRef();
-    }
-
     getControlledContent = () => {
         let { validItems, isSlider, columns, SETTINGS: { transition, mode }, position } = this.props;
 
@@ -23,27 +17,29 @@ class AstridDisplayLayer extends Component {
                         width: `${100 / columns}%`,
                         display: 'inline-block',
                     }}>
-                    {/*idx === this.props.activeItem ? 'current' : null*/}
+                    
                     {(typeof Item === 'function') ? <Item current={current} visible={visible} keyIndex={keyIndex} key={idx} /> : Item}
                 </div>
             )
         })
 
         return (
-            <div style={{
-                transform: `translate(${-1 * position * (100 / columns)}%, 0)`,
-                transition: `transform ${transition.time}ms ${transition.curve}`,
-                whiteSpace: 'nowrap',
-            }}>
-                {this.validItems}
+            <div className={'astrid-track'} datatransform={`translate(${-1 * position * (100 / columns)}%,0)`}>
+                <div 
+                    style={{
+                    transform: `translate(${-1 * position * (100 / columns)}%,0)`,
+                    transition: `transform ${transition.time}ms ${transition.curve}`,
+                    whiteSpace: 'nowrap',
+                }}>
+                    {this.validItems}
+                </div>
             </div>
         )
     }
 
     render() {
         return (
-            <div 
-                ref = {this.dragRef}
+            <div
                 style={{
                 overflow: 'hidden',
                 width: '100%',
@@ -52,10 +48,6 @@ class AstridDisplayLayer extends Component {
                 {this.getControlledContent()}
             </div>
         )
-    }
-
-    componentDidMount = () => {
-        this.props.setDragNode(this.dragRef.current)
     }
 }
 

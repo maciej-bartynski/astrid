@@ -13,6 +13,8 @@ export default class AstridDragger extends Component {
         const dragAreaNode = findDOMNode(this.dragArea.current);
         this.dragAreaWidth = dragAreaNode.offsetWidth;
 
+        this.translateAreaNode = dragAreaNode.querySelector('.astrid-track');
+
         this.touchStart = null;
         this.touchEnd = null;
         this.movedByPx = null;
