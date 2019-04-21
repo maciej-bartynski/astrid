@@ -3,12 +3,12 @@ import connect from '../astridConnect';
 
 class AstridDisplayLayer extends Component {
     getControlledContent = () => {
-        let { validItems, isSlider, columns, SETTINGS: { transition, mode }, position } = this.props;
-        
+        let { validItems, activeItem, columns, transition, mode, position } = this.props;
+       
         this.validItems = validItems.map((item, idx) => {
             const Item = item.Item;
             const keyIndex = item.keyIndex;
-            const current = idx === this.props.activeItem ? true : false;
+            const current = idx === activeItem ? true : false;
             const visible = (idx >= position && idx < position + columns) ? true : false;
             return (
                 <div
@@ -23,14 +23,16 @@ class AstridDisplayLayer extends Component {
             )
         })
 
+        console.log(position, columns)
+        const TRASNLATE_TO = -1 * position * (100 / columns);
+        
         return (
-
             <div
                 key={'astrid-track-tracker'}
                 data-astrid-selector='astrid-track-selector'
-                data-astrid-position = { (-1 * position * (100 / columns)) }
+                data-astrid-position = { TRASNLATE_TO }
                 style={{
-                    transform: `translate(${-1 * position * (100 / columns)}%,0)`,
+                    transform: `translate(${TRASNLATE_TO}%, 0)`,
                     transition: `transform ${transition.time}ms ${transition.curve}`,
                     whiteSpace: 'nowrap',
                 }}>

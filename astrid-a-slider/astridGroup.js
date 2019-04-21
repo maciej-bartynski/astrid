@@ -1,18 +1,14 @@
 import React, { Component, Fragment, createContext } from 'react';
 
 export let AstridContext = createContext({
-    position: null,
-    move: () => { }
+    by: null,
+    move_by: () => { }
 })
 
 export default class AstridGroup extends Component {
     constructor(props) {
         super(props);
         this.state = {
-            SETTINGS: {
-                ...this.props
-            },
-
             by: null,
             move_by: this.move_by,
         }
@@ -20,12 +16,11 @@ export default class AstridGroup extends Component {
 
     move_by = (payload) => {
         if (typeof payload !== 'number') {
-            payload = 1;
+            payload = 0;
         }
 
         this.setState({
             by: payload,
-            by_percent: null,
         })
     }
 

@@ -3,16 +3,20 @@ import DragLayer from './dragLayer';
 import connect from '../astridConnect';
 
 class RebuildLayer extends Component {
-
     constructor(props) {
         super(props);
+        this.validItems = this.props.validItems;
+        this.columns = this.props.columns;
+        this.position = this.props.position;
+        this.activeItem = this.props.activeItem;
+
         this.newValidItems = this.props.validItems;
+
     }
 
     getRebuildLayer = () => {
-        const { SETTINGS: { mode }, by } = this.props;
+        const { by } = this;//.props;
         const { newValidItems } = this;
-        if (mode !== 'infinite') return;
 
         let head;
         let tail;
@@ -30,16 +34,27 @@ class RebuildLayer extends Component {
     }
 
     render = () => {
-        //this.getRebuildLayer();
-        
+        this.propsToScope();
         return (
-            <div>
-                <DragLayer
-                    {...this.props}
-                    //{...this.state}
-                />
-            </div>
+            <DragLayer
+                {...this}
+            />
         )
+    }
+
+    propsToScope = () => {
+        const { by, move_by, children, mode, items, columns, transition, validItems, isSlider, position, activeItem } = this.props;
+        this.by = by;
+        this.move_by = move_by;
+        this.children = children;
+        this.items = items;
+        this.transition = transition;
+        this.columns = columns;
+        this.validItems = validItems;
+        this.isSlider = isSlider;
+        this.position = position;
+        this.activeItem = activeItem;
+        this.mode = mode
     }
 }
 

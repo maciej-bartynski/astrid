@@ -5,13 +5,13 @@ import connect from '../astridConnect';
 class PositionLayer extends Component {
     constructor(props) {
         super(props);
-        
-        this.position = this.props.SETTINGS.mode === 'infinite' ? this.props.columns : 0;
-        this.activeItem = this.props.SETTINGS.mode === 'infinite' ? this.props.columns : 0;
+
+        this.position = this.props.mode === 'infinite' ? this.props.columns : 0;
+        this.activeItem = this.props.mode === 'infinite' ? this.props.columns : 0;
     }
 
     setNewPosition = () => {
-        const { SETTINGS: { mode }, by } = this.props;
+        const { mode, by } = this;//.props;
 
         const demandedPosition = this.position + by;
         const demandedItem = this.activeItem + by;
@@ -20,16 +20,30 @@ class PositionLayer extends Component {
             this.finiteMode(demandedPosition, demandedItem)
         };
 
-        if (mode === 'infinite') {
-            this.infiniteMode(demandedPosition, demandedItem);
-            this.optionalAdjustmentForInfiniteMode();
+        if (mode === 'circular') {
+            this.circularMode(demandedPosition, demandedItem);
+            this.optionalAdjustmentForCircularMode();
         }
+        
+        if (mode === 'infinite') {
+            this.circularMode(demandedPosition, demandedItem);
+            this.optionalAdjustmentForCircularMode();
+            this.reportEdge();
+        };
 
         this.position = this.newPosition;
     }
 
-    infiniteMode = (demandedPosition, demandedItem) => {
-        const { validItems, columns } = this.props;
+    reportEdge = () => {
+        if (this.newPosition === this.props.columns){
+            console.log('LEFT EDGE');
+        } else if (this.newPosition === this.props.validItems.length - this.props.columns) {
+            console.log('RIGHT EDGE');
+        }
+    }
+
+    circularMode = (demandedPosition, demandedItem) => {
+        const { validItems, columns } = this;//.props;
         const revertFromToHigh = demandedItem - validItems.length;
         const revertFromToLow = validItems.length + demandedItem;
 
@@ -54,7 +68,7 @@ class PositionLayer extends Component {
     }
 
     finiteMode = (demandedPosition, demandedItem) => {
-        const { validItems, columns } = this.props;
+        const { validItems, columns } = this;//.props;
         const demandedPositionToHigh = (demandedPosition >= validItems.length - columns);
         const demandedPositionToLow = (demandedPosition < 0);
         const demandedItemToHigh = (demandedItem >= validItems.length);
@@ -69,25 +83,37 @@ class PositionLayer extends Component {
         this.newPosition = newPosition !== demandedItem ? this.position : newPosition;
     }
 
-    optionalAdjustmentForInfiniteMode = () => {
+    optionalAdjustmentForCircularMode = () => {
         const { validItems, columns } = this.props;
         if (this.activeItem >= 0 && this.activeItem < validItems.length - columns) {
             this.newPosition = this.activeItem;
         } else {
             this.newPosition = validItems.length - columns;
         }
-        
     }
 
     render = () => {
+        this.propsToScope();
         this.setNewPosition();
-        
+    
         return (
-            <RebuildLayer 
-                {...this.props}
+            <RebuildLayer
                 {...this}
             />
         )
+    }
+
+    propsToScope = () => {
+        const { by, move_by, children, items, columns, mode, validItems, isSlider, transition } = this.props;
+        this.by = by;
+        this.move_by = move_by;
+        this.children = children;
+        this.items = items;
+        this.columns = columns;
+        this.validItems = validItems;
+        this.isSlider = isSlider;
+        this.transition = transition;
+        this.mode = mode;
     }
 }
 

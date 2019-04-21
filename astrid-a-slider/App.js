@@ -1,7 +1,7 @@
 import React, { Component } from 'react';
 import AstridGroup from './astridGroup';
 import AstridNavigator from './astridNavigator';
-import AstridSlider from './carousel';
+import AstridSlider from './astridCarousel';
 
 const GALLERY_PATH = './media-gallery/';
 const FORMAT = '.jpg';
@@ -26,6 +26,11 @@ class ImageComponent extends Component {
     this.background = '';
   }
 
+  idRet = () => {
+    const { keyIndex } = this.props;
+    return media_gallery_paths[keyIndex].title;
+  }
+
   mediaGalleryPath = () => {
     const { keyIndex } = this.props;
     const title = media_gallery_paths[keyIndex].title;
@@ -40,6 +45,8 @@ class ImageComponent extends Component {
     }
     return (
       <div
+        id={this.idRet() + this.dupa}
+        key={this.idRet() + this.dupa}
         style={{
           boxSizing: 'border-box',
           width: '100%',
@@ -92,7 +99,6 @@ class App extends Component {
     }
 
     this.group_a = {
-      mode: 'infinite',//'infinite'
       transition: {
         time: 300,
         curve: 'ease-in',
@@ -103,64 +109,46 @@ class App extends Component {
 
     this.group_a__slider_a = {
       items: media_gallery_paths.map((item, index) => {
+        ImageComponent.dupa = index;
         return ImageComponent;
       }),
+      mode: 'infinite',
       columns: 2,
+      transition: {
+        time: 300,
+        curve: 'ease-in',
+        style: 'translate', //or fade,
+        mode: 'absolue' //relative
+      },
     }
 
     this.group_a__slider_b = {
       items: media_gallery_paths.map((item, index) => {
         return TitleComponent;
       }),
+      mode: 'infinite',
       columns: 5,
-    }
-
-    this.group_b = {
-      mode: 'finite',//'infinite'
       transition: {
-        time: 300,
-        curve: 'ease-in',
-        style: 'translate', //or fade
-        mode: 'absolute'//relative
+        time: 200,
+        curve: 'linear',
+        style: 'translate', //or fade,
+        mode: 'absolue' //relative
       },
-    }
-
-    this.group_b__slider_a = {
-      items: [],
-      columns: 3,
     }
   }
 
   render() {
-    let imageBlockStyle = {
-      boxSizing: 'border-box',
-      width: '100%',
-      paddingTop: '100%',
-      backgroundSize: 'contain',
-      backgroundPosition: 'center',
-      backgroundRepeat: 'no-repeat',
-      border: 'solid 1px gray',
-    }
-
     return (
-      <div style={{ width: '100%', minWidth: 200, maxWidth: 1200, margin: '0 auto'}}>
+      <div style={{ width: '100%', minWidth: 200, maxWidth: 1200, margin: '0 auto' }}>
         <AstridGroup {...this.group_a}>
-          <h2>Astrid Slider - infinite, components (current marked)</h2>
-          <div style={{
-            width: '50%',
-            margin: '0 auto',
-          }}>
-            <AstridSlider {...this.group_a__slider_a} />
-          </div>
+          <AstridSlider {...this.group_a__slider_a} />
           <AstridSlider {...this.group_a__slider_b} />
 
-          <div style={{ width: '10%', margin: '0 auto' }}>
-            <AstridNavigator by={-1}><span>left 1</span></AstridNavigator>
-            <AstridNavigator by={1}><span>right 1</span></AstridNavigator>
-            <br />
-            <AstridNavigator by={-4}><span>left 4</span></AstridNavigator>
-            <AstridNavigator by={4}><span>right 4</span></AstridNavigator>
-          </div>
+          <AstridNavigator by={-1}><span>left 1</span></AstridNavigator>
+          <AstridNavigator by={1}><span>right 1</span></AstridNavigator>
+          <br />
+          <AstridNavigator by={-4}><span>left 4</span></AstridNavigator>
+          <AstridNavigator by={4}><span>right 4</span></AstridNavigator>
         </AstridGroup>
         <br />
         <button
@@ -182,66 +170,6 @@ class App extends Component {
           }>
           Change columns amount
         </button>
-        <br /><br /><br /><br /><br /><br /><br /><br />
-        <AstridGroup {...this.group_b}>
-          <h2>Astrid Slider - finite, components (current marked)</h2>
-          <AstridSlider {...this.group_b__slider_a}>
-            {media_gallery_paths.map((item, index) => {
-              return ImageComponent;
-            })}
-          </AstridSlider>
-          <AstridNavigator by={-1}><span>left 1</span></AstridNavigator>
-          <AstridNavigator by={1}><span>right 1</span></AstridNavigator>
-        </AstridGroup>
-
-        <br /><br /><br /><br /><br /><br /><br /><br />
-        <AstridGroup {...this.group_b}>
-          <h2>Astrid Slider - finite, html blocks (current not marked)</h2>
-          <AstridSlider {...this.group_b__slider_a}>
-            <div style={{
-              ...imageBlockStyle,
-              backgroundImage: `url(${GALLERY_PATH + media_gallery_paths[0].title + FORMAT})`
-            }} />
-            <div style={{
-              ...imageBlockStyle,
-              backgroundImage: `url(${GALLERY_PATH + media_gallery_paths[1].title + FORMAT})`
-            }} />
-            <div style={{
-              ...imageBlockStyle,
-              backgroundImage: `url(${GALLERY_PATH + media_gallery_paths[2].title + FORMAT})`
-            }} />
-            <div style={{
-              ...imageBlockStyle,
-              backgroundImage: `url(${GALLERY_PATH + media_gallery_paths[3].title + FORMAT})`
-            }} />
-            <div style={{
-              ...imageBlockStyle,
-              backgroundImage: `url(${GALLERY_PATH + media_gallery_paths[4].title + FORMAT})`
-            }} />
-            <div style={{
-              ...imageBlockStyle,
-              backgroundImage: `url(${GALLERY_PATH + media_gallery_paths[5].title + FORMAT})`
-            }} />
-            <div style={{
-              ...imageBlockStyle,
-              backgroundImage: `url(${GALLERY_PATH + media_gallery_paths[6].title + FORMAT})`
-            }} />
-            <div style={{
-              ...imageBlockStyle,
-              backgroundImage: `url(${GALLERY_PATH + media_gallery_paths[7].title + FORMAT})`
-            }} />
-            <div style={{
-              ...imageBlockStyle,
-              backgroundImage: `url(${GALLERY_PATH + media_gallery_paths[8].title + FORMAT})`
-            }} />
-            <div style={{
-              ...imageBlockStyle,
-              backgroundImage: `url(${GALLERY_PATH + media_gallery_paths[9].title + FORMAT})`
-            }} />
-          </AstridSlider>
-          <AstridNavigator by={-1}><span>left 1</span></AstridNavigator>
-          <AstridNavigator by={1}><span>right 1</span></AstridNavigator>
-        </AstridGroup>
       </div>
     );
   }
