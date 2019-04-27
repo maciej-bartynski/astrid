@@ -1,8 +1,78 @@
 import React, { Component } from 'react';
-import AstridGroup from './astridGroup';
+/*import AstridGroup from './astridGroup';
 import AstridNavigator from './astridNavigator';
-import AstridSlider from './astridCarousel';
+import AstridSlider from './astridCarousel';*/
+import AstridGroup from './astrid/Group';
+import AstridNavigator from './astrid/Navigator';
+import AstridSlider from './astrid/Carousel';
 
+class App extends Component {
+  render() {
+    return (
+      <AstridGroup>
+        <AstridSlider
+          mode={'finite'} //'finite', 'return'
+          draggable={true}
+          pixel_width={1000}
+          fit_height={true} //DOM operation!
+          
+          align={{
+            left: true, //default
+            center: true,
+            custom: '3%'
+          }}
+          
+          /**
+           * Grid OR inline.
+           * If both, only grid is dispatched,
+           */
+          //grid={{
+          //  columns: 2,
+          //  rows: 1
+          //}}
+         
+          
+          /**
+           * Translate OR fade.
+           * If both, only translate is dispatched
+           */
+          translate={{
+            time: {
+              duration: 300,
+              per_column: false,
+            },
+            curve: 'ease-in', // all css curves
+          }}
+          fade={{
+            time: 300,
+            curve_in: 'ease-in', // all css curves
+            curve_out: 'ease-out' // all css curves
+          }}
+        >
+          <div className='MyItem'>1</div>
+          <div className='MyItem'>2</div>
+          <div className='MyItem'>3</div>
+          <div className='MyItem'>4</div>
+          <div className='MyItem'>5</div>
+          <div className='MyItem'>6</div>
+          <div className='MyItem'>7</div>
+          <div className='MyItem'>8</div>
+          <div className='MyItem'>9</div>
+        </AstridSlider>
+        <br />
+        <AstridNavigator by={-1}><span>left 1</span></AstridNavigator>
+        <AstridNavigator by={1}><span>right 1</span></AstridNavigator>
+        <br />
+        <AstridNavigator by={-4}><span>left 4</span></AstridNavigator>
+        <AstridNavigator by={4}><span>right 4</span></AstridNavigator>
+      </AstridGroup>
+    )
+  }
+}
+
+export default App;
+
+/* OLD PROJECT 
 const GALLERY_PATH = './media-gallery/';
 const FORMAT = '.jpg';
 const media_gallery_paths = [
@@ -176,3 +246,5 @@ class App extends Component {
 }
 
 export default App;
+
+*/
