@@ -99,7 +99,7 @@ class DataLayer extends Component {
 
     render = () => {
         const { children, pixel_width } = this.props;
-console.log(this)
+
         if (!children) {
             return null
         }
