@@ -5,11 +5,56 @@ body {
   background-repeat: no-repeat
 }
 
-.MyItem {
+.MyItem_grid {
+  height: 300px;
+  border: solid 1px red;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+.MyItem_inline {
   height: 300px;
   border: solid 1px red;
   display: flex;
   justify-content: center;
   align-items: center;
   width: 230px;
+}
+
+.MyItem_inline_ex__div-conteiner {
+  display: flex;
+}
+
+.MyItem_inline_ex__list-conteiner {
+  list-style: none;
+  display: flex;
+  margin: 0;
+  padding: 0;
+}
+
+.MyItem_inline_ex {
+  height: 300px;
+  border: solid 1px red;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  width: 230px;
+}
+.MyItem_inline_ex__list-conteiner .MyItem_inline_ex {
+  height: 300px;
+  border: solid 1px red;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  width: 110px;
+}
+
+.MyItem_inline_ex__div-conteiner .MyItem_inline_ex {
+  height: 300px;
+  border: solid 1px red;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  width: 150px;
 }
