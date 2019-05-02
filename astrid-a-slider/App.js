@@ -2,69 +2,126 @@ import React, { Component } from 'react';
 /*import AstridGroup from './astridGroup';
 import AstridNavigator from './astridNavigator';
 import AstridSlider from './astridCarousel';*/
-import AstridGroup from './astrid/Group';
-import AstridNavigator from './astrid/Navigator';
-import AstridSlider from './astrid/Carousel';
+import AstridGroup from './AstridCarousel_new/astridGroup';
+import AstridNavigator from './AstridCarousel_new/astridNavigator';
+import AstridCarousel from './AstridCarousel_new';
+
+const GALLERY_PATH = './media-gallery/';
+const FORMAT = '.jpg';
+const media_gallery_paths = [
+  { title: 'animals' },
+  { title: 'books' },
+  { title: 'business' },
+  { title: 'coins' },
+  { title: 'frog' },
+  { title: 'girl' },
+  { title: 'literature' },
+  { title: 'money' },
+  { title: 'reading' },
+  { title: 'tabletop-photography' },
+  { title: 'water' },
+]
+
+class Navigator extends Component {
+  render = () => {
+    const { left_edge, right_edge, title, by } = this.props;
+    const visible = ( left_edge && title === 'left' ) || (right_edge && title === 'right') ? false : true ;
+    console.log(this.props)
+    return(
+      <div
+        style={{
+          padding: '10px 20px',
+          opacity: ( visible ? 1 : 0.4 ),
+          border: '1px red solid'
+        }}
+      >{title}{' '}{by} </div>
+    )
+  }
+}
+
+class TextComponent extends Component {
+  render = () => {
+    const { title, index } = this.props;
+    return (
+      <div
+        style={{
+          height: (index % 2 === 0 ? 120 : 60),
+          border: 'solid 1px green',
+          display: 'flex',
+          justifyContent: 'center',
+          alignItems: 'center',
+          padding: '10px 5px'
+        }}>{title.title}</div>
+    )
+  }
+}
+
+class ImageComponent extends Component {
+  constructor(props) {
+    super(props);
+    this.background = '';
+    this.mediaGalleryPath();
+  }
+
+  mediaGalleryPath = () => {
+    const { image: { title } } = this.props;
+    this.background = `url(${GALLERY_PATH + title + FORMAT})`;
+  }
+
+  render = () => {
+    return (
+      <div
+        style={{
+          width: '100%',
+          paddingTop: '100%',
+          backgroundImage: this.background,
+          backgroundSize: 'contain',
+          backgroundPosition: 'center',
+          backgroundRepeat: 'no-repeat',
+          border: 'solid 1px pink'
+        }} />
+    )
+  }
+}
+
+const config = {
+  columns: 2,
+  mode: 'infinite',
+  grid: true,
+}
+
+const config2 = {
+  columns: 2,
+  mode: 'infinite',
+  grid: false,
+}
 
 class App extends Component {
   render() {
     return (
       <AstridGroup>
-        <AstridSlider
-          mode={'finite'} //'finite', 'return'
-          draggable={true}
-          pixel_width={1000}
-          fit_height={true} //DOM operation!
-          
-          align={{
-            left: true, //default
-            center: true,
-            custom: '3%'
-          }}
-          
-          /**
-           * Grid OR inline.
-           * If both, only grid is dispatched,
-           */
-          //grid={{
-          //  columns: 2,
-          //  rows: 1
-          //}}
-         
-          
-          /**
-           * Translate OR fade.
-           * If both, only translate is dispatched
-           */
-          translate={{
-            time: {
-              duration: 300,
-              per_column: false,
-            },
-            curve: 'ease-in', // all css curves
-          }}
-          fade={{
-            time: 300,
-            curve_in: 'ease-in', // all css curves
-            curve_out: 'ease-out' // all css curves
-          }}
-        >
-          <div className='MyItem'>1</div>
-          <div className='MyItem'>2</div>
-          <div className='MyItem'>3</div>
-          <div className='MyItem'>4</div>
-          <div className='MyItem'>5</div>
-          <div className='MyItem'>6</div>
-          <div className='MyItem'>7</div>
-          <div className='MyItem'>8</div>
-          <div className='MyItem'>9</div>
-        </AstridSlider>
+        <div style={{
+          margin: '0 auto',
+          width: 500
+        }}>
+          <AstridCarousel {...config}>
+            {media_gallery_paths.map((item, indx, arr) => (<ImageComponent key={indx} image={arr[indx]} />))}
+          </AstridCarousel>
+        </div>
+        <div style={{
+          margin: '0 auto',
+          width: 500
+        }}>
+          <AstridCarousel {...config2}>
+            {media_gallery_paths.map((item, indx, arr) => (<TextComponent key={indx} title={arr[indx]} index={indx} />))}
+          </AstridCarousel>
+        </div>
         <br />
-        <AstridNavigator by={-1}><span>left 1</span></AstridNavigator>
-        <AstridNavigator by={1}><span>right 1</span></AstridNavigator>
+        <AstridNavigator by={-1}><Navigator title={'left'} by={-1}/></AstridNavigator>
+        <AstridNavigator by={1}><Navigator title={'right'} by={1}/></AstridNavigator>
         <br />
-        <AstridNavigator by={-4}><span>left 4</span></AstridNavigator>
-        <AstridNavigator by={4}><span>right 4</span></AstridNavigator>
+        <AstridNavigator by={-4}><Navigator title={'left'} by={-4}/></AstridNavigator>
+        <AstridNavigator by={4}><Navigator title={'right'} by={4}/></AstridNavigator>
       </AstridGroup>
     )
   }
@@ -72,7 +129,7 @@ class App extends Component {
 
 export default App;
 
-/* OLD PROJECT 
+/* OLD PROJECT
 const GALLERY_PATH = './media-gallery/';
 const FORMAT = '.jpg';
 const media_gallery_paths = [
