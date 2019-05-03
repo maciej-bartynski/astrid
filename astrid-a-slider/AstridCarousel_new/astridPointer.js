@@ -2,7 +2,7 @@
 import React, { Component, cloneElement } from 'react';
 import { CarouselContext } from './astridGroup';
 
-export default class CarouselNavigator extends Component {
+export default class AstridPointer extends Component {
     constructor(props){
         super(props);
         this.state = {
@@ -12,31 +12,31 @@ export default class CarouselNavigator extends Component {
         }
     }
     render() {
-        const { children, by } = this.props;
+        const { children, to } = this.props;
         const { left_edge, right_edge, active_position } = this.state;
-        console.log('ME NAV I RERERENDER', this.props)
+        
         return (
             <CarouselContext.Consumer>
-                {({ move_by, navigators_reference }) => {
+                {({ move_to, navigators_reference }) => {
                 this.navigatorsReference = navigators_reference;
                 return (
                     <div
                         role='button'
                         tabIndex={0}
-                        onKeyDown={()=>move_by(by)}
-                        onClick={()=>move_by(by)}>
+                        onKeyDown={()=>move_to(to)}
+                        onClick={()=>move_to(to)}>
                         { cloneElement( children, { left_edge, right_edge, active_position } ) }
                     </div>
                 )}}
             </CarouselContext.Consumer>
         )
+        
+    
     }
 
     triggerSetState = (payload) => {
-        console.log('LET STATE INDIS')
         this.setState({...payload})
     }
-
     componentDidMount = () => {
         this.navigatorsReference( this );
     }

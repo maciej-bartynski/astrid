@@ -70,7 +70,11 @@ export const library = {
 
             for (let i = 0; i < MINIMUM_SAFE_ARRAY_LENGTH; i++) {
                 helper_iterator = helper_iterator >= ARRAY_LENGTH ? 0 : helper_iterator;
-                infiniteElementsArray.push(elementsArray[helper_iterator])
+                const element = cloneElement(
+                    elementsArray[helper_iterator],
+                    { key: i, infinite_identity: i }
+                )
+                infiniteElementsArray.push(element)
                 helper_iterator++;
             }
 
@@ -93,5 +97,16 @@ export const library = {
         let SliderLeftOverflow = elementsArray.slice(elementsArray.length - columns);
         let SliderVisibleAreaAndRightOverflow = elementsArray.slice(0, elementsArray.length - columns);
         return SliderLeftOverflow.concat(SliderVisibleAreaAndRightOverflow);
+    },
+
+    getModifiedTo: function(columns, to, componentsLength) {
+        let modifiedTo;
+        if ( to >= componentsLength - columns ){
+            const revertTo = to - (componentsLength - columns); 
+            modifiedTo = revertTo; 
+        } else {
+            modifiedTo = columns+to;
+        }
+        return modifiedTo;
     }
 }

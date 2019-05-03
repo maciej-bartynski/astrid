@@ -17,25 +17,41 @@ class DataLayer extends Component {
         })
     }
 
-    /*isOnEdge = () => {
-        if (this.positionItem >= this.state.validChildren.length - 1) {
-            this.positionItem = this.state.validChildren.length - 1;
+    isOnEdge = () => {
+        if (this.position >= this.props.to_render.components.length - 1) {
+            this.position = this.props.to_render.components.length - 1;
             this.rightEdge = true;
-        } else if (this.positionItem <= 0) {
-            this.positionItem = 0;
+        } else if (this.position <= 0) {
+            this.position = 0;
             this.leftEdge = true;
         } else {
             this.leftEdge = false;
             this.rightEdge = false;
         }
-    }*/
+
+        this.informationForNavigators = {
+            active_position: this.position,
+            left_edge: this.leftEdge,
+            right_edge: this.rightEdge
+        }
+       
+    }
 
     getPosition = () => {
-        const { grid, columns, to_render, by } = this.props;
+        let { grid, columns, to_render, by, to, mode } = this.props;
         const { components_widths } = to_render;
-        this.position = library.getValidCarouselPosition(this.position + by, components_widths.length);
+        
+        
+        if (mode === 'infinite') {
+            to = library.getModifiedTo(columns, to, components_widths.length);
+        } 
 
-        //this.isOnEdge();
+        const position = typeof by !== 'boolean' ? (this.position + by) : to ;
+        this.position = typeof position === 'number' ? position : this.position;
+        
+        this.position = library.getValidCarouselPosition(this.position, components_widths.length);
+
+        this.isOnEdge();
 
         if ( !grid ) {
             let left = 0;
@@ -74,8 +90,17 @@ class DataLayer extends Component {
         )
     }
 
-    transitionEndHandler = () => {
-        if (this.leftEdge || this.rightEdge ) {
+    transitionEndHandler = () => { 
+        const { navigators } = this.props;
+       
+        navigators.forEach( (navigator)=>{
+            console.log('IS IT NABI? ', navigator)
+            navigator.triggerSetState({
+                ...this.informationForNavigators
+            })
+        } )
+
+       /* if (this.leftEdge || this.rightEdge ) {
             this.wasOnEdge = true;
             this.props.isOnEdge( this.leftEdge, this.rightEdge );
         } else {
@@ -83,7 +108,7 @@ class DataLayer extends Component {
                 this.wasOnEdge = false;
                 this.props.isOnEdge( false, false );
             }
-        }
+        } */ 
     }
 }
 

@@ -1,4 +1,5 @@
 import React, { Component, createContext } from 'react';
+import { timingSafeEqual } from 'crypto';
 
 export let CarouselContext = createContext({
     position: null,
@@ -8,7 +9,7 @@ export let CarouselContext = createContext({
 export default class CarouselGroup extends Component {
     constructor(props) {
         super(props);
-        this.maxPositions=[];
+        this.navigators=[];
 
         this.state = {
             by: null,
@@ -16,19 +17,23 @@ export default class CarouselGroup extends Component {
             move_to: this.move_to,
             move_by: this.move_by,
 
-            left_edge: null,
+            navigators: [],
+            navigators_reference: this.navigators_reference,
+
+            /*left_edge: null,
             right_edge: null,
-            isOnEdge: this.isOnEdge,
+            isOnEdge: this.isOnEdge,*/
         }
     }
 
     move_to = (to) => {
         if (typeof to !== 'number') {
-            to = this.state.position;
+            return;
         }
 
         this.setState({
-           to
+           to,
+           by: false,
         })
     }
 
@@ -38,15 +43,27 @@ export default class CarouselGroup extends Component {
         }
         
         this.setState({
-            by
+            by,
+            to: false,
         })
     }
 
-    isOnEdge = (left_edge, right_edge) => {
+    /*isOnEdge = (left_edge, right_edge) => {
         this.setState({
             left_edge,
             right_edge,
             position: this.state.position,
+        })
+    }*/
+
+    navigators_reference = async (payload) => {
+        this.navigators.push(payload);
+    }
+
+    componentDidMount=()=>{
+       
+        this.setState({
+            navigators: this.navigators
         })
     }
 

@@ -35,10 +35,9 @@ class DataLayer extends Component {
         }
 
         const columnWidth = this.isGrid ? 100/columns + '%' : 'auto' ;
-
         const elementsDataArrays = library.getElementsArray(children, columnWidth);
         this.components = elementsDataArrays.items;
-        this.components_dataIDs = elementsDataArrays.ids;
+        this.components_IDs = elementsDataArrays.ids;
     }
 
     getIsSlider = () => {

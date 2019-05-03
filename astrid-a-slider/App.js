@@ -5,6 +5,7 @@ import AstridSlider from './astridCarousel';*/
 import AstridGroup from './AstridCarousel_new/astridGroup';
 import AstridNavigator from './AstridCarousel_new/astridNavigator';
 import AstridCarousel from './AstridCarousel_new';
+import AstridPointer from './AstridCarousel_new/astridPointer';
 
 const GALLERY_PATH = './media-gallery/';
 const FORMAT = '.jpg';
@@ -22,16 +23,34 @@ const media_gallery_paths = [
   { title: 'water' },
 ]
 
+class Pointer extends Component {
+  render = () => {
+    const { to, active_position } = this.props;
+    
+    return(
+      <div
+        style={{
+          padding: '10px',
+          border: '1px red solid',
+          display: 'inline-block',
+          color: 'white',
+          background: ( to === active_position ? 'gray' : 'green') 
+        }}
+      >{to}</div>
+    )
+  }
+}
+
 class Navigator extends Component {
   render = () => {
-    const { left_edge, right_edge, title, by } = this.props;
+    const { left_edge, right_edge, active_position, title, by } = this.props;
     const visible = ( left_edge && title === 'left' ) || (right_edge && title === 'right') ? false : true ;
-    console.log(this.props)
+
     return(
       <div
         style={{
           padding: '10px 20px',
-          opacity: ( visible ? 1 : 0.4 ),
+          opacity: ( visible ? 1 : 0.1 ),
           border: '1px red solid'
         }}
       >{title}{' '}{by} </div>
@@ -91,7 +110,7 @@ const config = {
 }
 
 const config2 = {
-  columns: 2,
+  columns: 5,
   mode: 'finite',
   grid: false,
 }
@@ -105,7 +124,7 @@ class App extends Component {
           width: 500
         }}>
           <AstridCarousel {...config}>
-            {media_gallery_paths.map((item, indx, arr) => (<ImageComponent key={indx} image={arr[indx]} />))}
+            {media_gallery_paths.map((item, indx, arr) => (<ImageComponent key={'top'+indx} image={arr[indx]} />))}
           </AstridCarousel>
         </div>
         <div style={{
@@ -113,15 +132,20 @@ class App extends Component {
           width: 500
         }}>
           <AstridCarousel {...config2}>
-            {media_gallery_paths.map((item, indx, arr) => (<TextComponent key={indx} title={arr[indx]} index={indx} />))}
+            {media_gallery_paths.map((item, indx, arr) => (<TextComponent key={'bottom'+indx} title={arr[indx]} index={indx} />))}
           </AstridCarousel>
         </div>
         <br />
         <AstridNavigator by={-1}><Navigator title={'left'} by={-1}/></AstridNavigator>
         <AstridNavigator by={1}><Navigator title={'right'} by={1}/></AstridNavigator>
         <br />
-        <AstridNavigator by={-4}><Navigator title={'left'} by={-4}/></AstridNavigator>
-        <AstridNavigator by={4}><Navigator title={'right'} by={4}/></AstridNavigator>
+        {media_gallery_paths.map((item, indx)=>{
+          return (
+            <AstridPointer to={indx} key={'pointer' +indx}>
+              <Pointer to={indx} />
+            </AstridPointer>
+          )
+        })}
       </AstridGroup>
     )
   }
