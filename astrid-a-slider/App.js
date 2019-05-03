@@ -92,7 +92,7 @@ const config = {
 
 const config2 = {
   columns: 2,
-  mode: 'infinite',
+  mode: 'finite',
   grid: false,
 }
 

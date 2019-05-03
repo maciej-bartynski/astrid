@@ -1,34 +1,70 @@
+import React, { cloneElement } from 'react';
+
 export const library = {
-    getElementsArray: (children) => {
-        let newItems = children.map((item, idx)=>{
-            return {
-                CarouselItem: item, 
-                carouselItemID: idx, 
-                carouselItemWidth: null,
-                carouselItemHeight: null,
-            }
+    getElementsArray: function(children, width) {
+        const data = {
+            items: [],
+            ids: [],
+        }
+
+        children.map((item, idx) => {
+            const carouselItem = this.itemToCarouselItem(item, idx, width)
+            data.items.push(carouselItem);
+            data.ids.push(idx);
         })
-        return newItems;
+
+        return data;
     },
 
-    arrayListFromArrayLikeList: (arrayLike) => {
-        let validArray = [];
-        for (let i = 0; i<arrayLike.length; i++){
-            validArray.push(arrayLike[i])
+    itemToCarouselItem: function(item, idx, width) {
+        const itemStyles = {
+            display: 'inline-block',
+            width: (width ? width : 'auto'),
+            listStyle: 'none',
+            margin: 0,
+            padding: 0,
         }
-        return validArray;
+
+        return (
+            <li
+                key={idx}
+                data-carousel-selector='carousel_item'
+                style={itemStyles}>
+                {cloneElement(
+                    item, { identity: idx }
+                )}
+            </li>
+        )
     },
 
     getIsSlider: (columns, elementsArray) => {
         return elementsArray.length <= columns ? false : true;
     },
 
-    getInfiniteElementsArray: (columns, elementsArray) => {
+    getIsGrid: (grid) => {
+        return (grid === null || grid === undefined || grid) ? true : false;
+    },
+
+    getValidCarouselPosition: (demandedPosition, arrayLength) => {
+        const toLow = demandedPosition < 0;
+        const toHigh = demandedPosition > arrayLength - 1;
+        return (toLow || toHigh ? toLow ? 0 : arrayLength -1 : demandedPosition)  
+    },
+
+    arrayListFromArrayLikeList: (arrayLike) => {
+        let validArray = [];
+        for (let i = 0; i < arrayLike.length; i++) {
+            validArray.push(arrayLike[i])
+        }
+        return validArray;
+    },
+
+    getInfiniteElementsArray: function(columns, elementsArray){
         let infiniteElementsArray = [];
         const ARRAY_LENGTH = elementsArray.length;
         const MINIMUM_SLIDER_LENGTH = 3 * columns;
-        const MINIMUM_SAFE_ARRAY_LENGTH = library.getMinSafeArrayLength(ARRAY_LENGTH, MINIMUM_SLIDER_LENGTH);
-        
+        const MINIMUM_SAFE_ARRAY_LENGTH = this.getMinSafeArrayLength(ARRAY_LENGTH, MINIMUM_SLIDER_LENGTH);
+
         if (ARRAY_LENGTH < MINIMUM_SAFE_ARRAY_LENGTH) {
             let helper_iterator = 0;
 
@@ -42,20 +78,18 @@ export const library = {
             infiniteElementsArray = elementsArray;
         }
 
-
+        infiniteElementsArray = this.moveLastIndexesToStart(columns, infiniteElementsArray)
         return infiniteElementsArray;
     },
 
-    getMinSafeArrayLength: (arrayLength, minLength) => {
-
-        while (arrayLength < minLength) {
+    getMinSafeArrayLength: function(arrayLength, minLength){
+        while (arrayLength < minLength && arrayLength !== 0 && minLength !== 0) {
             arrayLength += arrayLength
         }
-      
         return arrayLength;
     },
 
-    moveLastIndexesToStart: (columns, elementsArray) => {
+    moveLastIndexesToStart: function (columns, elementsArray) {
         let SliderLeftOverflow = elementsArray.slice(elementsArray.length - columns);
         let SliderVisibleAreaAndRightOverflow = elementsArray.slice(0, elementsArray.length - columns);
         return SliderLeftOverflow.concat(SliderVisibleAreaAndRightOverflow);

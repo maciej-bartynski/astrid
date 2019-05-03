@@ -8,7 +8,7 @@ export default class CarouselNavigator extends Component {
         
         return (
             <CarouselContext.Consumer>
-                {({ move_by, left_edge, right_edge }) => (
+                {({ move_by, move_to, left_edge, right_edge }) => (
                     <div
                         role='button'
                         tabIndex={0}

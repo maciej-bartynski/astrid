@@ -8,8 +8,12 @@ export let CarouselContext = createContext({
 export default class CarouselGroup extends Component {
     constructor(props) {
         super(props);
+        this.maxPositions=[];
+
         this.state = {
             by: null,
+            to: null,
+            move_to: this.move_to,
             move_by: this.move_by,
 
             left_edge: null,
@@ -18,13 +22,23 @@ export default class CarouselGroup extends Component {
         }
     }
 
-    move_by = (payload) => {
-        if (typeof payload !== 'number') {
-            payload = 0;
+    move_to = (to) => {
+        if (typeof to !== 'number') {
+            to = this.state.position;
         }
 
         this.setState({
-            by: payload,
+           to
+        })
+    }
+
+    move_by = (by) => {
+        if (typeof by !== 'number') {
+            by = 0;
+        }
+        
+        this.setState({
+            by
         })
     }
 
@@ -32,7 +46,7 @@ export default class CarouselGroup extends Component {
         this.setState({
             left_edge,
             right_edge,
-            by: 0,
+            position: this.state.position,
         })
     }
 
