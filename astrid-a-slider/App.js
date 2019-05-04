@@ -1,7 +1,4 @@
 import React, { Component } from 'react';
-/*import AstridGroup from './astridGroup';
-import AstridNavigator from './astridNavigator';
-import AstridSlider from './astridCarousel';*/
 import AstridGroup from './AstridCarousel_new/astridGroup';
 import AstridNavigator from './AstridCarousel_new/astridNavigator';
 import AstridCarousel from './AstridCarousel_new';
@@ -25,16 +22,20 @@ const media_gallery_paths = [
 
 class Pointer extends Component {
   render = () => {
-    const { to, active_position } = this.props;
+    const { to, active_position, isThin } = this.props;
     
     return(
       <div
         style={{
           padding: '10px',
-          border: '1px red solid',
+          width: '100%',
+          textAlign: 'center',
+          border: '1px white solid',
           display: 'inline-block',
+          boxSizing: 'border-box',
           color: 'white',
-          background: ( to === active_position ? 'gray' : 'green') 
+          background: ( to === active_position ? 'gray' : 'rgba(0,0,0,0.2'),
+          cursor: 'pointer',
         }}
       >{to}</div>
     )
@@ -50,8 +51,13 @@ class Navigator extends Component {
       <div
         style={{
           padding: '10px 20px',
-          opacity: ( visible ? 1 : 0.1 ),
-          border: '1px red solid'
+          opacity: ( visible ? 1 : 0.4 ),
+          background: 'gray',
+          color: 'white',
+          border: '1px solid white',
+          cursor: 'pointer',
+          width: 250,
+          display: 'inline-block',
         }}
       >{title}{' '}{by} </div>
     )
@@ -64,12 +70,16 @@ class TextComponent extends Component {
     return (
       <div
         style={{
-          height: (index % 2 === 0 ? 120 : 60),
-          border: 'solid 1px green',
+          height: 60,
+          border: 'solid 1px rgb(200,200,200)',
+          borderTop: 'none',
+          color: 'white',
+          background: 'rgb(130,130,130)',
           display: 'flex',
           justifyContent: 'center',
           alignItems: 'center',
-          padding: '10px 5px'
+          width: (index % 2 === 0 || index === 5 ? index % 2 === 0 ? 'unset' : '200px' : '450px'),
+          padding: (index % 2 === 0 ? '5px 5px' : '5px 20px'),
         }}>{title.title}</div>
     )
   }
@@ -93,11 +103,12 @@ class ImageComponent extends Component {
         style={{
           width: '100%',
           paddingTop: '100%',
+          backgroundColor: 'rgb(100,100,100)',
           backgroundImage: this.background,
           backgroundSize: 'contain',
           backgroundPosition: 'center',
           backgroundRepeat: 'no-repeat',
-          border: 'solid 1px pink'
+          border: 'solid 1px white'
         }} />
     )
   }
@@ -105,7 +116,7 @@ class ImageComponent extends Component {
 
 const config = {
   columns: 2,
-  mode: 'infinite',
+  mode: 'finite',
   grid: true,
 }
 
@@ -115,18 +126,36 @@ const config2 = {
   grid: false,
 }
 
+const config3 = {
+  columns: 3,
+  mode: 'finite',
+  grid: true,
+}
+
 class App extends Component {
   render() {
     return (
       <AstridGroup>
         <div style={{
           margin: '0 auto',
-          width: 500
+          width: 500,
+          textAlign: 'center'
         }}>
+          <h4 style={{
+            textAlign: 'center',
+            margin: '0 auto',
+            padding: 5,
+          }}>Regular width columns</h4>
           <AstridCarousel {...config}>
             {media_gallery_paths.map((item, indx, arr) => (<ImageComponent key={'top'+indx} image={arr[indx]} />))}
           </AstridCarousel>
         </div>
+
+        <h4 style={{
+          textAlign: 'center',
+             margin: '0 auto',
+            padding: 5,
+          }}>Irregular as fuck width columns</h4>
         <div style={{
           margin: '0 auto',
           width: 500
@@ -135,17 +164,61 @@ class App extends Component {
             {media_gallery_paths.map((item, indx, arr) => (<TextComponent key={'bottom'+indx} title={arr[indx]} index={indx} />))}
           </AstridCarousel>
         </div>
+        <br/>
+        <h4 style={{
+          textAlign: 'center',
+            margin: 0,
+            padding: 5,
+          }}>Slider with active pointers</h4>
+        <div style={{
+          margin: '0 auto',
+          width: 500
+        }}>
+          <AstridCarousel {...config3}>
+            {media_gallery_paths.map((item, indx)=>{
+              return (
+                <AstridPointer to={indx} key={'pointer' +indx}>
+                  <Pointer to={indx} isThin={false}/>
+                </AstridPointer>
+              )
+            })}
+          </AstridCarousel>
+        </div>
+
         <br />
-        <AstridNavigator by={-1}><Navigator title={'left'} by={-1}/></AstridNavigator>
-        <AstridNavigator by={1}><Navigator title={'right'} by={1}/></AstridNavigator>
-        <br />
-        {media_gallery_paths.map((item, indx)=>{
-          return (
-            <AstridPointer to={indx} key={'pointer' +indx}>
-              <Pointer to={indx} />
-            </AstridPointer>
-          )
-        })}
+        <h4 style={{
+          textAlign: 'center',
+             margin: '0 auto',
+            padding: 5,
+          }}>Navigators L/R</h4>
+        <div style={
+          {
+            display: 'flex',
+            alignItems: 'center',
+            justifyContent: 'center',
+            margin: '0 auto',
+            width: '600px',
+            position: 'relative'
+          }
+        }>
+          <AstridNavigator by={-1}><Navigator title={'left'} by={-1}/></AstridNavigator>
+          <AstridNavigator by={1}><Navigator title={'right'} by={1}/></AstridNavigator>
+          <br />
+        </div>
+
+        <div style={{
+          position: 'fixed',
+          top: 0,
+          left: '16%'
+        }}>
+          {media_gallery_paths.map((item, indx)=>{
+            return (
+              <AstridPointer to={indx} key={'pointer' +indx}>
+                <Pointer to={indx} isThin={true}/>
+              </AstridPointer>
+            )
+          })}
+          </div>
       </AstridGroup>
     )
   }

@@ -56,12 +56,11 @@ export default class CarouselGroup extends Component {
         })
     }*/
 
-    navigators_reference = async (payload) => {
+    navigators_reference = (payload) => {
         this.navigators.push(payload);
     }
 
     componentDidMount=()=>{
-       
         this.setState({
             navigators: this.navigators
         })

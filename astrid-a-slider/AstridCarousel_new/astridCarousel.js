@@ -16,6 +16,8 @@ class DataLayer extends Component {
         this.components_IDs = [];
         this.components_widths = [];
         this.components_heights = [];
+        this.components_positionsX = []; //if horizontal
+        this.components_positionsY = []; //if vertical
 
         this.isSlider = null;
         this.isGrid = null;
@@ -34,7 +36,7 @@ class DataLayer extends Component {
             return;
         }
 
-        const columnWidth = this.isGrid ? 100/columns + '%' : 'auto' ;
+        const columnWidth = this.isGrid ? 100 / columns + '%' : 'auto';
         const elementsDataArrays = library.getElementsArray(children, columnWidth);
         this.components = elementsDataArrays.items;
         this.components_IDs = elementsDataArrays.ids;
@@ -76,9 +78,9 @@ class DataLayer extends Component {
                     overflowX: 'hidden',
                     overflowY: 'visible'
                 }}>
+
                 {this.sizes_available ?
                     <MotionLayer
-                        validChildren={this.state.components}
                         to_render={this.state}
                         columns={this.props.columns}
                         grid={this.isGrid}
@@ -91,24 +93,45 @@ class DataLayer extends Component {
     }
 
     componentDidMount = () => {
-        if (this.stopAllActions) return null ;
+        if (this.stopAllActions) return null;
 
         const carousel = findDOMNode(this.carouselReference.current);
+        const carouselWidth = carousel.offsetWidth;
+        const carouselHeight = carousel.offsetHeight;
         let itemNodes = carousel.querySelectorAll('li[data-carousel-selector="carousel_item"]');
         itemNodes = library.arrayListFromArrayLikeList(itemNodes);
 
+        let componentPositionX = 0;
+        let componentPositionY = 0;
         itemNodes.map((node) => {
             this.components_widths.push(node.offsetWidth);
             this.components_heights.push(node.offsetHeight);
+            this.components_positionsX.push(componentPositionX);
+            this.components_positionsY.push(componentPositionY);
+            componentPositionX += node.offsetWidth;
+            componentPositionY += node.offsetHeight;
         })
 
-        this.sizes_available = true ;
+        const galleryTotalWidth = componentPositionX;
+        const galleryTotalHeight = componentPositionY;
+
+        for (let i = itemNodes.length - 1; i >= 0; i--) {
+            if (this.components_positionsX[i] > (galleryTotalWidth - carouselWidth)) {
+                this.components_positionsX[i] = componentPositionX - carouselWidth;
+            }
+        }
+
+        /** same loop for galleryTotalWidth */
+
+        this.sizes_available = true;
 
         this.setState({
             components: this.components,
             components_widths: this.components_widths,
             components_heights: this.components_heights,
             components_IDs: this.components_IDs,
+            components_positionsX: this.components_positionsX,
+            components_positionsY: this.components_positionsY,
         })
     }
 }

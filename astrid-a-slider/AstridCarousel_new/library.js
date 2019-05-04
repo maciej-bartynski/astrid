@@ -19,6 +19,7 @@ export const library = {
     itemToCarouselItem: function(item, idx, width) {
         const itemStyles = {
             display: 'inline-block',
+            verticalAlign: 'top',
             width: (width ? width : 'auto'),
             listStyle: 'none',
             margin: 0,

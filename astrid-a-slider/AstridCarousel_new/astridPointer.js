@@ -37,7 +37,8 @@ export default class AstridPointer extends Component {
     triggerSetState = (payload) => {
         this.setState({...payload})
     }
+    
     componentDidMount = () => {
-        this.navigatorsReference( this );
+       this.navigatorsReference( this ); 
     }
 }

@@ -6,14 +6,14 @@ import { library } from './../library';
 class DataLayer extends Component {
     constructor(props) {
         super(props);
-        this.position = this.props.mode === 'infinite' ? this.props.columns : 0 ;
+        this.position = this.props.mode === 'infinite' ? this.props.columns : 0;
 
         this.carouselReference = createRef();
     }
 
     renderCarouselItems = () => {
-        return this.props.to_render.components.map((child)=>{
-            return child
+        return this.props.to_render.components.map((Child, idx) => {
+            return Child;
         })
     }
 
@@ -21,12 +21,15 @@ class DataLayer extends Component {
         if (this.position >= this.props.to_render.components.length - 1) {
             this.position = this.props.to_render.components.length - 1;
             this.rightEdge = true;
-        } else if (this.position <= 0) {
+        } else {
+            this.rightEdge = false;
+        }
+
+        if (this.position <= 0) {
             this.position = 0;
             this.leftEdge = true;
         } else {
             this.leftEdge = false;
-            this.rightEdge = false;
         }
 
         this.informationForNavigators = {
@@ -34,39 +37,29 @@ class DataLayer extends Component {
             left_edge: this.leftEdge,
             right_edge: this.rightEdge
         }
-       
     }
 
     getPosition = () => {
-        let { grid, columns, to_render, by, to, mode } = this.props;
-        const { components_widths } = to_render;
-        
-        
-        if (mode === 'infinite') {
-            to = library.getModifiedTo(columns, to, components_widths.length);
-        } 
+        let { columns, to_render, by, to, mode } = this.props;
+        const { components_positionsX } = to_render;
 
-        const position = typeof by !== 'boolean' ? (this.position + by) : to ;
+        if (mode === 'infinite') {
+            to = library.getModifiedTo(columns, to, components_positionsX.length);
+        }
+
+        const position = typeof by !== 'boolean' ? (this.position + by) : to;
         this.position = typeof position === 'number' ? position : this.position;
-        
-        this.position = library.getValidCarouselPosition(this.position, components_widths.length);
+
+        this.position = library.getValidCarouselPosition(this.position, components_positionsX.length);
 
         this.isOnEdge();
-
-        if ( !grid ) {
-            let left = 0;
-            for ( let i = 0; i < this.position ; i++ ){
-                left += components_widths[i];
-            }
-            return -left + 'px';
-        } else {
-            return -(this.position * (100/columns)) + '%'
-        }
+        let left = components_positionsX[this.position];
+        return -left + 'px';
     }
 
     render = () => {
         let position = this.getPosition();
-        
+
         const listStyle = {
             width: '100%',
             display: 'block',
@@ -75,40 +68,37 @@ class DataLayer extends Component {
             margin: 0,
             whiteSpace: 'nowrap',
             transition: 'transform 300ms linear',
-            transform: `translateX(${ position })`
+            transform: `translateX(${position})`
         }
 
         return (
             <ul
                 ref={this.carouselReference}
-                style={
-                    listStyle}
-                onTransitionEnd = { this.transitionEndHandler }
+                style={listStyle}
             >
                 {this.renderCarouselItems()}
             </ul>
         )
     }
 
-    transitionEndHandler = () => { 
+    componentDidUpdate = () => {
         const { navigators } = this.props;
-       
-        navigators.forEach( (navigator)=>{
-            console.log('IS IT NABI? ', navigator)
+
+        navigators.forEach((navigator) => {
             navigator.triggerSetState({
                 ...this.informationForNavigators
             })
-        } )
+        })
+    }
 
-       /* if (this.leftEdge || this.rightEdge ) {
-            this.wasOnEdge = true;
-            this.props.isOnEdge( this.leftEdge, this.rightEdge );
-        } else {
-            if (this.wasOnEdge) {
-                this.wasOnEdge = false;
-                this.props.isOnEdge( false, false );
-            }
-        } */ 
+    componentDidMount = () => {
+        const { navigators } = this.props;
+
+        navigators.forEach((navigator) => {
+            navigator.triggerSetState({
+                ...this.informationForNavigators
+            })
+        })
     }
 }
 
