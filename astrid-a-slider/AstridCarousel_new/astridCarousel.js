@@ -36,8 +36,8 @@ class AstridCarousel extends Component {
             return;
         }
 
-        const columnWidth = this.isGrid ? 100 / columns + '%' : 'auto';
-        const elementsDataArrays = library.getElementsArray(children, columnWidth, axis);
+        const columnSize = this.isGrid ? 100 / columns + '%' : 'auto';
+        const elementsDataArrays = library.getElementsArray(children, columnSize, axis);
         this.components = elementsDataArrays.items;
         this.components_IDs = elementsDataArrays.ids;
     }
@@ -70,14 +70,21 @@ class AstridCarousel extends Component {
             )
         };
 
+        const { axis } = this.props;
+
+        const clipFrameStyle = {
+            /*width: '100%',*/
+            overflow: 'hidden',
+            transition: 'height 300ms linear'
+        }
+
+        const dimension = axis === 'vertical' ? 'height' : 'width';
+        clipFrameStyle[dimension] = '100%';
+
         return (
             <div
                 ref={this.carouselReference}
-                style={{
-                    width: '100%',
-                    overflow: 'hidden',
-                    transition: 'height 300ms linear'
-                }}>
+                style={clipFrameStyle}>
 
                 {this.sizes_available ?
                     <MotionLayerFinite
@@ -120,9 +127,11 @@ class AstridCarousel extends Component {
             if (this.components_positionsX[i] > (galleryTotalWidth - carouselWidth)) {
                 this.components_positionsX[i] = componentPositionX - carouselWidth;
             }
-        }
 
-        /** same loop for galleryTotalWidth */
+            if (this.components_positionsY[i] > (galleryTotalHeight - carouselHeight)) {
+                this.components_positionsY[i] = componentPositionY - carouselHeight;
+            }
+        }
 
         this.sizes_available = true;
 
@@ -139,8 +148,10 @@ class AstridCarousel extends Component {
         })
     }
 
-    modifyCarouselYAxisWidth = (height) => {
-        this.carouselReference.current.style.height = height + 'px';
+    modifyCarouselYAxisWidth = (size) => {
+        const { axis } = this.props;
+        const dimension = axis === 'vertical' ? 'width' : 'height' ;
+        this.carouselReference.current.style[dimension] = size + 'px';
     }
 }
 

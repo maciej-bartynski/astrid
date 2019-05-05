@@ -67,7 +67,7 @@ class MotionLayerFinite extends Component {
     }
 
     carouselYAxisWidth = () => {
-        let { columns, to_render, by, to, mode, grid } = this.props;
+        let { columns, to_render, by, to, mode, grid, axis } = this.props;
         if (grid) return;
         const { components,
             components_widths,
@@ -79,8 +79,32 @@ class MotionLayerFinite extends Component {
             carouselHeight,
             modifyCarouselYAxisWidth } = to_render;
 
+        const componentsSizes = axis === 'vertical' ? components_widths : components_heights ;
+        const componentsPositions = axis === 'vertical' ? components_positionsY : components_positionsX ;
+        const carouselSize = axis === 'vertical' ? carouselHeight : carouselWidth ;
 
-        let carouselYAxisWidth = components_heights[this.position];
+        let carouselYAxisWidth = componentsSizes[this.position];
+        const LENGTH = components.length;
+
+        for (let i = this.position; i < LENGTH; i++) {
+            const thisLeft = componentsPositions[i];
+            const nextLeft = componentsPositions[i + 1];
+            const nextLeft_rightEdge = componentsPositions[i + 2];
+
+            if (nextLeft_rightEdge - thisLeft <= carouselWidth) { //jeśli następny mieści się w wizjerze
+                if ( componentsSizes[i + 1] > carouselYAxisWidth ) {
+                    carouselYAxisWidth = componentsSizes[i + 1];
+                }
+            } else if ( (carouselSize/columns)*(columns-1) >= nextLeft - thisLeft ) { //następny zajmuje choć szerokość 1 kolumny
+                if ( componentsSizes[i + 1] > carouselYAxisWidth ) {
+                    carouselYAxisWidth = componentsSizes[i + 1];
+                }
+            } else {
+                break;
+            }
+        }
+
+        /*let carouselYAxisWidth = components_heights[this.position];
         const LENGTH = components.length;
 
         for (let i = this.position; i < LENGTH; i++) {
@@ -99,19 +123,22 @@ class MotionLayerFinite extends Component {
             } else {
                 break;
             }
-        }
+        } */
 
         modifyCarouselYAxisWidth(carouselYAxisWidth)
     }
 
     render = () => {
-        let position = this.getPosition();
+        const position = this.getPosition();
 
-        let translate = ( this.props.axis === 'vertical' ) ? 
+        const translate = ( this.props.axis === 'vertical' ) ? 
             `translateY(${position})` : `translateX(${position})`;
 
+        const dimension = ( this.props.axis === 'vertical' ) ? 
+            'height' : 'width';
+
         const listStyle = {
-            width: '100%',
+            /*width: '100%',*/
             display: 'block',
             listStyle: 'none',
             padding: 0,
@@ -120,6 +147,8 @@ class MotionLayerFinite extends Component {
             transition: 'transform 300ms linear',
             transform: translate
         }
+
+        listStyle[dimension] = '100%';
 
         return (
             <ul

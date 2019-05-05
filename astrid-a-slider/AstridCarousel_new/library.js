@@ -1,15 +1,14 @@
 import React, { cloneElement } from 'react';
-import { Z_BLOCK } from 'zlib';
 
 export const library = {
-    getElementsArray: function (children, width, axis) {
+    getElementsArray: function (children, columnSize, axis) {
         const data = {
             items: [],
             ids: [],
         }
 
         children.map((item, idx) => {
-            const carouselItem = this.itemToCarouselItem(item, idx, width, axis)
+            const carouselItem = this.itemToCarouselItem(item, idx, columnSize, axis)
             data.items.push(carouselItem);
             data.ids.push(idx);
         })
@@ -17,16 +16,20 @@ export const library = {
         return data;
     },
 
-    itemToCarouselItem: function (item, idx, width, axis) {
+    itemToCarouselItem: function (item, idx, columnSize, axis) {
         let displayType = axis === 'vertical' ? 'block' : 'inline-block';
+        
         const itemStyles = {
             display: displayType,
             verticalAlign: 'top',
-            width: (width ? width : 'auto'),
+            /*width: (columnSize ? columnSize : 'auto'),*/
             listStyle: 'none',
             margin: 0,
             padding: 0,
         }
+
+        const dimension =  axis === 'vertical' ? 'height' : 'width';
+        itemStyles[dimension] = columnSize;
 
         const CarouselItem = (props) => {
             return (

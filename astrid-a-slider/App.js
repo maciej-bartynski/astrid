@@ -113,8 +113,9 @@ class ImageComponent extends Component {
     return (
       <div
         style={{
-          width: ( vertical ? 200 : '100%' ),
-          paddingTop: '100%',
+          width: (vertical ? 200 : '100%'),
+          paddingTop: (vertical ? 'unset' : '100%'),
+          height: (vertical ? '100%' : 'unset'),
           backgroundColor: (astrid_position === astrid_identity ? 'rgb(100,100,100)' : 'rgba(130,130,130,0.4)'),
           backgroundImage: this.background,
           backgroundSize: 'contain',
@@ -146,6 +147,13 @@ const config3 = {
 
 const config4 = {
   columns: 3,
+  mode: 'finite',
+  grid: true,
+  axis: 'vertical',
+}
+
+const config5 = {
+  columns: 1,
   mode: 'finite',
   grid: false,
   axis: 'vertical',
@@ -244,15 +252,34 @@ class App extends Component {
           top: 0,
           left: 0,
           width: 200,
+          height: 500,
         }}>
           <h4 style={{
             textAlign: 'center',
             margin: '0 auto',
             padding: 5,
-          }}>Regular width columns</h4>
+          }}>Regular height rows</h4>
           <AstridCarousel {...config4}>
-            {media_gallery_paths.map((item, indx, arr) => (<ImageComponent key={'top' + indx} image={arr[indx]} vertical={true}/>))}
+            {media_gallery_paths.map((item, indx, arr) => (<ImageComponent key={'top' + indx} image={arr[indx]} vertical={true} />))}
           </AstridCarousel>
+
+          {/*<div style={{
+            position: 'fixed',
+            top: 0,
+            left: 203,
+            height: 500,
+            border: 'solid 1px red'
+          }}>
+            <h4 style={{
+              textAlign: 'center',
+              margin: '0 auto',
+              padding: 5,
+            }}>Irregular as fuck height columns</h4>
+
+            <AstridCarousel {...config5}>
+              {media_gallery_paths.map((item, indx, arr) => (<TextComponent key={'bottom' + indx} title={arr[indx]} index={indx} />))}
+            </AstridCarousel>
+          </div>*/}
         </div>
       </AstridGroup>
     )
