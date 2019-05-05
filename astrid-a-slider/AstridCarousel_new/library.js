@@ -1,14 +1,15 @@
 import React, { cloneElement } from 'react';
+import { Z_BLOCK } from 'zlib';
 
 export const library = {
-    getElementsArray: function(children, width) {
+    getElementsArray: function (children, width, axis) {
         const data = {
             items: [],
             ids: [],
         }
 
         children.map((item, idx) => {
-            const carouselItem = this.itemToCarouselItem(item, idx, width)
+            const carouselItem = this.itemToCarouselItem(item, idx, width, axis)
             data.items.push(carouselItem);
             data.ids.push(idx);
         })
@@ -16,9 +17,10 @@ export const library = {
         return data;
     },
 
-    itemToCarouselItem: function(item, idx, width) {
+    itemToCarouselItem: function (item, idx, width, axis) {
+        let displayType = axis === 'vertical' ? 'block' : 'inline-block';
         const itemStyles = {
-            display: 'inline-block',
+            display: displayType,
             verticalAlign: 'top',
             width: (width ? width : 'auto'),
             listStyle: 'none',
@@ -26,16 +28,20 @@ export const library = {
             padding: 0,
         }
 
-        return (
-            <li
-                key={idx}
-                data-carousel-selector='carousel_item'
-                style={itemStyles}>
-                {cloneElement(
-                    item, { identity: idx }
-                )}
-            </li>
-        )
+        const CarouselItem = (props) => {
+            return (
+                <li
+                    key={idx}
+                    data-carousel-selector='carousel_item'
+                    style={itemStyles}>
+                    {cloneElement(
+                        item, { astrid_identity: idx, ...props }
+                    )}
+                </li>
+            )
+        }
+
+        return <CarouselItem/>
     },
 
     getIsSlider: (columns, elementsArray) => {
@@ -49,7 +55,7 @@ export const library = {
     getValidCarouselPosition: (demandedPosition, arrayLength) => {
         const toLow = demandedPosition < 0;
         const toHigh = demandedPosition > arrayLength - 1;
-        return (toLow || toHigh ? toLow ? 0 : arrayLength -1 : demandedPosition)  
+        return (toLow || toHigh ? toLow ? 0 : arrayLength - 1 : demandedPosition)
     },
 
     arrayListFromArrayLikeList: (arrayLike) => {
@@ -60,7 +66,7 @@ export const library = {
         return validArray;
     },
 
-    getInfiniteElementsArray: function(columns, elementsArray){
+    getInfiniteElementsArray: function (columns, elementsArray) {
         let infiniteElementsArray = [];
         const ARRAY_LENGTH = elementsArray.length;
         const MINIMUM_SLIDER_LENGTH = 3 * columns;
@@ -87,7 +93,7 @@ export const library = {
         return infiniteElementsArray;
     },
 
-    getMinSafeArrayLength: function(arrayLength, minLength){
+    getMinSafeArrayLength: function (arrayLength, minLength) {
         while (arrayLength < minLength && arrayLength !== 0 && minLength !== 0) {
             arrayLength += arrayLength
         }
@@ -100,13 +106,13 @@ export const library = {
         return SliderLeftOverflow.concat(SliderVisibleAreaAndRightOverflow);
     },
 
-    getModifiedTo: function(columns, to, componentsLength) {
+    getModifiedTo: function (columns, to, componentsLength) {
         let modifiedTo;
-        if ( to >= componentsLength - columns ){
-            const revertTo = to - (componentsLength - columns); 
-            modifiedTo = revertTo; 
+        if (to >= componentsLength - columns) {
+            const revertTo = to - (componentsLength - columns);
+            modifiedTo = revertTo;
         } else {
-            modifiedTo = columns+to;
+            modifiedTo = columns + to;
         }
         return modifiedTo;
     }

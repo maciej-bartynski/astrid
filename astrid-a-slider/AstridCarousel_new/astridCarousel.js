@@ -1,10 +1,10 @@
 import React, { Component, createRef } from 'react';
 import carouselConnect from './astridConnect';
-import MotionLayer from './astridLayers/itemsLayer';
+import MotionLayerFinite from './astridLayers/motionLayerFinite';
 import { findDOMNode } from 'react-dom';
 import { library } from './library';
 
-class DataLayer extends Component {
+class AstridCarousel extends Component {
 
     constructor(props) {
         super(props);
@@ -29,7 +29,7 @@ class DataLayer extends Component {
     }
 
     getValidChildren = () => {
-        const { children, columns } = this.props;
+        const { children, columns, axis } = this.props;
 
         if (children === null || children === undefined) {
             this.components = null;
@@ -37,7 +37,7 @@ class DataLayer extends Component {
         }
 
         const columnWidth = this.isGrid ? 100 / columns + '%' : 'auto';
-        const elementsDataArrays = library.getElementsArray(children, columnWidth);
+        const elementsDataArrays = library.getElementsArray(children, columnWidth, axis);
         this.components = elementsDataArrays.items;
         this.components_IDs = elementsDataArrays.ids;
     }
@@ -75,17 +75,18 @@ class DataLayer extends Component {
                 ref={this.carouselReference}
                 style={{
                     width: '100%',
-                    overflowX: 'hidden',
-                    overflowY: 'visible'
+                    overflow: 'hidden',
+                    transition: 'height 300ms linear'
                 }}>
 
                 {this.sizes_available ?
-                    <MotionLayer
+                    <MotionLayerFinite
                         to_render={this.state}
                         columns={this.props.columns}
                         grid={this.isGrid}
                         slider={this.isSlider}
                         mode={this.props.mode}
+                        axis={this.props.axis}
                     /> : this.components
                 }
             </div>
@@ -132,8 +133,15 @@ class DataLayer extends Component {
             components_IDs: this.components_IDs,
             components_positionsX: this.components_positionsX,
             components_positionsY: this.components_positionsY,
+            carouselWidth,
+            carouselHeight,
+            modifyCarouselYAxisWidth: this.modifyCarouselYAxisWidth
         })
+    }
+
+    modifyCarouselYAxisWidth = (height) => {
+        this.carouselReference.current.style.height = height + 'px';
     }
 }
 
-export default carouselConnect(DataLayer)
+export default carouselConnect(AstridCarousel)

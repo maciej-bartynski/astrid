@@ -14,7 +14,7 @@ export default class CarouselNavigator extends Component {
     render() {
         const { children, by } = this.props;
         const { left_edge, right_edge, active_position } = this.state;
-        console.log('ME NAV I RERERENDER', this.props)
+        
         return (
             <CarouselContext.Consumer>
                 {({ move_by, navigators_reference }) => {
@@ -33,7 +33,7 @@ export default class CarouselNavigator extends Component {
     }
 
     triggerSetState = (payload) => {
-        console.log('LET STATE INDIS')
+        
         this.setState({...payload})
     }
 
