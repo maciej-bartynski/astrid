@@ -71,15 +71,17 @@ class AstridCarousel extends Component {
         };
 
         const { axis } = this.props;
+        const transitionDimension = axis === 'vertical' ? 'width' : 'height' ;
+        const sizeDimension = axis === 'vertical' ? 'height' : 'width';
 
         const clipFrameStyle = {
             /*width: '100%',*/
             overflow: 'hidden',
-            transition: 'height 300ms linear'
+            transition: `${transitionDimension} 300ms linear`,
+            boxSizing: 'border-box'
         }
 
-        const dimension = axis === 'vertical' ? 'height' : 'width';
-        clipFrameStyle[dimension] = '100%';
+        clipFrameStyle[sizeDimension] = '100%';
 
         return (
             <div
@@ -106,11 +108,12 @@ class AstridCarousel extends Component {
         const carousel = findDOMNode(this.carouselReference.current);
         const carouselWidth = carousel.offsetWidth;
         const carouselHeight = carousel.offsetHeight;
-        let itemNodes = carousel.querySelectorAll('li[data-carousel-selector="carousel_item"]');
+        let itemNodes = carousel.querySelectorAll('div[data-carousel-selector="carousel_item"]');
         itemNodes = library.arrayListFromArrayLikeList(itemNodes);
 
         let componentPositionX = 0;
         let componentPositionY = 0;
+        
         itemNodes.map((node) => {
             this.components_widths.push(node.offsetWidth);
             this.components_heights.push(node.offsetHeight);
@@ -150,8 +153,10 @@ class AstridCarousel extends Component {
 
     modifyCarouselYAxisWidth = (size) => {
         const { axis } = this.props;
+       
         const dimension = axis === 'vertical' ? 'width' : 'height' ;
         this.carouselReference.current.style[dimension] = size + 'px';
+       
     }
 }
 

@@ -18,14 +18,17 @@ export const library = {
 
     itemToCarouselItem: function (item, idx, columnSize, axis) {
         let displayType = axis === 'vertical' ? 'block' : 'inline-block';
+        let floatType = axis === 'vertical' ? { float: 'left', clear: 'left'} : {};
         
         const itemStyles = {
             display: displayType,
             verticalAlign: 'top',
             /*width: (columnSize ? columnSize : 'auto'),*/
             listStyle: 'none',
+            boxSizing: 'border-box',
             margin: 0,
             padding: 0,
+            ...floatType,
         }
 
         const dimension =  axis === 'vertical' ? 'height' : 'width';
@@ -33,14 +36,14 @@ export const library = {
 
         const CarouselItem = (props) => {
             return (
-                <li
+                <div
                     key={idx}
                     data-carousel-selector='carousel_item'
                     style={itemStyles}>
                     {cloneElement(
                         item, { astrid_identity: idx, ...props }
                     )}
-                </li>
+                </div>
             )
         }
 

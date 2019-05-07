@@ -91,7 +91,7 @@ class MotionLayerFinite extends Component {
             const nextLeft = componentsPositions[i + 1];
             const nextLeft_rightEdge = componentsPositions[i + 2];
 
-            if (nextLeft_rightEdge - thisLeft <= carouselWidth) { //jeśli następny mieści się w wizjerze
+            if (nextLeft_rightEdge - thisLeft <= carouselSize) { //jeśli następny mieści się w wizjerze
                 if ( componentsSizes[i + 1] > carouselYAxisWidth ) {
                     carouselYAxisWidth = componentsSizes[i + 1];
                 }
@@ -145,24 +145,25 @@ class MotionLayerFinite extends Component {
             margin: 0,
             whiteSpace: 'nowrap',
             transition: 'transform 300ms linear',
-            transform: translate
+            transform: translate,
+            boxSizing: 'border-box'
         }
 
         listStyle[dimension] = '100%';
 
         return (
-            <ul
+            <div
                 ref={this.carouselReference}
                 style={listStyle}
             >
                 {this.renderCarouselItems()}
-            </ul>
+            </div>
         )
     }
 
     componentDidUpdate = () => {
         const { navigators } = this.props;
-
+        if (!navigators) return;
         navigators.forEach((navigator) => {
             navigator.triggerSetState({
                 ...this.informationForNavigators
@@ -172,7 +173,7 @@ class MotionLayerFinite extends Component {
 
     componentDidMount = () => {
         const { navigators } = this.props;
-
+        if (!navigators) return;
         navigators.forEach((navigator) => {
             navigator.triggerSetState({
                 ...this.informationForNavigators
