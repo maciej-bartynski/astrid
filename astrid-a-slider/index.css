@@ -22,41 +22,38 @@ body {
 
 .gridContainer {
   display: grid;
-  width: 100%;
+  width: 50%;
   box-sizing: border-box;
-  grid-template-columns: 50% 50%;
-  grid-template-rows: auto;
-  grid-row-gap: 0;
-  grid-column-gap: 0;
+  margin: 0 auto;
+  min-width: 1000px;
+  grid-template:
+    [row1-start] "header header header header" 150px [row1-end]
+    [row2-start] "horizontalSliders_a verticalSliders_a verticalSliders_b verticalSliders_c" 50px [row2-end]
+    [row3-start] "horizontalSliders_a verticalSliders_a verticalSliders_b verticalSliders_c" auto [row3-end]
+    [row4-start] "horizontalSliders_c verticalSliders_a verticalSliders_b verticalSliders_c" auto [row4-end]
+    [row5-start] "horizontalSliders_d verticalSliders_a verticalSliders_b verticalSliders_c" auto [row5-end]
+    / 50% 20% 3% 27%;
 }
 
-.gridLeft {
-  grid-column: 1;
-  /*padding: 5%;
-  padding-right: 2.5%;*/
+.gridTop {
+  grid-area: header;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
 }
 
-.gridRight {
-  grid-column: 2;
-  /*padding: 5%;
-  padding-left: 2.5%;*/
-  
-  display: grid;
-  box-sizing: border-box;
-  grid-template-columns: 20% 10% 70%;
-  grid-template-rows: 70px auto;
-}
-
-.gridRight h1, .gridLeft h1 {
+.gridTop h1 {
   width: 100%;
-  text-transform: uppercase;
   text-align: center;
-  padding: 0;
-  margin: 0;
-  line-height: 1;
-  font-size: 20px;
-  font-family: sans-serif;
-  letter-spacing: 0.4px;
+}
+
+.gridTop .navigatorsContainer{
+  width: 100%;
+  display: flex;
+  flex-direction: row;
+  justify-content: center;
+  align-items: center;
 }
 
 .verticalSlider_navigators {
@@ -72,37 +69,32 @@ body {
 }
 
 .verticalSlider_grid {
-  grid-column: 1;
-  grid-row: 2;
-  height: 400px;
+  grid-area: verticalSliders_a;
 }
 
 .verticalSlider_noGrid {
-  grid-column: 3;
-  grid-row: 2;
+  grid-area: verticalSliders_c;
   height: 500px;
 }
 
 .verticalSlider_pointers {
-  grid-column: 2;
-  grid-row: 2;
-  height: 100px;
-}
-
-.horizontalSlider_navigators {
-  width: 100%
+  grid-area: verticalSliders_b;
+  height: 100%;
 }
 
 .horizontalSlider_grid {
   width: 100%;
+  grid-area: horizontalSliders_a;
 }
 
 .horizontalSlider_noGrid {
-  width: 100%
+  width: 100%;
+  grid-area: horizontalSliders_c;
 }
 
 .horizontalSlider_pointers {
-  width: 100%
+  width: 100%;
+  grid-area: horizontalSliders_d;
 }
 
 h2 {

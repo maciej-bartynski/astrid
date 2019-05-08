@@ -106,8 +106,8 @@ class AstridCarousel extends Component {
         if (this.stopAllActions) return null;
 
         const carousel = findDOMNode(this.carouselReference.current);
-        const carouselWidth = carousel.offsetWidth;
-        const carouselHeight = carousel.offsetHeight;
+        const carouselWidth = this.isGrid ? 100 : carousel.offsetWidth;
+        const carouselHeight = this.isGrid ? 100 : carousel.offsetHeight;
         let itemNodes = carousel.querySelectorAll('div[data-carousel-selector="carousel_item"]');
         itemNodes = library.arrayListFromArrayLikeList(itemNodes);
 
@@ -115,12 +115,14 @@ class AstridCarousel extends Component {
         let componentPositionY = 0;
         
         itemNodes.map((node) => {
+            const nodeOffsetWidth = this.isGrid ? 100/this.props.columns : node.offsetWidth ;
+            const nodeOffsetHeight = this.isGrid ? 100/this.props.columns : node.offsetHeight ;
             this.components_widths.push(node.offsetWidth);
             this.components_heights.push(node.offsetHeight);
             this.components_positionsX.push(componentPositionX);
             this.components_positionsY.push(componentPositionY);
-            componentPositionX += node.offsetWidth;
-            componentPositionY += node.offsetHeight;
+            componentPositionX += nodeOffsetWidth;
+            componentPositionY += nodeOffsetHeight;
         })
 
         const galleryTotalWidth = componentPositionX;
@@ -137,7 +139,7 @@ class AstridCarousel extends Component {
         }
 
         this.sizes_available = true;
-
+        
         this.setState({
             components: this.components,
             components_widths: this.components_widths,

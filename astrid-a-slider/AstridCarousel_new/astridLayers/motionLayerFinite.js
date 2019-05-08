@@ -57,13 +57,15 @@ class MotionLayerFinite extends Component {
         this.isOnEdge();
         this.carouselYAxisWidth();
 
+        const TRANSITION_UNIT = this.props.grid ? '%' : 'px';
+
         if (axis === 'vertical') {
             let top = components_positionsY[this.position];
-            return -top + 'px';
+            return -top + TRANSITION_UNIT;
         }
 
         let left = components_positionsX[this.position];
-        return -left + 'px';
+        return -left + TRANSITION_UNIT;
     }
 
     carouselYAxisWidth = () => {
@@ -86,18 +88,23 @@ class MotionLayerFinite extends Component {
         let carouselYAxisWidth = componentsSizes[this.position];
         const LENGTH = components.length;
 
+        const thisLeft = componentsPositions[this.position];
+
         for (let i = this.position; i < LENGTH; i++) {
-            const thisLeft = componentsPositions[i];
+            
             const nextLeft = componentsPositions[i + 1];
             const nextLeft_rightEdge = componentsPositions[i + 2];
 
             if (nextLeft_rightEdge - thisLeft <= carouselSize) { //jeśli następny mieści się w wizjerze
+                
                 if ( componentsSizes[i + 1] > carouselYAxisWidth ) {
                     carouselYAxisWidth = componentsSizes[i + 1];
+                    
                 }
             } else if ( (carouselSize/columns)*(columns-1) >= nextLeft - thisLeft ) { //następny zajmuje choć szerokość 1 kolumny
                 if ( componentsSizes[i + 1] > carouselYAxisWidth ) {
                     carouselYAxisWidth = componentsSizes[i + 1];
+                    
                 }
             } else {
                 break;

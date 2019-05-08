@@ -21,6 +21,10 @@ export default class AstridPointer extends Component {
                 this.navigatorsReference = navigators_reference;
                 return (
                     <div
+                        style={{
+                            width: '100%',
+                            height: '100%',
+                        }}
                         role='button'
                         tabIndex={0}
                         onKeyDown={()=>move_to(to)}

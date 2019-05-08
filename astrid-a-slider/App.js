@@ -4,6 +4,9 @@ import AstridNavigator from './AstridCarousel_new/astridNavigator';
 import AstridCarousel from './AstridCarousel_new';
 import AstridPointer from './AstridCarousel_new/astridPointer';
 
+import Description from './test/Description.js';
+import Pointer from './test/Pointer.js';
+
 const GALLERY_PATH = './media-gallery/';
 const FORMAT = '.jpg';
 const media_gallery_paths = [
@@ -20,7 +23,7 @@ const media_gallery_paths = [
   { title: 'water' },
 ]
 
-class Pointer extends Component {
+/*class Pointer extends Component {
   render = () => {
     const { to, active_position, isThin } = this.props;
 
@@ -41,7 +44,7 @@ class Pointer extends Component {
       >{to}</div>
     )
   }
-}
+}*/
 
 class Navigator extends Component {
   render = () => {
@@ -200,112 +203,52 @@ class App extends Component {
       <div className='root'>
         <div className='gridContainer'>
           <AstridGroup>
-            <div className='gridLeft'>
-              <div className='horizontalSlider_navigators'>
-                <h1>Horizontal sliders</h1>
-                <div className='navigatorsContainer'>
-                  <AstridNavigator by={-1}><Navigator title={'left'} by={-1} /></AstridNavigator>
-                  <AstridNavigator by={1}><Navigator title={'right'} by={1} /></AstridNavigator>
-                </div>
-              </div>
-              <div className='horizontalSlider_grid'>
-                <h2>Horizontal, cells: grid</h2>
-                <AstridCarousel {...config}>
-                  {media_gallery_paths.map((item, indx, arr) => (<ImageComponent key={'top' + indx} image={arr[indx]} />))}
-                </AstridCarousel>
-              </div>
-              <div className='horizontalSlider_noGrid'>
-                <h2>Horizontal, cells: nogrid (irregular as fuck)</h2>
-                <AstridCarousel {...config2}>
-                  {media_gallery_paths.map((item, indx, arr) => (<TextComponent key={'bottom' + indx} title={arr[indx]} index={indx} />))}
-                </AstridCarousel>
-              </div>
-              <div className='horizontalSlider_pointers'>
-                <h2>Carousel with pointers (clickable)</h2>
-                <AstridCarousel {...config3}>
-                  {media_gallery_paths.map((item, indx) => {
-                    return (
-                      <AstridPointer to={indx} key={'pointer' + indx}>
-                        <Pointer to={indx} isThin={false} />
-                      </AstridPointer>
-                    )
-                  })}
-                </AstridCarousel>
+
+            <div className='gridTop'>
+              <h1>Astrid. A carousel.</h1>
+              <div className='navigatorsContainer'>
+                <AstridNavigator by={-1}><Navigator title={'left'} by={-1} /></AstridNavigator>
+                <AstridNavigator by={1}><Navigator title={'right'} by={1} /></AstridNavigator>
               </div>
             </div>
 
-            <div className='gridRight'>
-              <div className='verticalSlider_navigators'>
-                <h1>Vertical sliders</h1>
-                <div className='navigatorsContainer'>
-                  <AstridNavigator by={-1}><Navigator title={'left'} by={-1} /></AstridNavigator>
-                  <AstridNavigator by={1}><Navigator title={'right'} by={1} /></AstridNavigator>
-                </div>
-              </div>
-              <div className='verticalSlider_grid'>
-                <AstridCarousel {...config4}>
-                  {media_gallery_paths.map((item, indx, arr) => (<ImageComponent key={'top' + indx} image={arr[indx]} vertical={true} />))}
-                </AstridCarousel>
-              </div>
-              <div className='verticalSlider_noGrid'>
-                <AstridCarousel {...config5}>
-                  {media_gallery_paths.map((item, indx, arr) => (<VerticalTextComponent key={'bottom' + indx} title={arr[indx]} index={indx} />))}
-                </AstridCarousel>
-              </div>
-              <div className='verticalSlider_pointers'>
-                <AstridCarousel {...config6}>
-                  {media_gallery_paths.map((item, indx) => {
-                    return (
-                      <AstridPointer to={indx} key={'pointer' + indx}>
-                        <Pointer to={indx} isThin={false} />
-                      </AstridPointer>
-                    )
-                  })}
-                </AstridCarousel>
-              </div>
-            </div>
-
-
-            {/*<AstridGroup>
-            <div style={{
-              margin: '0 auto',
-              width: 500,
-              textAlign: 'center'
-            }}>
-              <h4 style={{
-                textAlign: 'center',
-                margin: '0 auto',
-                padding: 5,
-              }}>Regular width columns</h4>
+            <div className='horizontalSlider_grid'>
+              <h2>Horizontal, cells: grid</h2>
               <AstridCarousel {...config}>
                 {media_gallery_paths.map((item, indx, arr) => (<ImageComponent key={'top' + indx} image={arr[indx]} />))}
               </AstridCarousel>
             </div>
 
-            <h4 style={{
-              textAlign: 'center',
-              margin: '0 auto',
-              padding: 5,
-            }}>Irregular as fuck width columns</h4>
-            <div style={{
-              margin: '0 auto',
-              width: 500
-            }}>
+            <div className='horizontalSlider_noGrid'>
+              <h2>Horizontal, cells: nogrid (irregular as fuck)</h2>
               <AstridCarousel {...config2}>
-                {media_gallery_paths.map((item, indx, arr) => (<TextComponent key={'bottom' + indx} title={arr[indx]} index={indx} />))}
+                {media_gallery_paths.map((item, indx, arr) => (<Description key={indx} title={arr[indx]} />))}
               </AstridCarousel>
             </div>
-            <br />
-            <h4 style={{
-              textAlign: 'center',
-              margin: 0,
-              padding: 5,
-            }}>Slider with active pointers</h4>
-            <div style={{
-              margin: '0 auto',
-              width: 500
-            }}>
+            <div className='horizontalSlider_pointers'>
+              <h2>Carousel with pointers (clickable)</h2>
               <AstridCarousel {...config3}>
+                {media_gallery_paths.map((item, indx) => {
+                  return (
+                    <AstridPointer to={indx} key={'pointer' + indx}>
+                      <Pointer to={indx} />
+                    </AstridPointer>
+                  )
+                })}
+              </AstridCarousel>
+            </div>
+            <div className='verticalSlider_grid'>
+              <AstridCarousel {...config4}>
+                {media_gallery_paths.map((item, indx, arr) => (<ImageComponent key={'top' + indx} image={arr[indx]} vertical={true} />))}
+              </AstridCarousel>
+            </div>
+            <div className='verticalSlider_noGrid'>
+              <AstridCarousel {...config5}>
+                {media_gallery_paths.map((item, indx, arr) => (<Description key={indx} title={arr[indx]} />))}
+              </AstridCarousel>
+            </div>
+            <div className='verticalSlider_pointers'>
+              <AstridCarousel {...config6}>
                 {media_gallery_paths.map((item, indx) => {
                   return (
                     <AstridPointer to={indx} key={'pointer' + indx}>
@@ -315,78 +258,6 @@ class App extends Component {
                 })}
               </AstridCarousel>
             </div>
-
-            <br />
-            <h4 style={{
-              textAlign: 'center',
-              margin: '0 auto',
-              padding: 5,
-            }}>Navigators L/R</h4>
-            <div style={
-              {
-                display: 'flex',
-                alignItems: 'center',
-                justifyContent: 'center',
-                margin: '0 auto',
-                width: '600px',
-                position: 'relative'
-              }
-            }>
-              <AstridNavigator by={-1}><Navigator title={'left'} by={-1} /></AstridNavigator>
-              <AstridNavigator by={1}><Navigator title={'right'} by={1} /></AstridNavigator>
-              <br />
-            </div>
-
-            <div style={{
-              position: 'fixed',
-              top: 0,
-              left: '16%'
-            }}>
-              {media_gallery_paths.map((item, indx) => {
-                return (
-                  <AstridPointer to={indx} key={'pointer' + indx}>
-                    <Pointer to={indx} isThin={true} />
-                  </AstridPointer>
-                )
-              })}
-            </div>
-            <AstridNavigator by={-1}><Navigator title={'left'} by={-1} /></AstridNavigator>
-        <AstridNavigator by={1}><Navigator title={'right'} by={1} /></AstridNavigator>
-        <div style={{
-         // position: 'absolute',
-          //top: 0,
-         // left: 0,
-          width: 200,
-          height: 500,
-        }}>
-          <h4 style={{
-            textAlign: 'center',
-            margin: '0 auto',
-            padding: 5,
-          }}>Regular height rows</h4>
-          <AstridCarousel {...config4}>
-            {media_gallery_paths.map((item, indx, arr) => (<ImageComponent key={'top' + indx} image={arr[indx]} vertical={true} />))}
-          </AstridCarousel>
-        </div>
-
-        <div style={{
-            //position: 'absolute',
-            //top: 0,
-            //left: 203,
-            height: 500,
-            border: 'solid 1px red'
-          }}>
-            <h4 style={{
-              textAlign: 'center',
-              margin: '0 auto',
-              padding: 5,
-            }}>Irregular as fuck height columns</h4>
-
-            <AstridCarousel {...config5}>
-              {media_gallery_paths.map((item, indx, arr) => (<VerticalTextComponent key={'bottom' + indx} title={arr[indx]} index={indx} />))}
-            </AstridCarousel>
-          </div>*/}
-
           </AstridGroup>
 
         </div>
