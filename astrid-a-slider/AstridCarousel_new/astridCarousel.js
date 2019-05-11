@@ -137,6 +137,8 @@ class AstridCarousel extends Component {
         for (let i = nodesArray.length - 1; i >= 0; i--) {
             if (this.components_positions[i] > ( galleryTotalSize - carouselSize)) {
                 minTransverseSize = this[dimensionSize][i] > minTransverseSize ? this[dimensionSize][i] : minTransverseSize ;
+            } else {
+                break;
             }
         }
 
@@ -144,7 +146,9 @@ class AstridCarousel extends Component {
             if (this.components_positions[i] > ( galleryTotalSize - carouselSize)) {
                 this.components_positions[i] = galleryTotalSize - carouselSize;
                 this[dimensionSize][i] = minTransverseSize;
-            } 
+            } else {
+                break;
+            }
         }
     }
 

@@ -120,7 +120,6 @@ class MotionLayerFinite extends Component {
             whiteSpace: 'nowrap',
             transition: 'transform 300ms linear',
             transform: translate,
-           
         }
 
         listStyle[dimension] = '100%';
@@ -129,6 +128,10 @@ class MotionLayerFinite extends Component {
             <div
                 ref={this.carouselReference}
                 style={listStyle}
+                onMouseDown = {(e)=>{this.handleLock(e)}}
+                onMouseMove = {(e)=>{this.handleMove(e)}}
+                onMouseUp ={(e)=>{this.handleLose(e)}}
+               
             >
                 {this.renderCarouselItems()}
             </div>
@@ -151,6 +154,48 @@ class MotionLayerFinite extends Component {
 
     componentDidMount = () => {
         this.tellNavigatorsIfOnEdge();
+    }
+
+    handleLock = (e) => {
+        e.stopPropagation() ; 
+        e.preventDefault() ;
+        this.locked = true;
+        this.lockPosition = e.clientX ;
+        this.carouselNode = findDOMNode(this.carouselReference.current) ;
+        const findPosition = this.carouselNode.style.transform.indexOf('(');
+        const number = parseFloat(this.carouselNode.style.transform.slice(findPosition+1));
+        this.caroudelNodeInitialLeft = number;
+    }
+
+    handleLose = (e) => {
+        this.locked = false;
+        this.losePosition = e.clientX;
+        this.difference = this.losePosition - this.lockPosition ;
+        this.shiftByPx = Math.abs(this.difference );
+
+        const { move_by, columns, to_render: { carouselSize } } = this.props;
+
+        const columnWidth = carouselSize / columns ;
+        const isShifted = this.shiftByPx > columnWidth/2;
+        if (!isShifted) {
+            this.carouselNode.style.transform = `translateX(${this.caroudelNodeInitialLeft}px)`;
+            return;
+        };
+        const shiftByColumns = Math.ceil(this.shiftByPx / columnWidth);
+        const shiftDirection = Math.sign(this.difference);
+        const moveBy = shiftByColumns * -shiftDirection;
+        move_by(moveBy)
+        
+    }
+
+    handleMove = (e) => {
+        if (!this.locked) return;
+        
+        this.movePosition = e.clientX;
+        this.difference = this.movePosition - this.lockPosition ;
+        this.moveBy = this.caroudelNodeInitialLeft + this.difference ;
+        
+        this.carouselNode.style.transform = `translateX(${this.moveBy}px)`
     }
 }
 
