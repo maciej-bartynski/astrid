@@ -108,6 +108,7 @@ class AstridCarousel extends Component {
         const carousel = findDOMNode(this.carouselReference.current);
         const carouselSize =  this.isGrid ? FULL_PERCENT_SIZE : carousel[offsetSize];
         this.carouselSizePx = carousel[offsetSize];
+      
         const nodesList = carousel.querySelectorAll('div[data-carousel-selector="carousel_item"]');
         const nodesArray = library.arrayListFromArrayLikeList(nodesList);
 

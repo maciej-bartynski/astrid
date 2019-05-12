@@ -54,12 +54,13 @@ class MotionLayerFinite extends Component {
         const position = typeof by !== 'boolean' ? (this.position + by) : to;
         this.position = typeof position === 'number' ? position : this.position;
         this.position = library.getValidCarouselPosition(this.position, components.length);
-
+      
         this.isOnEdge();
         this.carouselTransverseAxisWidth();
 
         const TRANSITION_UNIT = this.props.grid ? '%' : 'px';
         this.transitionPosition = -components_positions[this.position] + TRANSITION_UNIT;
+       
         return this.transitionPosition;
     }
 
@@ -105,10 +106,10 @@ class MotionLayerFinite extends Component {
 
     render = () => {
         const position = this.getPosition();
-
+     
         const translate = ( this.props.axis === 'vertical' ) ? 
             `translateY(${position})` : `translateX(${position})`;
-
+ 
         const dimension = ( this.props.axis === 'vertical' ) ? 
             'height' : 'width';
 
@@ -168,7 +169,10 @@ class MotionLayerFinite extends Component {
     }
 
     backToCurrentCssLeftWithoutTriggeringLogic = () => {
-        this.carouselNode.style.transform = `translateX(${this.transitionPosition}px)`;
+        const { axis } = this.props;
+        const translate = axis === 'vertical' ? `translateY(${this.transitionPosition})` : `translateX(${this.transitionPosition})` ;
+        this.carouselNode.style.transform = translate;
+        this.locked = false;
     }
 
     convertPixelsToColumns = (columnWidthPx) => {
@@ -216,8 +220,8 @@ class MotionLayerFinite extends Component {
         this.handleLose();
     }
 
-    moveByPxOrPercent = (movePosition, difference) => {
-        const { columns, carouselSizePx, grid } = this.props;
+    moveByPxOrPercent = ( difference) => {
+        const { carouselSizePx, grid } = this.props;
 
         if (!grid) {
             return (parseFloat(this.transitionPosition) + difference) + 'px';
@@ -237,7 +241,7 @@ class MotionLayerFinite extends Component {
         
         const movePosition = axis === 'vertical' ? e.clientY : e.clientX;
         const difference = movePosition - this.lockPosition ;
-        const moveBy = this.moveByPxOrPercent (movePosition, difference) ;
+        const moveBy = this.moveByPxOrPercent(difference) ;
         
         this.carouselNode.style.transform = axis === 'vertical' ? `translateY(${moveBy})` : `translateX(${moveBy})` ;
     }
