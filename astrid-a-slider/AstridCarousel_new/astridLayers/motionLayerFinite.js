@@ -59,8 +59,8 @@ class MotionLayerFinite extends Component {
         this.carouselTransverseAxisWidth();
 
         const TRANSITION_UNIT = this.props.grid ? '%' : 'px';
-        const transitionPosition = -components_positions[this.position] + TRANSITION_UNIT;
-        return transitionPosition;
+        this.transitionPosition = -components_positions[this.position] + TRANSITION_UNIT;
+        return this.transitionPosition;
     }
 
     carouselTransverseAxisWidth = () => {
@@ -130,8 +130,8 @@ class MotionLayerFinite extends Component {
                 style={listStyle}
                 onMouseDown = {(e)=>{this.handleLock(e)}}
                 onMouseMove = {(e)=>{this.handleMove(e)}}
-                onMouseUp ={(e)=>{this.handleLose(e)}}
-               
+                onMouseUp ={(e)=>{this.handleMouseUp(e)}}
+                onMouseLeave ={(e)=>{this.handleMouseUp(e)}}
             >
                 {this.renderCarouselItems()}
             </div>
@@ -154,48 +154,92 @@ class MotionLayerFinite extends Component {
 
     componentDidMount = () => {
         this.tellNavigatorsIfOnEdge();
+        this.carouselNode = findDOMNode(this.carouselReference.current) ;
+        this.minDraggingDistance = 100;
     }
 
     handleLock = (e) => {
+        this.carouselNode.style.transition = 'none';
         e.stopPropagation() ; 
         e.preventDefault() ;
         this.locked = true;
-        this.lockPosition = e.clientX ;
-        this.carouselNode = findDOMNode(this.carouselReference.current) ;
-        const findPosition = this.carouselNode.style.transform.indexOf('(');
-        const number = parseFloat(this.carouselNode.style.transform.slice(findPosition+1));
-        this.caroudelNodeInitialLeft = number;
+        const { axis } = this.props;
+        this.lockPosition = axis === 'vertical' ? e.clientY : e.clientX;
     }
 
-    handleLose = (e) => {
-        this.locked = false;
-        this.losePosition = e.clientX;
-        this.difference = this.losePosition - this.lockPosition ;
-        this.shiftByPx = Math.abs(this.difference );
+    backToCurrentCssLeftWithoutTriggeringLogic = () => {
+        this.carouselNode.style.transform = `translateX(${this.transitionPosition}px)`;
+    }
 
-        const { move_by, columns, to_render: { carouselSize } } = this.props;
+    convertPixelsToColumns = (columnWidthPx) => {
+        const distanceColumns = this.distancePx / columnWidthPx;
+        const distanceInteger = Math.round(distanceColumns);
+        const distanceNonZeroInteger = distanceInteger === 0 ? 1 : distanceInteger ;
+        
+        return distanceNonZeroInteger ;
+    }
 
-        const columnWidth = carouselSize / columns ;
-        const isShifted = this.shiftByPx > columnWidth/2;
+    handleLose = () => {
+        this.carouselNode.style.transition = '300ms linear transform';
+        this.differencePx = this.losePosition - this.lockPosition ;
+        this.distancePx = Math.abs(this.differencePx );
+
+        const { move_by, columns, carouselSizePx } = this.props;
+
+        const columnWidthPx = carouselSizePx / columns ;
+        const isShifted = this.distancePx > this.minDraggingDistance;
+        
         if (!isShifted) {
-            this.carouselNode.style.transform = `translateX(${this.caroudelNodeInitialLeft}px)`;
+            this.backToCurrentCssLeftWithoutTriggeringLogic();
             return;
         };
-        const shiftByColumns = Math.ceil(this.shiftByPx / columnWidth);
-        const shiftDirection = Math.sign(this.difference);
-        const moveBy = shiftByColumns * -shiftDirection;
-        move_by(moveBy)
+
+        const distanceColumns = this.convertPixelsToColumns(columnWidthPx);
+        const shiftDirection = Math.sign(this.differencePx);
+        const moveBy = distanceColumns * -shiftDirection;
         
+        this.locked = false;
+        move_by(moveBy)
+    }
+
+    handleMouseUp = (e) => {
+        if (!this.locked) return;
+        e.stopPropagation() ; 
+        e.preventDefault() ;
+        this.handleLose();
+    }
+
+    handleMouseOut = (e) => {
+        if (!this.locked) return;
+        e.stopPropagation() ; 
+        e.preventDefault() ;
+        this.handleLose();
+    }
+
+    moveByPxOrPercent = (movePosition, difference) => {
+        const { columns, carouselSizePx, grid } = this.props;
+
+        if (!grid) {
+            return (parseFloat(this.transitionPosition) + difference) + 'px';
+        }
+
+        const differencePercent = (difference / carouselSizePx) * 100 ;
+        return (parseFloat(this.transitionPosition) + differencePercent) + '%';
     }
 
     handleMove = (e) => {
+        e.stopPropagation() ; 
+        e.preventDefault() ;
         if (!this.locked) return;
+
+        const { axis } = this.props;
+        this.losePosition = axis === 'vertical' ? e.clientY : e.clientX;
         
-        this.movePosition = e.clientX;
-        this.difference = this.movePosition - this.lockPosition ;
-        this.moveBy = this.caroudelNodeInitialLeft + this.difference ;
+        const movePosition = axis === 'vertical' ? e.clientY : e.clientX;
+        const difference = movePosition - this.lockPosition ;
+        const moveBy = this.moveByPxOrPercent (movePosition, difference) ;
         
-        this.carouselNode.style.transform = `translateX(${this.moveBy}px)`
+        this.carouselNode.style.transform = axis === 'vertical' ? `translateY(${moveBy})` : `translateX(${moveBy})` ;
     }
 }
 
