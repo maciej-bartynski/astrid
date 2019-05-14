@@ -164,7 +164,7 @@ const config = {
 }
 
 const config2 = {
-  columns: 1,
+  columns: 3,
   mode: 'finite',
   grid: false,
 }
@@ -183,7 +183,7 @@ const config4 = {
 }
 
 const config5 = {
-  columns: 1,
+  columns: 3,
   mode: 'finite',
   grid: false,
   axis: 'vertical',

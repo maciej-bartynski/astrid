@@ -12,15 +12,16 @@ class MotionLayerFinite extends Component {
     }
 
     renderCarouselItems = () => {
-        return this.props.to_render.components.map((Child, idx) => {
+        
+        return this.props.to_render.galleryItems.map((Child, idx) => {
             return cloneElement(
-                Child, { astrid_position: this.position }
+                Child, { astrid_position: this.position, key: idx }
             )
         })
     }
 
     isOnEdge = () => {
-        const MAX_POSITION = this.props.to_render.components.length - 1;
+        const MAX_POSITION = this.props.to_render.galleryItems.length - 1;
         const MIN_POSITION = 0;
         if (this.position >= MAX_POSITION) {
             this.position = MAX_POSITION;
@@ -45,21 +46,21 @@ class MotionLayerFinite extends Component {
 
     getPosition = () => {
         let { columns, to_render, by, to, mode, axis } = this.props;
-        const { components_positions, components } = to_render;
+        const { galleryItems_positions, galleryItems } = to_render;
 
         if (mode === 'infinite') {
-            to = library.getModifiedTo(columns, to, components_positions.length);
+            to = library.getModifiedTo(columns, to, galleryItems_positions.length);
         }
 
         const position = typeof by !== 'boolean' ? (this.position + by) : to;
         this.position = typeof position === 'number' ? position : this.position;
-        this.position = library.getValidCarouselPosition(this.position, components.length);
+        this.position = library.getValidCarouselPosition(this.position, galleryItems.length);
       
         this.isOnEdge();
         this.carouselTransverseAxisWidth();
 
         const TRANSITION_UNIT = this.props.grid ? '%' : 'px';
-        this.transitionPosition = -components_positions[this.position] + TRANSITION_UNIT;
+        this.transitionPosition = -galleryItems_positions[this.position] + TRANSITION_UNIT;
        
         return this.transitionPosition;
     }
@@ -68,24 +69,24 @@ class MotionLayerFinite extends Component {
         let { columns, to_render, grid, axis } = this.props;
         if ( grid ) return;
         const {
-            components,
-            components_widths,
-            components_heights,
-            components_positions,
+            galleryItems,
+            galleryItems_widths,
+            galleryItems_heights,
+            galleryItems_positions,
             carouselSize,
             modifyCarouselTransverseWidth,
         } = to_render;
 
-        const componentsSizes = axis === 'vertical' ? components_widths : components_heights ;
-        let currentMinimalTransverseAxisWidth = componentsSizes[this.position];
-        const carousel_items_max_iterator = components.length - 1 ;
+        const galleryItemsSizes = axis === 'vertical' ? galleryItems_widths : galleryItems_heights ;
+        let currentMinimalTransverseAxisWidth = galleryItemsSizes[this.position];
+        const carousel_items_max_iterator = galleryItems.length - 1 ;
         const carousel_items_min_iterator = this.position ;
-        const currentCssPosition = components_positions[this.position];
+        const currentCssPosition = galleryItems_positions[this.position];
 
         for (let i = carousel_items_min_iterator; i <= carousel_items_max_iterator; i++) {
-            const next_item_css_position = components_positions[i + 1];
-            const next_item_span_position = components_positions[i + 2];
-            const next_item_transverse_size = componentsSizes[i + 1];
+            const next_item_css_position = galleryItems_positions[i + 1];
+            const next_item_span_position = galleryItems_positions[i + 2];
+            const next_item_transverse_size = galleryItemsSizes[i + 1];
 
             if (next_item_span_position - currentCssPosition <= carouselSize) { //jeśli następny mieści się w wizjerze
                 if (  next_item_transverse_size  > currentMinimalTransverseAxisWidth ) {
@@ -105,8 +106,9 @@ class MotionLayerFinite extends Component {
     }
 
     render = () => {
-        const position = this.getPosition();
-     
+        const { sizes_checked } = this.props;
+        const position = sizes_checked ? this.getPosition() : this.position ;
+       
         const translate = ( this.props.axis === 'vertical' ) ? 
             `translateY(${position})` : `translateX(${position})`;
  
@@ -157,6 +159,8 @@ class MotionLayerFinite extends Component {
         this.tellNavigatorsIfOnEdge();
         this.carouselNode = findDOMNode(this.carouselReference.current) ;
         this.minDraggingDistance = 100;
+
+   
     }
 
     handleLock = (e) => {

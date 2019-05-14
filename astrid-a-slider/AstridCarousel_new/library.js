@@ -2,18 +2,14 @@ import React, { cloneElement } from 'react';
 
 export const library = {
     getElementsArray: function (children, columnSize, axis) {
-        const data = {
-            items: [],
-            ids: [],
-        }
+        let items = [];
 
         children.map((item, idx) => {
             const carouselItem = this.itemToCarouselItem(item, idx, columnSize, axis)
-            data.items.push(carouselItem);
-            data.ids.push(idx);
+            items.push(carouselItem);
         })
 
-        return data;
+        return items;
     },
 
     itemToCarouselItem: function (item, idx, columnSize, axis) {
@@ -23,7 +19,6 @@ export const library = {
         const itemStyles = {
             display: displayType,
             verticalAlign: 'top',
-            /*width: (columnSize ? columnSize : 'auto'),*/
             listStyle: 'none',
             boxSizing: 'border-box',
             margin: 0,

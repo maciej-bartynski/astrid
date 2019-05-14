@@ -8,38 +8,35 @@ class AstridCarousel extends Component {
 
     constructor(props) {
         super(props);
-        
+
         this.sizes_available = false;
         this.carouselReference = createRef();
-
-        this.components = []; //react elements
-        this.components_IDs = []; //identifier
-        this.components_widths = []; //elem size
-        this.components_heights = []; //elem size
-        this.components_positions = []; //gallery position if elem active, depends on axis: top or left
 
         this.isSlider = null;
         this.isGrid = null;
         this.isInfinite = null;
-
         this.getIsSlider();
         this.getIsGrid();
-        this.getValidChildren();
-        this.getInfiniteFriendlyArray();
+        //this.getInfiniteFriendlyArray();
+
+        this.state = {
+            galleryItems: this.getValidChildren(), //react elements
+            galleryItems_widths: [], //elem sizes
+            galleryItems_heights: [], //elem sizes
+            galleryItems_positions: [], //gallery position if elem active, depends on axis: top or left
+        }
     }
 
     getValidChildren = () => {
         const { children, columns, axis } = this.props;
 
         if (children === null || children === undefined) {
-            this.components = null;
-            return;
+            return null;
         }
 
         const columnSize = this.isGrid ? 100 / columns + '%' : 'auto';
         const elementsDataArrays = library.getElementsArray(children, columnSize, axis);
-        this.components = elementsDataArrays.items;
-        this.components_IDs = elementsDataArrays.ids;
+        return elementsDataArrays;
     }
 
     getIsSlider = () => {
@@ -52,25 +49,25 @@ class AstridCarousel extends Component {
         this.isGrid = library.getIsGrid(grid);
     }
 
-    getInfiniteFriendlyArray = () => {
-        const { columns, mode } = this.props;
-        if (!this.isSlider || mode === 'finite') return;
-        this.isInfinite = true;
-        this.components = library.getInfiniteElementsArray(columns, this.components);
-        this.components_IDs = library.getInfiniteElementsArray(columns, this.components_IDs);
-    }
+    //getInfiniteFriendlyArray = () => {
+    //    const { columns, mode } = this.props;
+    //    if (!this.isSlider || mode === 'finite') return;
+    //    this.isInfinite = true;
+    //    this.components = library.getInfiniteElementsArray(columns, this.components);
+    //    this.components_IDs = library.getInfiniteElementsArray(columns, this.components_IDs);
+    //}
 
     render = () => {
-        if (!this.components) {
+        if (!this.state.galleryItems) {
             return (
                 <div>
                     Slider require array of data
                 </div>
             )
         };
-
+       
         const { axis } = this.props;
-        const transitionDimension = axis === 'vertical' ? 'width' : 'height' ;
+        const transitionDimension = axis === 'vertical' ? 'width' : 'height';
         const sizeDimension = axis === 'vertical' ? 'height' : 'width';
 
         const clipFrameStyle = {
@@ -85,69 +82,74 @@ class AstridCarousel extends Component {
             <div
                 ref={this.carouselReference}
                 style={clipFrameStyle}>
-
-                {this.sizes_available ?
-                    <MotionLayerFinite
-                        to_render={this.state}
-                        columns={this.props.columns}
-                        grid={this.isGrid}
-                        slider={this.isSlider}
-                        mode={this.props.mode}
-                        axis={this.props.axis}
-                        carouselSizePx={this.carouselSizePx}
-                    /> : this.components
-                }
+                <MotionLayerFinite
+                    sizes_checked={ this.sizes_available ? true : false }
+                    to_render={this.state}
+                    columns={this.props.columns}
+                    grid={this.isGrid}
+                    slider={this.isSlider}
+                    mode={this.props.mode}
+                    axis={this.props.axis}
+                    carouselSizePx={this.carouselSizePx}
+                />
             </div>
         )
     }
 
     getCarouselItemsDOMNodes = () => {
         const { axis } = this.props;
-        const offsetSize = axis === 'vertical' ? 'offsetHeight' : 'offsetWidth' ;
+        const offsetSize = axis === 'vertical' ? 'offsetHeight' : 'offsetWidth';
         const FULL_PERCENT_SIZE = 100;
         const carousel = findDOMNode(this.carouselReference.current);
-        const carouselSize =  this.isGrid ? FULL_PERCENT_SIZE : carousel[offsetSize];
+        const carouselSize = this.isGrid ? FULL_PERCENT_SIZE : carousel[offsetSize];
         this.carouselSizePx = carousel[offsetSize];
-      
-        const nodesList = carousel.querySelectorAll('div[data-carousel-selector="carousel_item"]');
-        const nodesArray = library.arrayListFromArrayLikeList(nodesList);
 
+        const nodesList = carousel.querySelectorAll('div[data-carousel-selector="carousel_item"]');
+       
+        const nodesArray = library.arrayListFromArrayLikeList(nodesList);
+       
         return {
             nodesArray,
             carouselSize,
         }
     }
 
-    getCarouselTransitionData = ( nodesArray ) => {
+    getCarouselTransitionData = (nodesArray) => {
         const { columns, axis } = this.props;
         let galleryTotalSize = 0;
-        const offsetSize = axis === 'vertical' ? 'offsetHeight' : 'offsetWidth' ;
+        const offsetSize = axis === 'vertical' ? 'offsetHeight' : 'offsetWidth';
+        
+        this.galleryItems_widths = [];
+        this.galleryItems_heights = [];
+        this.galleryItems_positions = [];
+
         nodesArray.map((node) => {
-            const nodeOffsetSize = this.isGrid ? 100/columns : node[offsetSize]
-            this.components_widths.push(node.offsetWidth);
-            this.components_heights.push(node.offsetHeight);
-            this.components_positions.push(galleryTotalSize);
+            const nodeOffsetSize = this.isGrid ? 100 / columns : node[offsetSize]
+            this.galleryItems_widths.push(node.offsetWidth);
+            this.galleryItems_heights.push(node.offsetHeight);
+            this.galleryItems_positions.push(galleryTotalSize);
             galleryTotalSize += nodeOffsetSize;
-        }) 
-        return galleryTotalSize; 
+        })
+
+        return galleryTotalSize;
     }
 
-    correctLastGalleryItemsPositions=( galleryTotalSize, carouselSize, nodesArray )=>{
+    correctLastGalleryItemsPositions = (galleryTotalSize, carouselSize, nodesArray) => {
         let minTransverseSize = 0;
         const { axis } = this.props;
-        const dimensionSize = axis === 'vertical' ?  'components_widths' : 'components_heights';
-        
+        const dimensionSize = axis === 'vertical' ? 'galleryItems_widths' : 'galleryItems_heights';
+
         for (let i = nodesArray.length - 1; i >= 0; i--) {
-            if (this.components_positions[i] > ( galleryTotalSize - carouselSize)) {
-                minTransverseSize = this[dimensionSize][i] > minTransverseSize ? this[dimensionSize][i] : minTransverseSize ;
+            if (this.galleryItems_positions[i] > (galleryTotalSize - carouselSize)) {
+                minTransverseSize = this[dimensionSize][i] > minTransverseSize ? this[dimensionSize][i] : minTransverseSize;
             } else {
                 break;
             }
         }
 
         for (let i = nodesArray.length - 1; i >= 0; i--) {
-            if (this.components_positions[i] > ( galleryTotalSize - carouselSize)) {
-                this.components_positions[i] = galleryTotalSize - carouselSize;
+            if (this.galleryItems_positions[i] > (galleryTotalSize - carouselSize)) {
+                this.galleryItems_positions[i] = galleryTotalSize - carouselSize;
                 this[dimensionSize][i] = minTransverseSize;
             } else {
                 break;
@@ -156,19 +158,19 @@ class AstridCarousel extends Component {
     }
 
     componentDidMount = () => {
-        if (!this.components) return null;
-        
+        if (!this.state.galleryItems) return null;
+
         const { nodesArray, carouselSize } = this.getCarouselItemsDOMNodes();
+      
         const galleryTotalSize = this.getCarouselTransitionData(nodesArray);
-        this.correctLastGalleryItemsPositions( galleryTotalSize, carouselSize, nodesArray );
+        this.correctLastGalleryItemsPositions(galleryTotalSize, carouselSize, nodesArray);
         this.sizes_available = true;
 
         const newState = {
-            components: this.components,
-            components_widths: this.components_widths,
-            components_heights: this.components_heights,
-            components_IDs: this.components_IDs,
-            components_positions: this.components_positions,
+            galleryItems: this.state.galleryItems,
+            galleryItems_widths: this.galleryItems_widths,
+            galleryItems_heights: this.galleryItems_heights,
+            galleryItems_positions: this.galleryItems_positions,
             carouselSize,
             modifyCarouselTransverseWidth: this.modifyCarouselTransverseWidth
         }
@@ -178,10 +180,10 @@ class AstridCarousel extends Component {
 
     modifyCarouselTransverseWidth = (size) => {
         const { axis } = this.props;
-       
-        const dimension = axis === 'vertical' ? 'width' : 'height' ;
+
+        const dimension = axis === 'vertical' ? 'width' : 'height';
         this.carouselReference.current.style[dimension] = size + 'px';
-       
+
     }
 }
 
