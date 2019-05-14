@@ -41,20 +41,95 @@ body {
   align-items: center;
   width: 230px;
 }
-.MyItem_inline_ex__list-conteiner .MyItem_inline_ex {
-  height: 300px;
-  border: solid 1px red;
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  width: 110px;
+
+.root {
+  width: 100%;
+  margin: 0;
+  padding: 0;
 }
 
-.MyItem_inline_ex__div-conteiner .MyItem_inline_ex {
-  height: 300px;
-  border: solid 1px red;
+.gridContainer {
+  display: grid;
+  width: 50%;
+  box-sizing: border-box;
+  margin: 0 auto;
+  min-width: 1000px;
+  grid-template:
+    [row1-start] "header header header header" 150px [row1-end]
+    [row2-start] "horizontalSliders_a verticalSliders_a verticalSliders_b verticalSliders_c" 50px [row2-end]
+    [row3-start] "horizontalSliders_a verticalSliders_a verticalSliders_b verticalSliders_c" auto [row3-end]
+    [row4-start] "horizontalSliders_c verticalSliders_a verticalSliders_b verticalSliders_c" auto [row4-end]
+    [row5-start] "horizontalSliders_d verticalSliders_a verticalSliders_b verticalSliders_c" auto [row5-end]
+    / 50% 20% 3% 27%;
+}
+
+.gridTop {
+  grid-area: header;
   display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+}
+
+.gridTop h1 {
+  width: 100%;
+  text-align: center;
+}
+
+.gridTop .navigatorsContainer{
+  width: 100%;
+  display: flex;
+  flex-direction: row;
   justify-content: center;
   align-items: center;
-  width: 150px;
+}
+
+.verticalSlider_navigators {
+  grid-column-start: 1;
+  grid-column-end: 4;
+  grid-row: 1;
+}
+
+.navigatorsContainer {
+  display: flex;
+  flex-direction: row;
+  width: 100%;
+}
+
+.verticalSlider_grid {
+  grid-area: verticalSliders_a;
+}
+
+.verticalSlider_noGrid {
+  grid-area: verticalSliders_c;
+  height: 500px;
+}
+
+.verticalSlider_pointers {
+  grid-area: verticalSliders_b;
+  height: 100%;
+}
+
+.horizontalSlider_grid {
+  width: 100%;
+  grid-area: horizontalSliders_a;
+}
+
+.horizontalSlider_noGrid {
+  width: 100%;
+  grid-area: horizontalSliders_c;
+}
+
+.horizontalSlider_pointers {
+  width: 100%;
+  grid-area: horizontalSliders_d;
+}
+
+h2 {
+  letter-spacing: 0.3px;
+  font-family: sans-serif;
+  font-size: 15px;
+  margin: 0;
+  padding: 0;
+  text-align: center;
 }

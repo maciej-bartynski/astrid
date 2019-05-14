@@ -1,176 +1,12 @@
 import React, { Component } from 'react';
-/*import AstridGroup from './astridGroup';
-import AstridNavigator from './astridNavigator';
-import AstridSlider from './astridCarousel';*/
-import AstridGroup from './astrid/Group';
-import AstridNavigator from './astrid/Navigator';
-import AstridSlider from './astrid/Carousel';
+import AstridGroup from './AstridCarousel_new/astridGroup';
+import AstridNavigator from './AstridCarousel_new/astridNavigator';
+import AstridCarousel from './AstridCarousel_new';
+import AstridPointer from './AstridCarousel_new/astridPointer';
 
-class AstridItem extends Component {
-  render = () => {
-    return (
-      <div className='MyItem_grid'>
-        {this.props.title} <br />
-        {this.props.someProp}
-      </div>
-    )
-  }
-}
+import Description from './test/Description.js';
+import Pointer from './test/Pointer.js';
 
-class App extends Component {
-  render() {
-    return (
-      <AstridGroup>
-        <h1>Grid</h1>
-        <AstridSlider
-          mode={'finite'} //'finite', 'return'
-          draggable={true}
-          pixel_width={1000}
-          fit_height={true} //DOM operation!
-
-          align={{
-            left: true, //default
-            center: true,
-            custom: '3%'
-          }}
-
-          /**
-           * Grid OR inline.
-           * If both, only grid is dispatched,
-           */
-          grid={{
-            columns: 2,
-            rows: 1
-          }}
-
-          /**
-           * Translate OR fade.
-           * If both, only translate is dispatched
-           */
-          translate={{
-            time: {
-              duration: 300,
-              per_column: false,
-            },
-            curve: 'ease-in', // all css curves
-          }}
-          fade={{
-            time: 300,
-            curve_in: 'ease-in', // all css curves
-            curve_out: 'ease-out' // all css curves
-          }}
-        >
-          <AstridItem someProp='ups' />
-          <div className='MyItem_grid'>1</div>
-          <div className='MyItem_grid'>2</div>
-          <div className='MyItem_grid'>3</div>
-          <div className='MyItem_grid'>4</div>
-          <div className='MyItem_grid'>5</div>
-          <div className='MyItem_grid'>6</div>
-          <div className='MyItem_grid'>7</div>
-          <div className='MyItem_grid'>8</div>
-         
-        </AstridSlider>
-        <h1>Inline</h1>
-        <AstridSlider
-          mode={'finite'} //'finite', 'return'
-          draggable={true}
-          pixel_width={1000}
-          fit_height={true} //DOM operation!
-
-          align={{
-            left: true, //default
-            center: true,
-            custom: '3%'
-          }}
-          /* INLINE  */
-          inline={true}
-          /**
-           * Translate OR fade.
-           * If both, only translate is dispatched
-           */
-          translate={{
-            time: {
-              duration: 300,
-              per_column: false,
-            },
-            curve: 'ease-in', // all css curves
-          }}
-          fade={{
-            time: 300,
-            curve_in: 'ease-in', // all css curves
-            curve_out: 'ease-out' // all css curves
-          }}
-        >
-          <div className='MyItem_inline'>1</div>
-          <div className='MyItem_inline'>2</div>
-          <div className='MyItem_inline'>3</div>
-          <div className='MyItem_inline'>4</div>
-          <div className='MyItem_inline'>5</div>
-          <div className='MyItem_inline'>6</div>
-          <div className='MyItem_inline'>7</div>
-          <div className='MyItem_inline'>8</div>
-          <div className='MyItem_inline'>9</div>
-        </AstridSlider>
-        <h1>Inline extended</h1>
-        <AstridSlider
-          mode={'finite'} //'finite', 'return'
-          draggable={true}
-          pixel_width={1000}
-          fit_height={true} //DOM operation!
-
-          align={{
-            left: true, //default
-            center: true,
-            custom: '3%'
-          }}
-          /* Inline extended */
-          inline_extended={true}
-          /**
-           * Translate OR fade.
-           * If both, only translate is dispatched
-           */
-          translate={{
-            time: {
-              duration: 300,
-              per_column: false,
-            },
-            curve: 'ease-in', // all css curves
-          }}
-          fade={{
-            time: 300,
-            curve_in: 'ease-in', // all css curves
-            curve_out: 'ease-out' // all css curves
-          }}
-        >
-          <ul className='MyItem_inline_ex__list-conteiner'>
-            <li data-astrid_selector='astrid-item' className='MyItem_inline_ex'>1</li>
-            <li data-astrid_selector='astrid-item' className='MyItem_inline_ex'>2</li>
-            <li data-astrid_selector='astrid-item' className='MyItem_inline_ex'>3</li>
-            <li data-astrid_selector='astrid-item' className='MyItem_inline_ex'>4</li>
-          </ul>
-          <div data-astrid_selector='astrid-item' className='MyItem_inline_ex'>5</div>
-          <div data-astrid_selector='astrid-item' className='MyItem_inline_ex'>6</div>
-          <div data-astrid_selector='astrid-item' className='MyItem_inline_ex'>7</div>
-          <div className='MyItem_inline_ex__div-conteiner'>
-            <div data-astrid_selector='astrid-item' className='MyItem_inline_ex'>8</div>
-            <div data-astrid_selector='astrid-item' className='MyItem_inline_ex'>9</div>
-          </div>
-        </AstridSlider>
-        <br />
-        <AstridNavigator by={-1}><span>left 1</span></AstridNavigator>
-        <AstridNavigator by={1}><span>right 1</span></AstridNavigator>
-        <br />
-        <AstridNavigator by={-4}><span>left 4</span></AstridNavigator>
-        <AstridNavigator by={4}><span>right 4</span></AstridNavigator>
-      </AstridGroup>
-    )
-  }
-}
-
-export default App;
-
-/* OLD PROJECT
 const GALLERY_PATH = './media-gallery/';
 const FORMAT = '.jpg';
 const media_gallery_paths = [
@@ -187,162 +23,248 @@ const media_gallery_paths = [
   { title: 'water' },
 ]
 
+/*class Pointer extends Component {
+  render = () => {
+    const { to, active_position, isThin } = this.props;
+
+    return (
+      <div
+        style={{
+          padding: '10px',
+          width: '100%',
+          textAlign: 'center',
+          border: '1px white solid',
+          display: 'inline-block',
+          boxSizing: 'border-box',
+          color: 'white',
+          background: (to === active_position ? 'gray' : 'rgba(0,0,0,0.2'),
+          cursor: 'pointer',
+          boxSizing: 'border-box',
+        }}
+      >{to}</div>
+    )
+  }
+}*/
+
+class Navigator extends Component {
+  render = () => {
+    const { left_edge, right_edge, active_position, title, by } = this.props;
+    const visible = (left_edge && title === 'left') || (right_edge && title === 'right') ? false : true;
+
+    return (
+      <div
+        style={{
+          padding: '10px 20px',
+          opacity: (visible ? 1 : 0.4),
+          background: 'gray',
+          color: 'white',
+          border: '1px solid white',
+          cursor: 'pointer',
+          width: 250,
+          display: 'inline-block',
+          boxSizing: 'border-box',
+        }}
+      >{title}{' '}{by} </div>
+    )
+  }
+}
+
+class TextComponent extends Component {
+  render = () => {
+    const { title, index, astrid_identity, astrid_position } = this.props;
+
+    let variableHeight = () => {
+      let hei;
+      if (index > 4) {
+        hei = (index + 1) * 30;
+      } else {
+        hei = 250 - ((index + 1) * 30);
+      }
+      return hei + 'px'
+    }
+
+    return (
+      <div
+        style={{
+          height: variableHeight(),
+          border: 'solid 1px rgb(200,200,200)',
+          borderTop: 'none',
+          color: 'white',
+          background: (astrid_position === astrid_identity ? 'rgb(130,130,130)' : 'rgba(130,130,130,0.4)'),
+          display: 'flex',
+          justifyContent: 'center',
+          alignItems: 'center',
+          width: (index % 2 === 0 || index === 5 ? index % 2 === 0 ? 'unset' : '200px' : '450px'),
+          padding: (index % 2 === 0 ? '5px 5px' : '5px 20px'),
+          boxSizing: 'border-box',
+        }}>{title.title}</div>
+    )
+  }
+}
+
+class VerticalTextComponent extends Component {
+  render = () => {
+    const { title, index, astrid_identity, astrid_position } = this.props;
+
+    return (
+      <div
+        style={{
+          border: 'solid 1px rgb(200,200,200)',
+          borderTop: 'none',
+          color: 'white',
+          background: (astrid_position === astrid_identity ? 'rgb(130,130,130)' : 'rgba(130,130,130,0.4)'),
+          display: 'flex',
+          justifyContent: 'center',
+          alignItems: 'center',
+          width: (index % 2 === 0 || index === 5 ? index % 2 === 0 ? 'unset' : '200px' : '450px'),
+          height: (index % 2 === 0 || index === 5 ? index % 2 === 0 ? '300px' : '400px' : '450px'),
+          boxSizing: 'border-box',
+          padding: (index % 2 === 0 ? '5px 5px' : '5px 20px'),
+        }}>{title.title}</div>
+    )
+  }
+}
+
 class ImageComponent extends Component {
   constructor(props) {
     super(props);
-    this.loaded = false;
     this.background = '';
-  }
-
-  idRet = () => {
-    const { keyIndex } = this.props;
-    return media_gallery_paths[keyIndex].title;
+    this.mediaGalleryPath();
   }
 
   mediaGalleryPath = () => {
-    const { keyIndex } = this.props;
-    const title = media_gallery_paths[keyIndex].title;
+    const { image: { title }, astrid_identity, astrid_position } = this.props;
     this.background = `url(${GALLERY_PATH + title + FORMAT})`;
-    this.loaded = true;
   }
 
   render = () => {
-    const { visible, current } = this.props;
-    if (!this.loaded && visible) {
-      this.mediaGalleryPath();
-    }
+    const { vertical, astrid_identity, astrid_position } = this.props;
     return (
       <div
-        id={this.idRet() + this.dupa}
-        key={this.idRet() + this.dupa}
         style={{
-          boxSizing: 'border-box',
-          width: '100%',
-          paddingTop: '100%',
+          width: (vertical ? 200 : '100%'),
+          paddingTop: (vertical ? 'unset' : '100%'),
+          height: (vertical ? '100%' : 'unset'),
+          backgroundColor: (astrid_position === astrid_identity ? 'rgb(100,100,100)' : 'rgba(130,130,130,0.4)'),
           backgroundImage: this.background,
-          backgroundColor: (visible || current) ? current ? 'rgba(255, 0, 0, 0.7)' : 'rgba(0,0,0,0.1)' : 'rgba(0,0,0,0.7)',
-          transition: 'background-color 500ms linear',
           backgroundSize: 'contain',
           backgroundPosition: 'center',
           backgroundRepeat: 'no-repeat',
-          border: current ? 'solid 1px red' : 'solid 1px gray',
+          border: 'solid 1px white',
+          boxSizing: 'border-box',
         }} />
     )
   }
 }
 
-const TitleComponent = (props) => {
-  let { current, visible, keyIndex } = props;
-  const title = media_gallery_paths[keyIndex].title;
-
-  return (
-    <div
-      style={{
-        boxSizing: 'border-box',
-        width: '100%',
-        height: 50,
-        color: current ? 'white' : 'gray',
-        border: current ? 'solid 2px red' : 'solid 2px gray',
-        background: current ? 'rgba(255, 0, 0, 0.7)' : 'rgba(255, 0, 0, 0.2)',
-        display: 'flex',
-        justifyContent: 'center',
-        alignItems: 'center',
-      }}>
-      {title}
-    </div>
-  )
+const config = {
+  columns: 2,
+  mode: 'finite',
+  grid: true,
 }
 
+const config2 = {
+  columns: 1,
+  mode: 'finite',
+  grid: false,
+}
+
+const config3 = {
+  columns: 3,
+  mode: 'finite',
+  grid: true,
+}
+
+const config4 = {
+  columns: 3,
+  mode: 'finite',
+  grid: true,
+  axis: 'vertical',
+}
+
+const config5 = {
+  columns: 1,
+  mode: 'finite',
+  grid: false,
+  axis: 'vertical',
+}
+
+const config6 = {
+  columns: 2,
+  mode: 'finite',
+  grid: true,
+  axis: 'vertical',
+}
+
+
 class App extends Component {
-
-  constructor(props) {
-    super(props);
-    this.cell = {
-      width: '100%',
-      height: 300,
-      display: 'flex',
-      justifyContent: 'center',
-      alignItems: 'center',
-      border: 'solid 1px green'
-    }
-
-    this.group_a = {
-      transition: {
-        time: 300,
-        curve: 'ease-in',
-        style: 'translate', //or fade,
-        mode: 'absolue' //relative
-      },
-    }
-
-    this.group_a__slider_a = {
-      items: media_gallery_paths.map((item, index) => {
-        ImageComponent.dupa = index;
-        return ImageComponent;
-      }),
-      mode: 'infinite',
-      columns: 2,
-      transition: {
-        time: 300,
-        curve: 'ease-in',
-        style: 'translate', //or fade,
-        mode: 'absolue' //relative
-      },
-    }
-
-    this.group_a__slider_b = {
-      items: media_gallery_paths.map((item, index) => {
-        return TitleComponent;
-      }),
-      mode: 'infinite',
-      columns: 5,
-      transition: {
-        time: 200,
-        curve: 'linear',
-        style: 'translate', //or fade,
-        mode: 'absolue' //relative
-      },
-    }
-  }
-
   render() {
     return (
-      <div style={{ width: '100%', minWidth: 200, maxWidth: 1200, margin: '0 auto' }}>
-        <AstridGroup {...this.group_a}>
-          <AstridSlider {...this.group_a__slider_a} />
-          <AstridSlider {...this.group_a__slider_b} />
+      <div className='root'>
+        <div className='gridContainer'>
+          <AstridGroup>
 
-          <AstridNavigator by={-1}><span>left 1</span></AstridNavigator>
-          <AstridNavigator by={1}><span>right 1</span></AstridNavigator>
-          <br />
-          <AstridNavigator by={-4}><span>left 4</span></AstridNavigator>
-          <AstridNavigator by={4}><span>right 4</span></AstridNavigator>
-        </AstridGroup>
-        <br />
-        <button
-          style={{ padding: 10, margin: '0 auto', display: 'block' }}
-          onClick={
-            () => {
-              this.group_a__slider_a = {
-                ...this.group_a__slider_a,
-                columns: 1,
-              }
-              this.group_a__slider_b = {
-                ...this.group_a__slider_b,
-                columns: 6,
-              }
-              this.setState({
-                bool: !this.bool
-              })
-            }
-          }>
-          Change columns amount
-        </button>
+            <div className='gridTop'>
+              <h1>Astrid. A carousel.</h1>
+              <div className='navigatorsContainer'>
+                <AstridNavigator by={-1}><Navigator title={'left'} by={-1} /></AstridNavigator>
+                <AstridNavigator by={1}><Navigator title={'right'} by={1} /></AstridNavigator>
+              </div>
+            </div>
+
+            <div className='horizontalSlider_grid'>
+              <h2>Horizontal, cells: grid</h2>
+              <AstridCarousel {...config}>
+                {media_gallery_paths.map((item, indx, arr) => (<ImageComponent key={'top' + indx} image={arr[indx]} />))}
+              </AstridCarousel>
+            </div>
+
+            <div className='horizontalSlider_noGrid'>
+              <h2>Horizontal, cells: nogrid (irregular as fuck)</h2>
+              <AstridCarousel {...config2}>
+                {media_gallery_paths.map((item, indx, arr) => (<Description key={indx} title={arr[indx]} />))}
+              </AstridCarousel>
+            </div>
+            <div className='horizontalSlider_pointers'>
+              <h2>Carousel with pointers (clickable)</h2>
+              <AstridCarousel {...config3}>
+                {media_gallery_paths.map((item, indx) => {
+                  return (
+                    <AstridPointer to={indx} key={'pointer' + indx}>
+                      <Pointer to={indx} />
+                    </AstridPointer>
+                  )
+                })}
+              </AstridCarousel>
+            </div>
+            <div className='verticalSlider_grid'>
+              <AstridCarousel {...config4}>
+                {media_gallery_paths.map((item, indx, arr) => (<ImageComponent key={'top' + indx} image={arr[indx]} vertical={true} />))}
+              </AstridCarousel>
+            </div>
+            <div className='verticalSlider_noGrid'>
+              <AstridCarousel {...config5}>
+                {media_gallery_paths.map((item, indx, arr) => (<Description key={indx} title={arr[indx]} />))}
+              </AstridCarousel>
+            </div>
+            <div className='verticalSlider_pointers'>
+              <AstridCarousel {...config6}>
+                {media_gallery_paths.map((item, indx) => {
+                  return (
+                    <AstridPointer to={indx} key={'pointer' + indx}>
+                      <Pointer to={indx} isThin={false} />
+                    </AstridPointer>
+                  )
+                })}
+              </AstridCarousel>
+            </div>
+          </AstridGroup>
+
+        </div>
       </div>
-    );
+
+    )
   }
 }
 
 export default App;
-
-*/
