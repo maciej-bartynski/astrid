@@ -32,8 +32,8 @@ export default class CarouselGroup extends Component {
         }
 
         this.setState({
-           to,
-           by: false,
+            by: false,
+            to,
         })
     }
 
@@ -41,7 +41,7 @@ export default class CarouselGroup extends Component {
         if (typeof by !== 'number') {
             by = 0;
         }
-        
+
         this.setState({
             by,
             to: false,

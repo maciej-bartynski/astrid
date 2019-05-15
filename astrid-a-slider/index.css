@@ -125,6 +125,16 @@ body {
   grid-area: horizontalSliders_d;
 }
 
+.carouselWrapperToShowSize {
+  box-shadow: 0px 0px 3px 3px rgba(25,25,25,0.2)
+}
+
+.carouselWrapperToShowSize_vert {
+  box-shadow: 0px 0px 3px 3px rgba(25,25,25,0.2);
+  height: 500px;
+  width: min-content;
+}
+
 h2 {
   letter-spacing: 0.3px;
   font-family: sans-serif;

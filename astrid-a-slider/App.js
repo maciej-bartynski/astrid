@@ -221,9 +221,11 @@ class App extends Component {
 
             <div className='horizontalSlider_noGrid'>
               <h2>Horizontal, cells: nogrid (irregular as fuck)</h2>
-              <AstridCarousel {...config2}>
-                {media_gallery_paths.map((item, indx, arr) => (<Description key={indx} title={arr[indx]} />))}
-              </AstridCarousel>
+              <div className='carouselWrapperToShowSize'>
+                <AstridCarousel {...config2}>
+                  {media_gallery_paths.map((item, indx, arr) => (<Description key={indx} title={arr[indx]} />))}
+                </AstridCarousel>
+              </div>
             </div>
             <div className='horizontalSlider_pointers'>
               <h2>Carousel with pointers (clickable)</h2>
@@ -243,9 +245,11 @@ class App extends Component {
               </AstridCarousel>
             </div>
             <div className='verticalSlider_noGrid'>
-              <AstridCarousel {...config5}>
-                {media_gallery_paths.map((item, indx, arr) => (<Description key={indx} title={arr[indx]} />))}
-              </AstridCarousel>
+              <div className='carouselWrapperToShowSize_vert'>
+                <AstridCarousel {...config5}>
+                  {media_gallery_paths.map((item, indx, arr) => (<Description key={indx} title={arr[indx]} />))}
+                </AstridCarousel>
+              </div>
             </div>
             <div className='verticalSlider_pointers'>
               <AstridCarousel {...config6}>

@@ -28,7 +28,7 @@ export default class AstridPointer extends Component {
                         role='button'
                         tabIndex={0}
                         onKeyDown={()=>move_to(to)}
-                        onClick={()=>move_to(to)}>
+                        onClick={()=> { move_to(to)}}>
                         { cloneElement( children, { left_edge, right_edge, active_position } ) }
                     </div>
                 )}}
