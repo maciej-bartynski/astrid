@@ -3,7 +3,7 @@ import { findDOMNode } from 'react-dom';
 
 export default {
     replaceDefaultProps: function (props) { 
-        const { mode, columns } = props;
+        const { mode, columns, onMove } = props;
 
         const defaults = {
             mode: {

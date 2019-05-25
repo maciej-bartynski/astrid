@@ -32,7 +32,7 @@ class App extends Component {
         axis: 'horizontal', //vertical
         size: '100%', //css
         margin: '0 auto', //css
-        fit_to: 'none', //view, both, none
+        fit_to: 'transverse', //view, both, none
         centering: true, //center, [number][unit: px, %]
         
       },
@@ -48,7 +48,7 @@ class App extends Component {
         axis: 'vertical', //vertical
         size: '100%', //css
         margin: '0 auto', //css
-        fit_to: 'none', //view, both, none
+        fit_to: 'transverse', //view, both, none
         centering: true, //center, [number][unit: px, %],
        
       },
@@ -83,39 +83,39 @@ class App extends Component {
               <div style={{ width: '133px' }} data-astrid-selector='gallery-item'>
                 <img style={{width: '100%', display: 'block'}} src='./media-gallery/business.jpg'/>
               </div>
-              <div style={{ width: '33.33%' }} data-astrid-selector='gallery-item'>
+              <div style={{ width: '33.33%', height: 300 }} data-astrid-selector='gallery-item'>
                 <img style={{width: '100%', display: 'block'}} src='./media-gallery/coins.jpg'/>
               </div>
-              <div style={{ width: '23.33%' }} data-astrid-selector='gallery-item'>
+              <div style={{ width: '23.33%', height: 400 }} data-astrid-selector='gallery-item'>
                 <img style={{width: '100%', display: 'block'}} src='./media-gallery/frog.jpg'/>
               </div>
-              <div style={{ width: '33.33%' }} data-astrid-selector='gallery-item'>
+              <div style={{ width: '33.33%',height: 200 }} data-astrid-selector='gallery-item'>
                 <img style={{width: '100%', display: 'block'}} src='./media-gallery/girl.jpg'/>
               </div>
             </AstridDOMCarousel>
             <AstridDOMCarousel
               config={ config2}
             >
-              <div style={{ width: '43.33%' }} data-astrid-selector='gallery-item'>
-                <img style={{width: '100%', display: 'block'}} src='./media-gallery/animals.jpg'/>
+              <div style={{ height: '43.33%' }} data-astrid-selector='gallery-item'>
+                <img style={{height: '100%', display: 'block'}} src='./media-gallery/animals.jpg'/>
               </div>
-              <div style={{ width: '33.33%' }} data-astrid-selector='gallery-item'>
-                <img style={{width: '100%', display: 'block'}} src='./media-gallery/books.jpg'/>
+              <div style={{ height: '33.33%' }} data-astrid-selector='gallery-item'>
+                <img style={{height: '100%', display: 'block'}} src='./media-gallery/books.jpg'/>
               </div>
-              <div style={{ width: '33.33%' }} data-astrid-selector='gallery-item'>
-                <img style={{width: '100%', display: 'block'}} src='./media-gallery/animals.jpg'/>
+              <div style={{ height: '33.33%' }} data-astrid-selector='gallery-item'>
+                <img style={{height: '100%', display: 'block'}} src='./media-gallery/animals.jpg'/>
               </div>
-              <div style={{ width: '133px' }} data-astrid-selector='gallery-item'>
-                <img style={{width: '100%', display: 'block'}} src='./media-gallery/business.jpg'/>
+              <div style={{ height: '133px' }} data-astrid-selector='gallery-item'>
+                <img style={{height: '100%', display: 'block'}} src='./media-gallery/business.jpg'/>
               </div>
-              <div style={{ width: '33.33%' }} data-astrid-selector='gallery-item'>
-                <img style={{width: '100%', display: 'block'}} src='./media-gallery/coins.jpg'/>
+              <div style={{ height: '33.33%' }} data-astrid-selector='gallery-item'>
+                <img style={{height: '100%', display: 'block'}} src='./media-gallery/coins.jpg'/>
               </div>
-              <div style={{ width: '23.33%' }} data-astrid-selector='gallery-item'>
-                <img style={{width: '100%', display: 'block'}} src='./media-gallery/frog.jpg'/>
+              <div style={{ height: '23.33%' }} data-astrid-selector='gallery-item'>
+                <img style={{height: '100%', display: 'block'}} src='./media-gallery/frog.jpg'/>
               </div>
-              <div style={{ width: '33.33%' }} data-astrid-selector='gallery-item'>
-                <img style={{width: '100%', display: 'block'}} src='./media-gallery/girl.jpg'/>
+              <div style={{ height: '33.33%' }} data-astrid-selector='gallery-item'>
+                <img style={{height: '100%', display: 'block'}} src='./media-gallery/girl.jpg'/>
               </div>
             </AstridDOMCarousel>
           </div>

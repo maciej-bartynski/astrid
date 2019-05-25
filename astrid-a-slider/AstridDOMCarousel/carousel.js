@@ -22,7 +22,7 @@ class AstridDOMCarousel extends Component {
             display: (axis === 'vertical' ? 'inline-block' : 'block'),
             margin,
             boxSizign: 'border-box',
-
+            border: 'solid 1px green'
         }
         this.centering_styles = {
             transform: [(axis === 'vertical' ? `translateY(${centering}px)` : `translateX(${centering}px)`)],
@@ -44,11 +44,12 @@ class AstridDOMCarousel extends Component {
 
         this.position_logical = 0;
         this.position_translate = 0;
+        this.initialBy=0;
     }
 
     render = () => {
-        const { children } = this.props;
-
+        let { children, by } = this.props;
+        by = by ? by : this.initialBy;
         let moveGalleryStyle = {};
 
         if (this.props.by) {
@@ -109,7 +110,7 @@ class AstridDOMCarousel extends Component {
                 translate_centering_frame -= this.gallery_items[i][offsetSize]
             }
         }
-
+        this.translate_centering_frame = translate_centering_frame;
         this.centering_styles.transform = this.axis === 'vertical' ? `translateY(${translate_centering_frame}px)` : `translateX(${translate_centering_frame}px)`;
     }
 
@@ -133,12 +134,36 @@ class AstridDOMCarousel extends Component {
     }
 
     getTransverseSize = () => {
+        this.getItemsVisibilityStatuses();
+        
         if (this.fit_to === 'transverse') {
             const offsetSize = this.axis === 'vertical' ? 'offsetWidth' : 'offsetHeight';
             const viewFrameSize = this.axis === 'vertical' ? 'width' : 'height';
+        
             this.transverseSize = this.gallery_items[this.position_logical][offsetSize];
+            
             this.view_styles[viewFrameSize] = this.transverseSize + 'px';
         }
+    }
+
+    getItemsVisibilityStatuses = () => {
+        //this.position_logical;
+
+        this.full_visibility =[];
+        this.partial_visibility=[];
+        this.full_next=[];
+        this.partial_next=[];
+
+        //const offsetBorder = this.axis === 'vertical' ? 'offsetTop' : 'offsetLeft';
+        //const offsetSize = this.axis === 'vertical' ? 'offsetWidth' : 'offsetHeight';
+        let iterator = this.centering === true ? this.columns - Math.floor(this.columns/2) : this.columns ;
+        
+        for (let i = iterator; i < iterator + this.columns ; i++) {
+            this.full_visibility.push(i);
+        }
+
+        //partial = +/-1
+        //next = partial +/- columns
     }
 
     componentDidMount = () => {
