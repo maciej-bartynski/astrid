@@ -1,5 +1,4 @@
 import React, { Component, createContext } from 'react';
-import { timingSafeEqual } from 'crypto';
 
 export let CarouselContext = createContext({
     position: null,

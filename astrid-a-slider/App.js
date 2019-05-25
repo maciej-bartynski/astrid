@@ -1,5 +1,6 @@
 import React, { Component } from 'react';
-import AstridGroup from './AstridCarousel_new/astridGroup';
+import { AstridDOMCarousel, AstridDOMGroup, AstridDOMNavigator } from './AstridDOMCarousel/index.js';
+/*import AstridGroup from './AstridCarousel_new/astridGroup';
 import AstridNavigator from './AstridCarousel_new/astridNavigator';
 import AstridCarousel from './AstridCarousel_new';
 import AstridPointer from './AstridCarousel_new/astridPointer';
@@ -21,7 +22,112 @@ const media_gallery_paths = [
   { title: 'reading' },
   { title: 'tabletop-photography' },
   { title: 'water' },
-]
+]*/
+
+class App extends Component {
+  render() {
+    const config = {
+      mode: {
+        scroll: 'finite', //infinite, returnable
+        axis: 'horizontal', //vertical
+        size: '100%', //css
+        margin: '0 auto', //css
+        fit_to: 'none', //view, both, none
+        centering: true, //center, [number][unit: px, %]
+        
+      },
+      columns: 1,
+      onMove: ( domArr, currPos ) => {
+        domArr[currPos].style.border = 'solid 1px red';
+      }
+    }
+
+    const config2 = {
+      mode: {
+        scroll: 'finite', //infinite, returnable
+        axis: 'vertical', //vertical
+        size: '100%', //css
+        margin: '0 auto', //css
+        fit_to: 'none', //view, both, none
+        centering: true, //center, [number][unit: px, %],
+       
+      },
+      columns: 1,
+      onMove: ( domArr, currPos ) => {
+        domArr[currPos].style.border = 'solid 1px red';
+      }
+    }
+
+    return (
+      <div>
+        <AstridDOMGroup>
+          <div style={{
+            width: '50%',
+            minWidth: '1000px',
+            margin: '0 auto',
+            border: 'solid 1px black',
+            height: 600
+          }}>
+            <AstridDOMCarousel
+              config={ config}
+            >
+              <div style={{ width: '43.33%' }} data-astrid-selector='gallery-item'>
+                <img style={{width: '100%', display: 'block'}} src='./media-gallery/animals.jpg'/>
+              </div>
+              <div style={{ width: '33.33%' }} data-astrid-selector='gallery-item'>
+                <img style={{width: '100%', display: 'block'}} src='./media-gallery/books.jpg'/>
+              </div>
+              <div style={{ width: '33.33%' }} data-astrid-selector='gallery-item'>
+                <img style={{width: '100%', display: 'block'}} src='./media-gallery/animals.jpg'/>
+              </div>
+              <div style={{ width: '133px' }} data-astrid-selector='gallery-item'>
+                <img style={{width: '100%', display: 'block'}} src='./media-gallery/business.jpg'/>
+              </div>
+              <div style={{ width: '33.33%' }} data-astrid-selector='gallery-item'>
+                <img style={{width: '100%', display: 'block'}} src='./media-gallery/coins.jpg'/>
+              </div>
+              <div style={{ width: '23.33%' }} data-astrid-selector='gallery-item'>
+                <img style={{width: '100%', display: 'block'}} src='./media-gallery/frog.jpg'/>
+              </div>
+              <div style={{ width: '33.33%' }} data-astrid-selector='gallery-item'>
+                <img style={{width: '100%', display: 'block'}} src='./media-gallery/girl.jpg'/>
+              </div>
+            </AstridDOMCarousel>
+            <AstridDOMCarousel
+              config={ config2}
+            >
+              <div style={{ width: '43.33%' }} data-astrid-selector='gallery-item'>
+                <img style={{width: '100%', display: 'block'}} src='./media-gallery/animals.jpg'/>
+              </div>
+              <div style={{ width: '33.33%' }} data-astrid-selector='gallery-item'>
+                <img style={{width: '100%', display: 'block'}} src='./media-gallery/books.jpg'/>
+              </div>
+              <div style={{ width: '33.33%' }} data-astrid-selector='gallery-item'>
+                <img style={{width: '100%', display: 'block'}} src='./media-gallery/animals.jpg'/>
+              </div>
+              <div style={{ width: '133px' }} data-astrid-selector='gallery-item'>
+                <img style={{width: '100%', display: 'block'}} src='./media-gallery/business.jpg'/>
+              </div>
+              <div style={{ width: '33.33%' }} data-astrid-selector='gallery-item'>
+                <img style={{width: '100%', display: 'block'}} src='./media-gallery/coins.jpg'/>
+              </div>
+              <div style={{ width: '23.33%' }} data-astrid-selector='gallery-item'>
+                <img style={{width: '100%', display: 'block'}} src='./media-gallery/frog.jpg'/>
+              </div>
+              <div style={{ width: '33.33%' }} data-astrid-selector='gallery-item'>
+                <img style={{width: '100%', display: 'block'}} src='./media-gallery/girl.jpg'/>
+              </div>
+            </AstridDOMCarousel>
+          </div>
+
+          <AstridDOMNavigator move={1}/>
+          <AstridDOMNavigator move={-2}/>
+        
+        </AstridDOMGroup>
+      </div>    
+    )
+  }
+}
 
 /*class Pointer extends Component {
   render = () => {
@@ -46,7 +152,7 @@ const media_gallery_paths = [
   }
 }*/
 
-class Navigator extends Component {
+/*class Navigator extends Component {
   render = () => {
     const { left_edge, right_edge, active_position, title, by } = this.props;
     const visible = (left_edge && title === 'left') || (right_edge && title === 'right') ? false : true;
@@ -200,6 +306,9 @@ const config6 = {
 class App extends Component {
   render() {
     return (
+
+    )
+    return (
       <div className='root'>
         <div className='gridContainer'>
           <AstridGroup>
@@ -269,6 +378,6 @@ class App extends Component {
 
     )
   }
-}
+}*/
 
 export default App;
