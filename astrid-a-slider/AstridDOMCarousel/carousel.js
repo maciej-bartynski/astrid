@@ -8,13 +8,15 @@ class AstridDOMCarousel extends Component {
     constructor(props) {
         super(props);
 
-        const { mode: { scroll, axis, size, margin, fit_to, centering }, columns } = library.replaceDefaultProps(props.config);
+        const { mode: { scroll, axis, size, margin, fit_to, centering }, columns, lazy, lazyMode } = library.replaceDefaultProps(props.config);
         this.centering = centering;
         this.scroll = scroll;
         this.fit_to = fit_to;
         this.columns = columns;
         this.axis = axis;
         this.onMove = this.props.config.onMove;
+        this.lazy = lazy;
+        this.lazyMode = lazyMode;
 
         this.view_styles = {
             overflow: 'hidden',
@@ -22,7 +24,7 @@ class AstridDOMCarousel extends Component {
             display: (axis === 'vertical' ? 'inline-block' : 'block'),
             margin,
             boxSizign: 'border-box',
-            border: 'solid 1px green'
+            transition: `${(axis === 'vertical' ? 'width' : 'height')} 300ms linear`,
         }
         this.centering_styles = {
             transform: [(axis === 'vertical' ? `translateY(${centering}px)` : `translateX(${centering}px)`)],
@@ -33,7 +35,6 @@ class AstridDOMCarousel extends Component {
             transition: 'transform 300ms linear',
         }
         this.gallery_styles = {
-            display: 'block',
             [(axis === 'vertical' ? 'height' : 'width')]: '100%',
             display: (axis === 'vertical' ? 'inline-block' : 'block'),
             whiteSpace: 'nowrap',
@@ -48,15 +49,14 @@ class AstridDOMCarousel extends Component {
     }
 
     render = () => {
-        let { children, by } = this.props;
+        let { by, children } = this.props;
         by = by ? by : this.initialBy;
-        let moveGalleryStyle = {};
 
-        if (this.props.by) {
+        if (typeof this.props.by === 'number') {
             this.getPosition_gallery();
             this.getPosition_centering();
+            this.mainNodeListLoop();
             this.getTransverseSize();
-            this.onMove(this.gallery_items, this.position_logical);
         }
 
         return (
@@ -74,7 +74,6 @@ class AstridDOMCarousel extends Component {
                     <div data-astrid-selector='gallery-frame'
                         style={{
                             ...this.gallery_styles,
-                            ...moveGalleryStyle
                         }}
                     >
                         {children}
@@ -133,37 +132,131 @@ class AstridDOMCarousel extends Component {
 
     }
 
-    getTransverseSize = () => {
-        this.getItemsVisibilityStatuses();
+    mainNodeListLoop = () => {
+        this.pre_visible_items =[];
+        this.post_visible_items =[];
+        this.visible_items = [];
+
+        const offsetSize = this.axis === 'vertical' ? 'offsetHeight' : 'offsetWidth';
+        const offsetBorder = this.axis === 'vertical' ? 'offsetTop' : 'offsetLeft';
         
-        if (this.fit_to === 'transverse') {
-            const offsetSize = this.axis === 'vertical' ? 'offsetWidth' : 'offsetHeight';
-            const viewFrameSize = this.axis === 'vertical' ? 'width' : 'height';
-        
-            this.transverseSize = this.gallery_items[this.position_logical][offsetSize];
-            
-            this.view_styles[viewFrameSize] = this.transverseSize + 'px';
+        const framePosition = 0;
+        const frameRange = this.view_frame[offsetSize];
+        const framePosition_pre = -frameRange;
+        const frameRange_post = 2*frameRange;
+
+        for ( let i = this.position_logical; i < this.gallery_items.length; i++ ){
+            const item = this.gallery_items[i];
+            const itemPosition = this.position_translate + item[offsetBorder] + this.translate_centering_frame;
+            const itemRange = itemPosition + item[offsetSize];
+
+            if ( itemPosition < frameRange_post ){
+                if ( itemRange <= frameRange ){
+                    this.visible_items.push({
+                        index: i,
+                        status: 'visible',
+                        width: item.offsetWidth,
+                        height: item.offsetHeight,
+                        node: this.gallery_items[i],
+                        
+                    })
+                } else {
+                    this.post_visible_items.push({
+                        index: i,
+                        status: 'post_visible',
+                        width: item.offsetWidth,
+                        height: item.offsetHeight,
+                        node: this.gallery_items[i],
+                    })
+                }
+            } else {
+                break;
+            }
+        }
+
+        for ( let i = this.position_logical-1; i>=0; i-- ){
+            const item = this.gallery_items[i];
+            const itemPosition = this.position_translate + item[offsetBorder] + this.translate_centering_frame;
+            const itemRange = itemPosition + item[offsetSize];
+
+            if ( itemRange > framePosition_pre ){
+                if ( itemPosition >= framePosition ){
+                    this.visible_items.push({
+                        index: i,
+                        status: 'visible',
+                        width: item.offsetWidth,
+                        height: item.offsetHeight,
+                        node: this.gallery_items[i],
+                        
+                    })
+                } else {
+                    this.pre_visible_items.push({
+                        index: i,
+                        status: 'pre_visible',
+                        width: item.offsetWidth,
+                        height: item.offsetHeight,
+                        node: this.gallery_items[i],
+                    })
+                }
+            } else {
+                break;
+            }
         }
     }
 
-    getItemsVisibilityStatuses = () => {
-        //this.position_logical;
+    getTransverseSize = () => {
+        let currentSize = 0;
+        const size = this.axis === 'vertical' ? 'width' : 'height';
+        this.visible_items.forEach((item)=>{
+            if (item[size]>currentSize) {
+                currentSize = item[size];
+            }
+        })
+        this.view_styles[size] = currentSize + 'px';
+    }
 
-        this.full_visibility =[];
-        this.partial_visibility=[];
-        this.full_next=[];
-        this.partial_next=[];
-
-        //const offsetBorder = this.axis === 'vertical' ? 'offsetTop' : 'offsetLeft';
-        //const offsetSize = this.axis === 'vertical' ? 'offsetWidth' : 'offsetHeight';
-        let iterator = this.centering === true ? this.columns - Math.floor(this.columns/2) : this.columns ;
+    astridLazyLoad = () => {
         
-        for (let i = iterator; i < iterator + this.columns ; i++) {
-            this.full_visibility.push(i);
-        }
+        const offsetSize = this.axis === 'vertical' ? 'offsetWidth' : 'offsetHeight';
+        const size = this.axis === 'vertical' ? 'width' : 'height';
+        const lazyChildren = this.lazyMode === 'visible' ? 
+            this.visible_items : this.pre_visible_items.concat(this.visible_items.concat(this.post_visible_items));
+          
+        lazyChildren.forEach((item)=>{
+            let images = item.node.querySelectorAll('[data-astrid-lazy="true"]');
+            images = images.length !== 0 ? images : [ item.node ] ;
+            
+            for (let i = 0; i < images.length; i++){
+                const isLazy = images[i].getAttribute('data-astrid-lazy')
+                if (isLazy) {
+                    images[i].removeAttribute('data-astrid-lazy')
+                    const src = images[i].getAttribute('data-astrid-lazy-src');
+                    images[i].removeAttribute('data-astrid-lazy-src')
+                    images[i].setAttribute('src', src);
 
-        //partial = +/-1
-        //next = partial +/- columns
+                    if (images[i].getAttribute('data-astrid-lazy-style')) {
+                        const style = images[i].getAttribute('data-astrid-lazy-style');
+                        images[i].removeAttribute('data-astrid-lazy-style');
+                        images[i].setAttribute('style', style);
+                    }
+                    
+                    images[i].onload = ()=> {
+                        if (this.view_frame[offsetSize] < this.gallery_items[item.index][offsetSize]){
+                            this.view_frame.style[size] = this.gallery_items[item.index][offsetSize] + 'px';
+                        }
+                    }
+                }
+            }
+        })
+        
+    }
+
+    componentDidUpdate = () => {
+       
+        if ( this.lazy === true ) {
+            this.astridLazyLoad();
+        }
+        //this.onMove(this.position_logical, this.gallery_items, this.visible_items, this.pre_visible_items, this.post_visible_items, this.view_frame);
     }
 
     componentDidMount = () => {
@@ -178,7 +271,7 @@ class AstridDOMCarousel extends Component {
             this.gallery_items[i].style.clear = (this.axis === 'vertical' ? 'both' : '');
         }
 
-        this.props.plainJsStore.getPosition = this.getPosition;
+        this.props.go(0);
     }
 }
 

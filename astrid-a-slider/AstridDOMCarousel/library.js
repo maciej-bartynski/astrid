@@ -3,7 +3,7 @@ import { findDOMNode } from 'react-dom';
 
 export default {
     replaceDefaultProps: function (props) { 
-        const { mode, columns, onMove } = props;
+        const { mode, columns, onMove, lazy, lazyMode } = props;
 
         const defaults = {
             mode: {
@@ -15,15 +15,20 @@ export default {
                 centering: false, // center, %, px,
             },
             columns: 1,
-            onMove: ()=>{}
+            onMove: ()=>{},
+            lazy: false,
+            lazyMode: null,
         }
         
         let new_mode = (!mode || typeof mode !== 'object' ? defaults.mode : mode );
         new_mode = (!mode || typeof mode !== 'object' ? new_mode : this.validateMode(new_mode));
         let new_columns = (typeof columns === 'number' && columns > 0 ? parseInt(columns) : defaults.columns);
         let new_onMove = (typeof onMove === 'function' ? onMove : defaults.onMove);
+        let new_lazy =  (lazy === true ? true : defaults.lazy);
+        let new_lazyMode = (new_lazy === true && (lazyMode === 'visible' ||  lazyMode === 'pre_visible')) ? 
+            lazyMode === 'visible' ? 'visible' : 'pre_visible' : defaults.lazyMode;
 
-        return { mode: new_mode, columns: new_columns, onMove: new_onMove }
+        return { mode: new_mode, columns: new_columns, onMove: new_onMove, lazy: new_lazy, lazyMode: new_lazyMode }
     },
 
     validateMode: function (mode) {
