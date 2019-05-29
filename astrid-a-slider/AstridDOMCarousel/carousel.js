@@ -28,6 +28,7 @@ class AstridDOMCarousel extends Component {
         }
         this.centering_styles = {
             transform: [(axis === 'vertical' ? `translateY(${centering}px)` : `translateX(${centering}px)`)],
+            
             overflow: 'visible',
             [(axis === 'vertical' ? 'height' : 'width')]: '100%',
             display: (axis === 'vertical' ? 'inline-block' : 'block'),
@@ -45,7 +46,7 @@ class AstridDOMCarousel extends Component {
 
         this.position_logical = 0;
         this.position_translate = 0;
-        this.initialBy=0;
+        this.initialBy = 0;
     }
 
     render = () => {
@@ -56,6 +57,7 @@ class AstridDOMCarousel extends Component {
             this.getPosition_gallery();
             this.getPosition_centering();
             this.mainNodeListLoop();
+            //this.nodeListLoop();//this.getPosition_centering();
             this.getTransverseSize();
         }
 
@@ -96,7 +98,7 @@ class AstridDOMCarousel extends Component {
 
         if (this.position_translate + translate_centering_frame > 0) {
             translate_centering_frame = 0;
-            for (let i = 0 ; i<=this.position_logical; i++) {
+            for (let i = 0; i <= this.position_logical; i++) {
                 translate_centering_frame += this.gallery_items[i][offsetBorder]
             }
         }
@@ -105,7 +107,7 @@ class AstridDOMCarousel extends Component {
         const galleryWidth = lastItem[offsetBorder] + lastItem[offsetSize];
         if (galleryWidth + this.position_translate + translate_centering_frame < this.view_frame[offsetSize]) {
             translate_centering_frame = this.view_frame[offsetSize];
-            for (let i = this.position_logical; i< this.gallery_items.length; i++) {
+            for (let i = this.position_logical; i < this.gallery_items.length; i++) {
                 translate_centering_frame -= this.gallery_items[i][offsetSize]
             }
         }
@@ -132,33 +134,168 @@ class AstridDOMCarousel extends Component {
 
     }
 
+    returnItemStatus = (iterator, status) => {
+        return {
+            index: iterator,
+            status: status,
+            width: this.gallery_items[iterator].offsetWidth,
+            height: this.gallery_items[iterator].offsetHeight,
+            node: this.gallery_items[iterator],
+        }
+    }
+
+    nodeListLoop = () => {
+        const offsetSize = this.axis === 'vertical' ? 'offsetHeight' : 'offsetWidth';
+        const offsetBorder = this.axis === 'vertical' ? 'offsetTop' : 'offsetLeft';
+        
+        this.visible_items =[];
+        this.pre_visible_items=[];
+        
+        let { by } = this.props;
+        
+        if (!by) {
+            return;
+        };
+        
+        const viewFrameSize = this.view_frame[offsetSize];
+        const test_position_logical = this.position_logical + by;
+        const new_position_logical = test_position_logical > this.gallery_items.length - 1 ? this.gallery_items.length - 1 : test_position_logical < 0 ? 0 : test_position_logical;
+
+        const gallery_visibleArea_start = this.gallery_items[new_position_logical][offsetBorder];
+        const gallery_visibleArea_end = gallery_visibleArea_start + viewFrameSize;
+        const gallery_preVisibleArea_leftEdge = gallery_visibleArea_start - viewFrameSize;
+        const gallery_preVisibleArea_rightEdge = gallery_visibleArea_start + 2 * viewFrameSize;
+
+        const loop_logicalDirection = Math.sign(by);
+        const loop_nextItem = loop_logicalDirection < 0 ? 1 : 0;
+        const loop_translateDirection = -loop_logicalDirection;
+
+        const saveStartIterator = this.position_logical;
+        let loopIterator = saveStartIterator ;
+        let loop = true;
+        
+        while (this.gallery_items[this.position_logical + loop_logicalDirection] && loop) {
+           
+            if (by) {
+                //movement and logical item
+                by -= loop_logicalDirection;
+                this.position_translate += this.gallery_items[this.position_logical + loop_nextItem][offsetSize] * loop_translateDirection;
+                this.position_logical += loop_logicalDirection;
+               
+            }
+
+            const itemToCheck = this.gallery_items[loopIterator];
+            if (!itemToCheck) {
+                break;
+            }
+                       
+            if (
+                itemToCheck[offsetBorder] >= gallery_preVisibleArea_leftEdge &&
+                itemToCheck[offsetBorder] <= gallery_preVisibleArea_rightEdge
+            ) {
+                //pre_visible for sure
+                let pre_visible_item = this.returnItemStatus(loopIterator, 'pre_visible')
+                let visible_item = null;
+                
+                if (
+                    itemToCheck[offsetBorder] >= gallery_visibleArea_start &&
+                    itemToCheck[offsetBorder] + itemToCheck[offsetSize] <= gallery_visibleArea_end
+                ) {
+                    //visible for sure
+                    pre_visible_item = null;
+                    visible_item = this.returnItemStatus(loopIterator, 'visible')
+                }
+
+                if (pre_visible_item) this.pre_visible_items.push(pre_visible_item);
+                if (visible_item) this.visible_items.push(visible_item);
+
+            } else {
+                // do not iterate anymore
+                loop = false;
+            }
+
+            loopIterator += loop_logicalDirection;
+            
+        };
+        this.gallery_styles.transform = this.axis === 'vertical' ? `translateY(${this.position_translate}px)` : `translateX(${this.position_translate}px)`;
+        loopIterator = saveStartIterator + loop_logicalDirection;
+        loop = true;
+       
+        while (this.gallery_items[loopIterator] && loop) {
+            
+            const itemToCheck = this.gallery_items[loopIterator];
+            if (!itemToCheck) {
+                break;
+            }
+                       
+            if (
+                itemToCheck[offsetBorder] >= gallery_preVisibleArea_leftEdge &&
+                itemToCheck[offsetBorder] <= gallery_preVisibleArea_rightEdge
+            ) {
+                //pre_visible for sure
+                let pre_visible_item = {
+                    index:  loopIterator,
+                    status: 'pre_visible',
+                    width: itemToCheck.offsetWidth,
+                    height: itemToCheck.offsetHeight,
+                    node: this.gallery_items[loopIterator],
+                }
+                let visible_item = null;
+                
+                if (
+                    itemToCheck[offsetBorder] >= gallery_visibleArea_start &&
+                    itemToCheck[offsetBorder] + itemToCheck[offsetSize] <= gallery_visibleArea_end
+                ) {
+                    //visible for sure
+                    pre_visible_item = null;
+                    visible_item = {
+                        index:  loopIterator,
+                        status: 'visible',
+                        width: itemToCheck.offsetWidth,
+                        height: itemToCheck.offsetHeight,
+                        node: this.gallery_items[loopIterator],
+                    }
+                }
+
+                if (pre_visible_item) this.pre_visible_items.push(pre_visible_item);
+                if (visible_item) this.visible_items.push(visible_item);
+
+            } else {
+                // do not iterate anymore
+                loop = false;
+            }
+
+            loopIterator -= loop_logicalDirection;
+        };
+    }
+
     mainNodeListLoop = () => {
-        this.pre_visible_items =[];
-        this.post_visible_items =[];
+        this.pre_visible_items = [];
+        this.post_visible_items = [];
         this.visible_items = [];
 
         const offsetSize = this.axis === 'vertical' ? 'offsetHeight' : 'offsetWidth';
         const offsetBorder = this.axis === 'vertical' ? 'offsetTop' : 'offsetLeft';
-        
+
         const framePosition = 0;
         const frameRange = this.view_frame[offsetSize];
         const framePosition_pre = -frameRange;
-        const frameRange_post = 2*frameRange;
+        const frameRange_post = 2 * frameRange;
 
-        for ( let i = this.position_logical; i < this.gallery_items.length; i++ ){
+        for (let i = this.position_logical; i < this.gallery_items.length; i++) {
             const item = this.gallery_items[i];
             const itemPosition = this.position_translate + item[offsetBorder] + this.translate_centering_frame;
             const itemRange = itemPosition + item[offsetSize];
 
-            if ( itemPosition < frameRange_post ){
-                if ( itemRange <= frameRange ){
+            if (itemPosition < frameRange_post) {
+                if (itemRange <= frameRange) {
                     this.visible_items.push({
                         index: i,
                         status: 'visible',
                         width: item.offsetWidth,
                         height: item.offsetHeight,
                         node: this.gallery_items[i],
-                        
+
                     })
                 } else {
                     this.post_visible_items.push({
@@ -174,20 +311,20 @@ class AstridDOMCarousel extends Component {
             }
         }
 
-        for ( let i = this.position_logical-1; i>=0; i-- ){
+        for (let i = this.position_logical - 1; i >= 0; i--) {
             const item = this.gallery_items[i];
             const itemPosition = this.position_translate + item[offsetBorder] + this.translate_centering_frame;
             const itemRange = itemPosition + item[offsetSize];
 
-            if ( itemRange > framePosition_pre ){
-                if ( itemPosition >= framePosition ){
+            if (itemRange > framePosition_pre) {
+                if (itemPosition >= framePosition) {
                     this.visible_items.push({
                         index: i,
                         status: 'visible',
                         width: item.offsetWidth,
                         height: item.offsetHeight,
                         node: this.gallery_items[i],
-                        
+
                     })
                 } else {
                     this.pre_visible_items.push({
@@ -207,8 +344,8 @@ class AstridDOMCarousel extends Component {
     getTransverseSize = () => {
         let currentSize = 0;
         const size = this.axis === 'vertical' ? 'width' : 'height';
-        this.visible_items.forEach((item)=>{
-            if (item[size]>currentSize) {
+        this.visible_items.forEach((item) => {
+            if (item[size] > currentSize) {
                 currentSize = item[size];
             }
         })
@@ -216,17 +353,17 @@ class AstridDOMCarousel extends Component {
     }
 
     astridLazyLoad = () => {
-        
+
         const offsetSize = this.axis === 'vertical' ? 'offsetWidth' : 'offsetHeight';
         const size = this.axis === 'vertical' ? 'width' : 'height';
-        const lazyChildren = this.lazyMode === 'visible' ? 
-            this.visible_items : this.pre_visible_items.concat(this.visible_items.concat(this.post_visible_items));
-          
-        lazyChildren.forEach((item)=>{
+        const lazyChildren = this.lazyMode === 'visible' ?
+            this.visible_items : this.pre_visible_items.concat(this.visible_items);
+
+        lazyChildren.forEach((item) => {
             let images = item.node.querySelectorAll('[data-astrid-lazy="true"]');
-            images = images.length !== 0 ? images : [ item.node ] ;
-            
-            for (let i = 0; i < images.length; i++){
+            images = images.length !== 0 ? images : [item.node];
+
+            for (let i = 0; i < images.length; i++) {
                 const isLazy = images[i].getAttribute('data-astrid-lazy')
                 if (isLazy) {
                     images[i].removeAttribute('data-astrid-lazy')
@@ -239,21 +376,21 @@ class AstridDOMCarousel extends Component {
                         images[i].removeAttribute('data-astrid-lazy-style');
                         images[i].setAttribute('style', style);
                     }
-                    
-                    images[i].onload = ()=> {
-                        if (this.view_frame[offsetSize] < this.gallery_items[item.index][offsetSize]){
+
+                    images[i].onload = () => {
+                        if (this.view_frame[offsetSize] < this.gallery_items[item.index][offsetSize]) {
                             this.view_frame.style[size] = this.gallery_items[item.index][offsetSize] + 'px';
                         }
                     }
                 }
             }
         })
-        
+
     }
 
     componentDidUpdate = () => {
-       
-        if ( this.lazy === true ) {
+
+        if (this.lazy === true) {
             this.astridLazyLoad();
         }
         //this.onMove(this.position_logical, this.gallery_items, this.visible_items, this.pre_visible_items, this.post_visible_items, this.view_frame);
