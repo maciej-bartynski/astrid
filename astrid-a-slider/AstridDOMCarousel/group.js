@@ -5,11 +5,7 @@ export let AstridDOMBoundaryData = createContext({
     by: null,
 })
 
-class AstridDOMBoundaryPlainJsContext {
-    constructor(){
 
-    }
-}
 
 export default class AstridDOMBoundary extends Component {
     constructor(props) {
@@ -18,13 +14,13 @@ export default class AstridDOMBoundary extends Component {
         this.state = {
             by: null,
             go: this.go,
-            plainJsStore: new AstridDOMBoundaryPlainJsContext
         }
     }
 
     go = (by) => {   
         this.setState({
-            by
+            by,
+            restore: false,
         })
     }
 

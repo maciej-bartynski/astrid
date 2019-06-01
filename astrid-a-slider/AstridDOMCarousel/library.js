@@ -1,8 +1,8 @@
-import React, { Component } from 'react';
+import React, { Component, cloneElement } from 'react';
 import { findDOMNode } from 'react-dom';
 
 export default {
-    replaceDefaultProps: function (props) { 
+    replaceDefaultProps: function (props) {
         const { mode, columns, onMove, lazy, lazyMode } = props;
 
         const defaults = {
@@ -15,17 +15,17 @@ export default {
                 centering: false, // center, %, px,
             },
             columns: 1,
-            onMove: ()=>{},
+            onMove: () => { },
             lazy: false,
             lazyMode: null,
         }
-        
-        let new_mode = (!mode || typeof mode !== 'object' ? defaults.mode : mode );
+
+        let new_mode = (!mode || typeof mode !== 'object' ? defaults.mode : mode);
         new_mode = (!mode || typeof mode !== 'object' ? new_mode : this.validateMode(new_mode));
         let new_columns = (typeof columns === 'number' && columns > 0 ? parseInt(columns) : defaults.columns);
         let new_onMove = (typeof onMove === 'function' ? onMove : defaults.onMove);
-        let new_lazy =  (lazy === true ? true : defaults.lazy);
-        let new_lazyMode = (new_lazy === true && (lazyMode === 'visible' ||  lazyMode === 'pre_visible')) ? 
+        let new_lazy = (lazy === true ? true : defaults.lazy);
+        let new_lazyMode = (new_lazy === true && (lazyMode === 'visible' || lazyMode === 'pre_visible')) ?
             lazyMode === 'visible' ? 'visible' : 'pre_visible' : defaults.lazyMode;
 
         return { mode: new_mode, columns: new_columns, onMove: new_onMove, lazy: new_lazy, lazyMode: new_lazyMode }
@@ -45,11 +45,48 @@ export default {
             scroll: (scroll === 'finite' || scroll === 'infinite' || scroll === 'returnable' ? scroll : 'finite'),
             axis: (axis === 'horizontal' || axis === 'vertical' ? axis : 'horizontal'),
             size: (typeof parseInt(size) === 'number' && size !== 0 ? size : '100%'),
-            margin: (!margin ? '0 auto' : margin ),
+            margin: (!margin ? '0 auto' : margin),
             fit_to: (fit_to === 'transverse' || fit_to === 'view' || fit_to === 'both' || fit_to === 'none' ? fit_to : 'transverse'),
-            centering: (centering === true ? true : false) ,
+            centering: (centering === true ? true : false),
         }
 
         return valid_mode;
     },
+
+    childrenToAstridChildren: (items, scroll, columns, axis) => {
+        const astridChildren = items.map((item, idx) => {
+            const astridChildrenProps = {
+                key: idx,
+                id: idx,
+                ['data-astrid-selector']: "astrid-child",
+                style: {
+                    ...item.props.style,
+                    display: 'inline-block',
+                    verticalAlign: 'top',
+                    float: (axis==='vertical' ? 'left' : ''),
+                    clear: (axis==='vertical' ? 'both' : ''),
+                }
+            }
+           
+            return cloneElement(item, astridChildrenProps)
+        })   
+        
+        if (scroll === 'infinite' || scroll === 'returnable') {
+            const head = astridChildren.slice(0, -columns);
+            const tail = astridChildren.slice(-columns);
+            return tail.concat(head);
+        } else {
+            return astridChildren;
+        }
+    },
+
+    nodeListToArray: (list)=>{
+        const arr = [];
+
+        for (let i = 0; i<list.length; i++ ){
+            arr.push(list[i]);
+            
+        }
+        return arr
+    }
 }

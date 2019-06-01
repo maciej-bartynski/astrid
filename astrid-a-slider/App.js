@@ -38,7 +38,7 @@ class App extends Component {
     return (
       <div>
         {/* nope <Astrid_v1/>*/}
-        <Astrid_v2 { ...{images, titles} }/>
+        {/*<Astrid_v2 { ...{images, titles} }/>*/}
         <Astrid_v3 { ...{images, titles} }/>
       </div>
     )

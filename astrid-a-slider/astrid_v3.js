@@ -5,30 +5,29 @@ class Astrid_v3 extends Component {
   render() {
     const config = {
       mode: {
-        scroll: 'finite', //infinite, returnable
-        axis: 'horizontal', //vertical
+        scroll: 'infinite', //infinite, returnable
+        axis: 'horizontal', //'horizontal', //vertical
         size: '100%', //css
         margin: '0 auto', //css
         fit_to: 'transverse', //view, both, none
         centering: false, //center, [number][unit: px, %]
-
       },
-      columns: 1,
-      onMove: (currPos, domArr, visible_items, pre_visible_items, post_visible_items, view_frame) => {
-        domArr[currPos].style.border = 'solid 1px red';
-        visible_items.forEach((item)=>{
-          if (item.offsetHeight > view_frame.offsetHeight){
-            //view_frame.style.height = item.offsetHeight+'px'
-          }
-        })
-      },
-      lazy:true,
-      lazyMode:'visible'//pre_visible, post_visible
+      columns: 2, //just logical value
+      //onMove: (currPos, domArr, visible_items, pre_visible_items, post_visible_items, view_frame) => {
+      //  domArr[currPos].style.border = 'solid 1px red';
+      //  visible_items.forEach((item)=>{
+      //    if (item.offsetHeight > view_frame.offsetHeight){
+      //      //view_frame.style.height = item.offsetHeight+'px'
+      //    }
+      //  })
+      //},
+      //lazy:true,
+      //lazyMode:'visible'//pre_visible, post_visible
     }
 
     const config2 = {
       mode: {
-        scroll: 'finite', //infinite, returnable
+        scroll: 'returnable', //infinite, returnable
         axis: 'vertical', //vertical
         size: '100%', //css
         margin: '0 auto', //css
@@ -36,10 +35,10 @@ class Astrid_v3 extends Component {
         centering: true, //center, [number][unit: px, %],
 
       },
-      columns: 1,
-      onMove: (currPos, domArr) => {
-        domArr[currPos].style.border = 'solid 1px red';
-      }
+      columns:2,
+      //onMove: (currPos, domArr) => {
+      //  domArr[currPos].style.border = 'solid 1px red';
+      //}
     }
 
     return (
@@ -50,112 +49,90 @@ class Astrid_v3 extends Component {
             minWidth: '1000px',
             margin: '0 auto',
             border: 'solid 1px black',
+            
           }}>
             <AstridDOMCarousel
               config={config}
             >
               <div 
-                data-astrid-selector='gallery-item'
-                style={{ border: 'solid 1px green', width: '43.33%' }}>
+                style={{ border: 'solid 1px green', width: '60%' }}>
                 <img 
-                  data-astrid-lazy="true" 
-                  data-astrid-lazy-src='./media-gallery/animals.jpg' 
-                  data-astrid-lazy-style='width: 100%; display: block' 
+                  src='./media-gallery/animals.jpg' 
+                  style={{width: '100%', 
+                  display: 'block'}} 
                 />
               </div>
               <div 
-                data-astrid-selector='gallery-item'
-                style={{ border: 'solid 1px green',width: '33.33%' }}>
-                <img data-astrid-lazy="true" data-astrid-lazy-src='./media-gallery/books.jpg' data-astrid-lazy-style='width: 100%; display: block' />
+                style={{ border: 'solid 1px green',width: '30%' }}>
+                <img src='./media-gallery/books.jpg' style={{width: '100%', display: 'block'}} />
               </div>
               <div 
-                data-astrid-selector='gallery-item'
-                style={{ border: 'solid 1px green',width: '33.33%' }}>
-                <img data-astrid-lazy="true" data-astrid-lazy-src='./media-gallery/animals.jpg' data-astrid-lazy-style='width: 100%; display: block' />
+                style={{ border: 'solid 1px green',width: '70%' }}>
+                <img src='./media-gallery/animals.jpg' style={{width: '100%', display: 'block'}} />
               </div>
               <div
-                data-astrid-selector='gallery-item'
-                style={{ border: 'solid 1px green', width: '133px' }}>
-                <img data-astrid-lazy="true" data-astrid-lazy-src='/media-gallery/business.jpg' data-astrid-lazy-style='width: 100%; display: block' />
+                style={{ border: 'solid 1px green', width: '10%' }}>
+                <img src='/media-gallery/business.jpg' style={{width: '100%', display: 'block'}} />
               </div>
               <div 
-                data-astrid-selector='gallery-item'
-                style={{ border: 'solid 1px green',width: '33.33%', height: 300 }}>
-                <img data-astrid-lazy="true" data-astrid-lazy-src='./media-gallery/coins.jpg' data-astrid-lazy-style='width: 100%; display: block' />
-              </div>
-              <div
-                data-astrid-selector='gallery-item' 
-                style={{ border: 'solid 1px green',width: '23.33%', height: 400 }}>
-                <img data-astrid-lazy="true" data-astrid-lazy-src='./media-gallery/frog.jpg' data-astrid-lazy-style='width: 100%; display: block' />
+                style={{ border: 'solid 1px green',width: '120px', height: 300 }}>
+                <img src='./media-gallery/coins.jpg' style={{width: '100%', display: 'block'}} />
               </div>
               <div 
-                data-astrid-selector='gallery-item'
-                style={{ border: 'solid 1px green',width: '33.33%', height: 200 }}>
-                <img data-astrid-lazy="true" data-astrid-lazy-src='./media-gallery/girl.jpg' data-astrid-lazy-style='width: 100%; display: block' />
+                style={{ border: 'solid 1px green',width: '50px', height: 400 }}>
+                <img src='./media-gallery/frog.jpg' style={{width: '100%', display: 'block'}} />
+              </div>
+              <div 
+                style={{ border: 'solid 1px green',width: '300px', height: 200 }}>
+                <img src='./media-gallery/girl.jpg' style={{width: '100%', display: 'block'}} />
               </div>
             </AstridDOMCarousel>
-          </div>
+            </div>
 
           <div style={{
             width: '50%',
-            minWidth: '1000px',
+            minWidth: '100px',
             margin: '0 auto',
             border: 'solid 1px black',
+            height: 300
           }}>
-            {/*<AstridDOMCarousel
-              config={config}
+            <AstridDOMCarousel
+              config={config2}
             >
-              <img
-                data-astrid-selector='gallery-item'
-                data-astrid-lazy="true" 
-                data-astrid-lazy-src='./media-gallery/animals.jpg' 
-                style={{ border: 'solid 1px green', width: '43.33%' }}
-              />
-           
-              <img
-                data-astrid-selector='gallery-item'
-                style={{ border: 'solid 1px green',width: '33.33%' }}
-                data-astrid-lazy="true" 
-                data-astrid-lazy-src='./media-gallery/books.jpg' 
-              />
-                           
+              <div 
+                style={{ border: 'solid 1px green', height: '60%' }}>
                 <img 
-                  data-astrid-selector='gallery-item'
-                  style={{ border: 'solid 1px green',width: '33.33%' }} 
-                  data-astrid-lazy="true" 
-                  data-astrid-lazy-src='./media-gallery/animals.jpg' 
+                  src='./media-gallery/animals.jpg' 
+                  style={{width: '100%', 
+                  display: 'block'}} 
                 />
+              </div>
+              <div 
+                style={{ border: 'solid 1px green',height: '30%' }}>
+                <img src='./media-gallery/books.jpg' style={{width: '100%', display: 'block'}} />
+              </div>
+              <div 
+                style={{ border: 'solid 1px green',height: '70%' }}>
+                <img src='./media-gallery/animals.jpg' style={{width: '100%', display: 'block'}} />
+              </div>
+              <div
+                style={{ border: 'solid 1px green',height: '10%' }}>
+                <img src='/media-gallery/business.jpg' style={{width: '100%', display: 'block'}} />
+              </div>
+              <div 
+                style={{ border: 'solid 1px green',height: '120px', height: 300 }}>
+                <img src='./media-gallery/coins.jpg' style={{width: '100%', display: 'block'}} />
+              </div>
+              <div 
+                style={{ border: 'solid 1px green',height: '50px', height: 400 }}>
+                <img src='./media-gallery/frog.jpg' style={{width: '100%', display: 'block'}} />
+              </div>
+              <div 
+                style={{ border: 'solid 1px green',height: '300px', height: 200 }}>
+                <img src='./media-gallery/girl.jpg' style={{width: '100%', display: 'block'}} />
+              </div>
               
-                <img 
-                  data-astrid-selector='gallery-item'
-                  style={{ border: 'solid 1px green',width: '133px'}} 
-                  data-astrid-lazy="true" 
-                  data-astrid-lazy-src='/media-gallery/business.jpg' 
-                />
-              
-                <img
-                  data-astrid-selector='gallery-item'
-                  style={{ border: 'solid 1px green',width: '33.33%' }}
-                  data-astrid-lazy="true" 
-                  data-astrid-lazy-src='./media-gallery/coins.jpg' 
-                />
-              
-                <img 
-                  data-astrid-selector='gallery-item'
-                  style={{ border: 'solid 1px green',width: '23.33%', height: 400 }}
-                  data-astrid-lazy="true" 
-                  data-astrid-lazy-src='./media-gallery/frog.jpg' 
-                />
-            
-             
-                <img 
-                  data-astrid-selector='gallery-item'
-                  style={{ border: 'solid 1px green',width: '33.33%', height: 200 }} 
-                  data-astrid-lazy="true" 
-                  data-astrid-lazy-src='./media-gallery/girl.jpg' 
-              />
-              
-            </AstridDOMCarousel>*/}
+            </AstridDOMCarousel>
         </div>
 
           {/*<div style={{
