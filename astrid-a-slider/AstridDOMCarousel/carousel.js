@@ -77,7 +77,7 @@ class AstridDOMCarousel extends Component {
     render = () => {
         const { children, quietlyReset_infinite, operationIsInitialization } = this;
 
-        if (!quietlyReset_infinite && 
+        if (!quietlyReset_infinite &&
             !operationIsInitialization
         ) {
             this.getPosition_gallery();
@@ -142,17 +142,23 @@ class AstridDOMCarousel extends Component {
             this.operationIsInitialization = false
         }
 
-        if (this.type === 'fade') {
-            this.gallery_frame.style.transition = 'opacity 300ms linear';
+        this.gallery_styles.transition = `${this.time + 'ms ' + this.curve + ' ' + this.type}`;
+
+        if (this.type === 'fade' && this.scroll !== 'infinite') {
+            this.gallery_frame.style.transition = 'none';
             requestAnimationFrame(
-                ()=>{
-                    this.gallery_frame.style.opacity = 1 ;
+                () => {
+                    this.gallery_frame.style.opacity = 0;
+                    requestAnimationFrame(() => {
+                        this.gallery_frame.style.transition = `${this.time}ms ${this.curve} opacity`;
+                        requestAnimationFrame(() => {
+                            this.gallery_frame.style.opacity = 1;
+                        })
+                    })
                 }
             )
-            
-        }
 
-        this.gallery_styles.transition = `${this.time + 'ms ' + this.curve + ' ' + this.type}`;
+        }
     }
 
     rebuildReactChildrenAndNodeArrays_infinite = () => {
@@ -170,17 +176,18 @@ class AstridDOMCarousel extends Component {
             `translateY(${this.position_translate}px)`
             : `translateX(${this.position_translate}px)`;
 
-        if (this.type === 'fade') {
-            this.gallery_styles.opacity = 0;
-            this.gallery_frame.style.transition = 'none 300ms linear';
-        }
+        // if (this.type === 'fade') {
+        //     this.gallery_styles.opacity = 0;
+        //     this.gallery_styles.transition = 'none';
+        //this.gallery_frame.style.transition = 'none 300ms linear';
+        // }
 
         this.quietlyReset_infinite = false;
     }
 
     finiteScroll_returnable = () => {
         const maxRightItem = this.gallery_items.length;
-        const demandedItem = this.position_logical + this.by;     
+        const demandedItem = this.position_logical + this.by;
         if (demandedItem >= maxRightItem || demandedItem < 0) {
             return Math.sign(this.by) > 0 ? demandedItem - maxRightItem : maxRightItem + demandedItem;
         }

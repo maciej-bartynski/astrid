@@ -41,7 +41,7 @@ class Astrid_v3 extends Component {
 
       },
       transition: {
-        time: 1300, //milisec
+        time: 300, //milisec
         curve: 'linear', //all css curves
         type: 'fade', //'transform' //fade
       },
