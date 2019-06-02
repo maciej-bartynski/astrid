@@ -3,7 +3,7 @@ import { findDOMNode } from 'react-dom';
 
 export default {
     replaceDefaultProps: function (props) {
-        const { mode, columns, onMove, lazy, lazyMode } = props;
+        const { mode, columns, onMove, lazy, lazyMode, transition } = props;
 
         const defaults = {
             mode: {
@@ -14,6 +14,11 @@ export default {
                 fit_to: 'transverse', //view, both, none
                 centering: false, // center, %, px,
             },
+            transition: {
+                type: 'transform',
+                time: 300,
+                curve: 'ease-in',
+            },
             columns: 1,
             onMove: () => { },
             lazy: false,
@@ -22,13 +27,44 @@ export default {
 
         let new_mode = (!mode || typeof mode !== 'object' ? defaults.mode : mode);
         new_mode = (!mode || typeof mode !== 'object' ? new_mode : this.validateMode(new_mode));
+        let new_transition = (!transition || typeof transition !== 'object' ? defaults.transition : transition);
+        new_transition = (!transition || typeof transition !== 'object' ? new_transition : this.validateTransition(new_transition));
         let new_columns = (typeof columns === 'number' && columns > 0 ? parseInt(columns) : defaults.columns);
         let new_onMove = (typeof onMove === 'function' ? onMove : defaults.onMove);
         let new_lazy = (lazy === true ? true : defaults.lazy);
         let new_lazyMode = (new_lazy === true && (lazyMode === 'visible' || lazyMode === 'pre_visible')) ?
             lazyMode === 'visible' ? 'visible' : 'pre_visible' : defaults.lazyMode;
 
-        return { mode: new_mode, columns: new_columns, onMove: new_onMove, lazy: new_lazy, lazyMode: new_lazyMode }
+        return { mode: new_mode, columns: new_columns, onMove: new_onMove, lazy: new_lazy, lazyMode: new_lazyMode, transition: new_transition }
+    },
+
+    validateTransition: function(transition){
+        const {
+            type, time, curve
+        } = transition;
+
+        const validCurves = [
+            'linear',
+            'ease-in',
+            'ease-out',
+            'ease-in-out'
+        ]
+
+        let isCurveValid = false;
+
+        validCurves.forEach(validCurve=>{
+            if (validCurve === curve) {
+                isCurveValid = true;
+            }
+        })
+
+        const valid_transition = {
+            type: (type === 'transform' || type === 'fade' || type === 'none'? type : 'transform'),
+            curve: (isCurveValid ? curve: 'linear'),
+            time: (typeof parseInt(time) === 'number' ? parseInt(time) : 300)
+        }
+
+        return valid_transition;
     },
 
     validateMode: function (mode) {
@@ -71,7 +107,8 @@ export default {
             return cloneElement(item, astridChildrenProps)
         })   
         
-        if (scroll === 'infinite' || scroll === 'returnable') {
+        if (scroll === 'infinite') {
+            
             const head = astridChildren.slice(0, -columns);
             const tail = astridChildren.slice(-columns);
             return tail.concat(head);

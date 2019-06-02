@@ -3,26 +3,38 @@ import boundary from './boundary';
 import library from './library';
 
 class Navigator extends Component {
+    constructor(props) {
+        super(props);
+        this.state = {
+            position_logic: null,
+            left_edge: null,
+            right_edge: null
+        }
+    }
+    
     render = () => {
         return(
-            <div style={{
-                width: 100,
-                height: 30,
-                cursor: 'pointer',
-                border: 'solid 1px red'
-            }}
-                onClick={ ()=> this.handleOnClick()/*props.move_by(this.props.move) */}
+            <div 
+                onClick={ ()=> this.handleOnClick()}
             >
-                {this.props.move}
+                {this.props.children}
             </div>
         )
     }
     
     handleOnClick = () => {
-        //this.props.plainJsStore.getPosition(this.props.move)
-        this.props.go(this.props.move);
-        //this.props.plainJsStore.getPosition(this.props.move);
+        const { jump,slide} = this.props;
+        if ( typeof slide === 'number') {
+            this.props.slide_by(slide);
+        } else if ( typeof jump === 'number' ) {
+            const { jump } = this.props;
+            this.props.slide_to(jump);   
+        } else {
+            this.props.slide_by(1);
+        }
     }
+
+    
 }
 
 export default boundary(Navigator);

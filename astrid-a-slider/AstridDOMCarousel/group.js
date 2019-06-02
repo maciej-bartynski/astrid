@@ -13,20 +13,30 @@ export default class AstridDOMBoundary extends Component {
 
         this.state = {
             by: null,
-            go: this.go,
+            to: null,
+            slide_by: this.slide_by,
+            slide_to: this.slide_to
         }
     }
 
-    go = (by) => {   
+    slide_by = (by, th) => {   
+       
         this.setState({
             by,
-            restore: false,
+            to: null,
+        })
+    }
+
+    slide_to = (to) => {
+        this.setState({
+            by: null,
+            to,
         })
     }
 
     render() {
         const { children } = this.props;
-       
+        
         return (
             <AstridDOMBoundaryData.Provider value={this.state}>
                 { children }

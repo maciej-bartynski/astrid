@@ -12,6 +12,11 @@ class Astrid_v3 extends Component {
         fit_to: 'transverse', //view, both, none
         centering: false, //center, [number][unit: px, %]
       },
+      transition: {
+        time: 300, //milisec
+        curve: 'linear', //all css curves
+        type: 'transform' //fade
+      },
       columns: 2, //just logical value
       //onMove: (currPos, domArr, visible_items, pre_visible_items, post_visible_items, view_frame) => {
       //  domArr[currPos].style.border = 'solid 1px red';
@@ -35,7 +40,12 @@ class Astrid_v3 extends Component {
         centering: true, //center, [number][unit: px, %],
 
       },
-      columns:2,
+      transition: {
+        time: 1300, //milisec
+        curve: 'linear', //all css curves
+        type: 'fade', //'transform' //fade
+      },
+      columns: 3,
       //onMove: (currPos, domArr) => {
       //  domArr[currPos].style.border = 'solid 1px red';
       //}
@@ -49,45 +59,47 @@ class Astrid_v3 extends Component {
             minWidth: '1000px',
             margin: '0 auto',
             border: 'solid 1px black',
-            
+
           }}>
             <AstridDOMCarousel
               config={config}
             >
-              <div 
+              <div
                 style={{ border: 'solid 1px green', width: '60%' }}>
-                <img 
-                  src='./media-gallery/animals.jpg' 
-                  style={{width: '100%', 
-                  display: 'block'}} 
+                <img
+                  src='./media-gallery/animals.jpg'
+                  style={{
+                    width: '100%',
+                    display: 'block'
+                  }}
                 />
               </div>
-              <div 
-                style={{ border: 'solid 1px green',width: '30%' }}>
-                <img src='./media-gallery/books.jpg' style={{width: '100%', display: 'block'}} />
+              <div
+                style={{ border: 'solid 1px green', width: '30%' }}>
+                <img src='./media-gallery/books.jpg' style={{ width: '100%', display: 'block' }} />
               </div>
-              <div 
-                style={{ border: 'solid 1px green',width: '70%' }}>
-                <img src='./media-gallery/animals.jpg' style={{width: '100%', display: 'block'}} />
+              <div
+                style={{ border: 'solid 1px green', width: '70%' }}>
+                <img src='./media-gallery/animals.jpg' style={{ width: '100%', display: 'block' }} />
               </div>
               <div
                 style={{ border: 'solid 1px green', width: '10%' }}>
-                <img src='/media-gallery/business.jpg' style={{width: '100%', display: 'block'}} />
+                <img src='/media-gallery/business.jpg' style={{ width: '100%', display: 'block' }} />
               </div>
-              <div 
-                style={{ border: 'solid 1px green',width: '120px', height: 300 }}>
-                <img src='./media-gallery/coins.jpg' style={{width: '100%', display: 'block'}} />
+              <div
+                style={{ border: 'solid 1px green', width: '120px', height: 300 }}>
+                <img src='./media-gallery/coins.jpg' style={{ width: '100%', display: 'block' }} />
               </div>
-              <div 
-                style={{ border: 'solid 1px green',width: '50px', height: 400 }}>
-                <img src='./media-gallery/frog.jpg' style={{width: '100%', display: 'block'}} />
+              <div
+                style={{ border: 'solid 1px green', width: '50px', height: 400 }}>
+                <img src='./media-gallery/frog.jpg' style={{ width: '100%', display: 'block' }} />
               </div>
-              <div 
-                style={{ border: 'solid 1px green',width: '300px', height: 200 }}>
-                <img src='./media-gallery/girl.jpg' style={{width: '100%', display: 'block'}} />
+              <div
+                style={{ border: 'solid 1px green', width: '300px', height: 200 }}>
+                <img src='./media-gallery/girl.jpg' style={{ width: '100%', display: 'block' }} />
               </div>
             </AstridDOMCarousel>
-            </div>
+          </div>
 
           <div style={{
             width: '50%',
@@ -99,77 +111,117 @@ class Astrid_v3 extends Component {
             <AstridDOMCarousel
               config={config2}
             >
-              <div 
+              <div
                 style={{ border: 'solid 1px green', height: '60%' }}>
-                <img 
-                  src='./media-gallery/animals.jpg' 
-                  style={{width: '100%', 
-                  display: 'block'}} 
+                <img
+                  src='./media-gallery/animals.jpg'
+                  style={{
+                    width: '100%',
+                    display: 'block'
+                  }}
                 />
               </div>
-              <div 
-                style={{ border: 'solid 1px green',height: '30%' }}>
-                <img src='./media-gallery/books.jpg' style={{width: '100%', display: 'block'}} />
-              </div>
-              <div 
-                style={{ border: 'solid 1px green',height: '70%' }}>
-                <img src='./media-gallery/animals.jpg' style={{width: '100%', display: 'block'}} />
+              <div
+                style={{ border: 'solid 1px green', height: '30%' }}>
+                <img src='./media-gallery/books.jpg' style={{ width: '100%', display: 'block' }} />
               </div>
               <div
-                style={{ border: 'solid 1px green',height: '10%' }}>
-                <img src='/media-gallery/business.jpg' style={{width: '100%', display: 'block'}} />
+                style={{ border: 'solid 1px green', height: '70%' }}>
+                <img src='./media-gallery/animals.jpg' style={{ width: '100%', display: 'block' }} />
               </div>
-              <div 
-                style={{ border: 'solid 1px green',height: '120px', height: 300 }}>
-                <img src='./media-gallery/coins.jpg' style={{width: '100%', display: 'block'}} />
+              <div
+                style={{ border: 'solid 1px green', height: '10%' }}>
+                <img src='/media-gallery/business.jpg' style={{ width: '100%', display: 'block' }} />
               </div>
-              <div 
-                style={{ border: 'solid 1px green',height: '50px', height: 400 }}>
-                <img src='./media-gallery/frog.jpg' style={{width: '100%', display: 'block'}} />
+              <div
+                style={{ border: 'solid 1px green', height: '120px', height: 300 }}>
+                <img src='./media-gallery/coins.jpg' style={{ width: '100%', display: 'block' }} />
               </div>
-              <div 
-                style={{ border: 'solid 1px green',height: '300px', height: 200 }}>
-                <img src='./media-gallery/girl.jpg' style={{width: '100%', display: 'block'}} />
+              <div
+                style={{ border: 'solid 1px green', height: '50px', height: 400 }}>
+                <img src='./media-gallery/frog.jpg' style={{ width: '100%', display: 'block' }} />
               </div>
-              
+              <div
+                style={{ border: 'solid 1px green', height: '300px', height: 200 }}>
+                <img src='./media-gallery/girl.jpg' style={{ width: '100%', display: 'block' }} />
+              </div>
+
             </AstridDOMCarousel>
-        </div>
+          </div>
 
-          {/*<div style={{
-            margin: '0 auto',
-            border: 'solid 1px black',
-            height: 600
-          }}>
-            <AstridDOMCarousel
-              config={config2}
-            >
-              <div style={{ height: '300px' }} data-astrid-selector='gallery-item'>
-                <img style={{ height: '100%', display: 'block' }} src='./media-gallery/animals.jpg' />
-              </div>
-              <div style={{ height: '400px' }} data-astrid-selector='gallery-item'>
-                <img style={{ height: '100%', display: 'block' }} src='./media-gallery/books.jpg' />
-              </div>
-              <div style={{ height: '400px' }} data-astrid-selector='gallery-item'>
-                <img style={{ height: '100%', display: 'block' }} src='./media-gallery/animals.jpg' />
-              </div>
-              <div style={{ height: '133px' }} data-astrid-selector='gallery-item'>
-                <img style={{ height: '100%', display: 'block' }} src='./media-gallery/business.jpg' />
-              </div>
-              <div style={{ height: '400px' }} data-astrid-selector='gallery-item'>
-                <img style={{ height: '100%', display: 'block' }} src='./media-gallery/coins.jpg' />
-              </div>
-              <div style={{ height: '200px' }} data-astrid-selector='gallery-item'>
-                <img style={{ height: '100%', display: 'block' }} src='./media-gallery/frog.jpg' />
-              </div>
-              <div style={{ height: '400px' }} data-astrid-selector='gallery-item'>
-                <img style={{ height: '100%', display: 'block' }} src='./media-gallery/girl.jpg' />
-              </div>
-            </AstridDOMCarousel>
-        </div>*/}
+          <AstridDOMNavigator slide={3}>
+            <p style={{
+              width: 100,
+              height: 30,
+              cursor: 'pointer',
+              border: 'solid 1px red'
+            }}>+3</p>
+          </AstridDOMNavigator>
+          <AstridDOMNavigator slide={-2}>
+            <p style={{
+              width: 100,
+              height: 30,
+              cursor: 'pointer',
+              border: 'solid 1px red'
+            }}>-2</p>
+          </AstridDOMNavigator>
 
-          <AstridDOMNavigator move={1} />
-          <AstridDOMNavigator move={-2} />
+          <AstridDOMNavigator jump={4}>
+            <p style={{
+              width: 100,
+              height: 30,
+              cursor: 'pointer',
+              border: 'solid 1px red'
+            }}>to 4</p>
+          </AstridDOMNavigator>
 
+          <AstridDOMNavigator jump={0}>
+            <p style={{
+              width: 100,
+              height: 30,
+              cursor: 'pointer',
+              border: 'solid 1px red'
+            }}>to 0</p>
+          </AstridDOMNavigator>
+
+          <AstridDOMNavigator jump={6}>
+            <p style={{
+              width: 100,
+              height: 30,
+              cursor: 'pointer',
+              border: 'solid 1px red'
+            }}>to 6</p>
+          </AstridDOMNavigator>
+
+
+          {/*<AstridDOMNavigator jump={7}>
+            <p style={{
+              width: 100,
+              height: 30,
+              cursor: 'pointer',
+              border: 'solid 1px red'
+            }}>to 7</p>
+          </AstridDOMNavigator>
+
+
+          <AstridDOMNavigator jump={5}>
+            <p style={{
+              width: 100,
+              height: 30,
+              cursor: 'pointer',
+              border: 'solid 1px red'
+            }}>to 5</p>
+          </AstridDOMNavigator>
+
+
+          <AstridDOMNavigator jump={0}>
+            <p style={{
+              width: 100,
+              height: 30,
+              cursor: 'pointer',
+              border: 'solid 1px red'
+            }}>to 0</p>
+          </AstridDOMNavigator>*/}
         </AstridDOMGroup>
       </div>
     )

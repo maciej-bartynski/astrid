@@ -15,6 +15,11 @@ class AstridDOMCarousel extends Component {
                 fit_to,
                 centering
             },
+            transition: {
+                time,
+                curve,
+                type,
+            },
             columns,
             lazy,
             lazyMode
@@ -32,11 +37,15 @@ class AstridDOMCarousel extends Component {
         this.lazyMode = lazyMode;
         this.size = size;
         this.margin = margin;
+
+        this.time = time;
+        this.curve = curve;
+        this.type = type;
     }
 
     constructor(props) {
         super(props);
-        this.initialRenderChildren = true;
+        this.operationIsInitialization = true;
 
         this.settingsToValidSettings(props);
 
@@ -46,19 +55,19 @@ class AstridDOMCarousel extends Component {
             display: (this.axis === 'vertical' ? 'inline-block' : 'block'),
             margin: this.margin,
             boxSizign: 'border-box',
-            transition: `${(this.axis === 'vertical' ? 'width' : 'height')} 300ms linear`,
+            transition: `${(this.axis === 'vertical' ? 'width' : 'height')} ${this.time + 'ms ' + this.curve}`,
         }
 
         this.gallery_styles = {
             [(this.axis === 'vertical' ? 'height' : 'width')]: '100%',
             display: (this.axis === 'vertical' ? 'inline-block' : 'block'),
             whiteSpace: (this.axis === 'vertical' ? '' : 'nowrap'),
-            transition: 'transform 300ms linear',
+            transition: `${this.time + 'ms ' + this.curve + ' ' + this.type}`,
             transform: (this.axis === 'vertical' ? `translateY(0)` : `translateX(0)`),
             boxSizign: 'border-box',
         }
 
-        this.position_logical = this.scroll === 'infinite' || this.scroll === 'returnable' ? this.columns : 0;
+        this.position_logical = 0;
         this.position_translate = 0;
 
         this.offsetSize = this.axis === 'horizontal' ? 'offsetWidth' : 'offsetHeight';
@@ -66,13 +75,15 @@ class AstridDOMCarousel extends Component {
     }
 
     render = () => {
-        const { children } = this;
-        const { restore } = this; console.log('render', this.scroll, this.position_logical)
+        const { children, quietlyReset_infinite, operationIsInitialization } = this;
 
-        if (!restore && !this.initialRenderChildren) {
+        if (!quietlyReset_infinite && 
+            !operationIsInitialization
+        ) {
             this.getPosition_gallery();
-        } else if (!this.initialRenderChildren) {
-            this.restorePosition_gallery();
+            this.setPosition_gallery();
+        } else if (!operationIsInitialization) {
+            this.setPosition_gallery();
         }
 
         return (
@@ -102,13 +113,17 @@ class AstridDOMCarousel extends Component {
             return;
         }
 
-        this.restore = true;
+        if (this.operationIsInitialization) {
+            this.operationIsInitialization = false;
+            return;
+        }
 
-        this.rebuildChildrenArr();
+        this.quietlyReset_infinite = true;
+        this.rebuildReactChildrenAndNodeArrays_infinite();
         this.children = this.newChildren;
         this.position_logical = this.columns;
-
         this.position_translate = 0;
+
         for (let i = 0; i < this.columns; i++) {
             this.position_translate -= this.gallery_items[i][this.offsetSize];
         }
@@ -123,87 +138,135 @@ class AstridDOMCarousel extends Component {
     }
 
     componentDidUpdate = () => {
-        this.gallery_styles.transition = '300ms linear transform';
+        if (this.scroll !== 'infinite') {
+            this.operationIsInitialization = false
+        }
+
+        if (this.type === 'fade') {
+            this.gallery_frame.style.transition = 'opacity 300ms linear';
+            requestAnimationFrame(
+                ()=>{
+                    this.gallery_frame.style.opacity = 1 ;
+                }
+            )
+            
+        }
+
+        this.gallery_styles.transition = `${this.time + 'ms ' + this.curve + ' ' + this.type}`;
     }
 
-    rebuildChildrenArr = () => {
-        this.newChildren = null;
-        const head = this.children.slice(0, this.props.by);
-        const tail = this.children.slice(this.props.by);
+    rebuildReactChildrenAndNodeArrays_infinite = () => {
+        const head = this.children.slice(0, this.by);
+        const tail = this.children.slice(this.by);
         this.newChildren = tail.concat(head);
 
-        const node_head = this.gallery_items.slice(0, this.props.by);
-        const node_tail = this.gallery_items.slice(this.props.by);
+        const node_head = this.gallery_items.slice(0, this.by);
+        const node_tail = this.gallery_items.slice(this.by);
         this.gallery_items = node_tail.concat(node_head);
     }
 
-    restorePosition_gallery = () => {
+    setPosition_gallery = () => {
         this.gallery_styles.transform = this.axis === 'vertical' ?
             `translateY(${this.position_translate}px)`
             : `translateX(${this.position_translate}px)`;
 
-        this.restore = false;
+        if (this.type === 'fade') {
+            this.gallery_styles.opacity = 0;
+            this.gallery_frame.style.transition = 'none 300ms linear';
+        }
+
+        this.quietlyReset_infinite = false;
+    }
+
+    finiteScroll_returnable = () => {
+        const maxRightItem = this.gallery_items.length;
+        const demandedItem = this.position_logical + this.by;     
+        if (demandedItem >= maxRightItem || demandedItem < 0) {
+            return Math.sign(this.by) > 0 ? demandedItem - maxRightItem : maxRightItem + demandedItem;
+        }
+        return 'no return';
+    }
+
+    finiteScroll_preventEdges = () => {
+        const maxRange = this.lastItemReference[this.offsetBorder] + this.lastItemReference[this.offsetSize];
+        const isOnRightEdge = this.gallery_items[this.position_logical][this.offsetBorder] > maxRange - this.view_frame[this.offsetSize]
+
+        if (isOnRightEdge) {
+            this.position_translate = -(this.lastItemReference[this.offsetBorder] + this.lastItemReference[this.offsetSize]) + this.view_frame[this.offsetSize]
+        }
+    }
+
+    scrollBy_loop = () => {
+        let loopFactor = this.by;
+        const loop_direction_logical = Math.sign(this.by);
+        const loop_direction_translate = -loop_direction_logical;
+        while (this.gallery_items[this.position_logical + loop_direction_logical] && loopFactor) {
+            loopFactor += loop_direction_translate;
+            this.position_logical += loop_direction_logical;
+        };
+    }
+
+    calculateValueOfBy = () => {
+        let { to } = this.props;
+        let demandedGalleryItem = null;
+        this.gallery_items.forEach((item, idx) => {
+            const id = item.getAttribute('id');
+            if (id == to) {
+                demandedGalleryItem = idx;
+
+            }
+        })
+        return demandedGalleryItem - this.position_logical;
+    }
+
+    unifyToAndBy = () => {
+        const { by, to } = this.props;
+
+        if (typeof to === 'number') {
+            this.by = this.calculateValueOfBy();
+        } else if (typeof by === 'number') {
+            this.by = by;
+        } else {
+            this.by = 0;
+        }
+    }
+
+    getInitialBy = () => {
+        if (this.scroll === 'infinite') {
+            this.by = this.columns;
+        } else {
+            this.by = 0;
+        }
     }
 
     getPosition_gallery = () => {
-        let by = this.props.by;
+        this.unifyToAndBy();
 
-        const offsetSize = this.axis === 'vertical' ? 'offsetHeight' : 'offsetWidth';
-        const loop_direction_logical = Math.sign(by);
-        const loop_current_item = loop_direction_logical < 0 ? loop_direction_logical : 0;
-        const loop_direction_translate = loop_direction_logical * -1;
+        if (this.operationIsInitialization) {
+            this.getInitialBy();
+        }
 
         if (this.scroll === 'infinite') {
-            while (this.gallery_items[this.position_logical + loop_direction_logical] && by) {
-                by += loop_direction_translate;
-                this.position_translate += this.gallery_items[this.position_logical + loop_current_item][offsetSize] * loop_direction_translate;
-                this.position_logical += loop_direction_logical;
-            };
+            this.scrollBy_loop(this.by)
+            this.position_translate = -this.gallery_items[this.position_logical][this.offsetBorder];
         }
 
         if (this.scroll === 'finite') {
-
-            while (this.gallery_items[this.position_logical + loop_direction_logical] && by) {
-                by += loop_direction_translate;
-                this.position_logical += loop_direction_logical;
-            };
-
+            this.scrollBy_loop(this.by);
             this.position_translate = -this.gallery_items[this.position_logical][this.offsetBorder];
-
-            const maxRange = this.lastItemReference[this.offsetBorder] + this.lastItemReference[this.offsetSize];
-            const isOnRightEdge = this.gallery_items[this.position_logical][this.offsetBorder] > maxRange - this.view_frame[offsetSize]
-
-            if (isOnRightEdge) {
-                this.position_translate = -(this.lastItemReference[this.offsetBorder] + this.lastItemReference[this.offsetSize]) + this.view_frame[offsetSize]
-            }
+            this.finiteScroll_preventEdges()
         }
 
         if (this.scroll === 'returnable') {
-            const MAX = this.gallery_items.length;
-            const DEMAND = this.position_logical + by;
-            const goTo = Math.sign(by) > 0 ? DEMAND - MAX : MAX + DEMAND;
-        
-            if ( DEMAND >= MAX || DEMAND < 0 ) {
-                this.position_logical = goTo ;
+            const returnTo = this.finiteScroll_returnable(this.by);
+            if (typeof returnTo !== 'number') {
+                this.scrollBy_loop(this.by);
             } else {
-                while (this.gallery_items[this.position_logical + loop_direction_logical] && by) {
-                    by += loop_direction_translate;
-                    this.position_logical += loop_direction_logical;
-                };
+                this.position_logical = returnTo;
             }
-
             this.position_translate = -this.gallery_items[this.position_logical][this.offsetBorder];
-            const maxRange = this.lastItemReference[this.offsetBorder] + this.lastItemReference[this.offsetSize];
-            const isOnRightEdge = this.gallery_items[this.position_logical][this.offsetBorder] > maxRange - this.view_frame[offsetSize]
-
-            if (isOnRightEdge) {
-                this.position_translate = -(this.lastItemReference[this.offsetBorder] + this.lastItemReference[this.offsetSize]) + this.view_frame[offsetSize]
-            }
+            this.finiteScroll_preventEdges()
         }
-
-        this.gallery_styles.transform = this.axis === 'vertical' ?
-            `translateY(${this.position_translate}px)`
-            : `translateX(${this.position_translate}px)`;
     }
 
     componentDidMount = () => {
@@ -211,8 +274,9 @@ class AstridDOMCarousel extends Component {
         this.gallery_frame = this.view_frame.querySelector('[data-astrid-selector="gallery-frame"]');
         this.gallery_items = library.nodeListToArray(this.view_frame.querySelectorAll('[data-astrid-selector="astrid-child"]'));
         this.lastItemReference = this.gallery_items[this.gallery_items.length - 1]
-        this.initialRenderChildren = false;
-        this.props.go(this.position_logical);
+        this.getPosition_gallery();
+        this.setPosition_gallery();
+        this.forceUpdate();
     }
 }
 
