@@ -19,7 +19,7 @@ export default {
                 time: 300,
                 curve: 'ease-in',
             },
-            columns: 1,
+            //columns: 1,
             onMove: () => { },
             lazy: false,
             lazyMode: null,
@@ -29,13 +29,13 @@ export default {
         new_mode = (!mode || typeof mode !== 'object' ? new_mode : this.validateMode(new_mode));
         let new_transition = (!transition || typeof transition !== 'object' ? defaults.transition : transition);
         new_transition = (!transition || typeof transition !== 'object' ? new_transition : this.validateTransition(new_transition));
-        let new_columns = (typeof columns === 'number' && columns > 0 ? parseInt(columns) : defaults.columns);
+        //let new_columns = (typeof columns === 'number' && columns > 0 ? parseInt(columns) : defaults.columns);
         let new_onMove = (typeof onMove === 'function' ? onMove : defaults.onMove);
         let new_lazy = (lazy === true ? true : defaults.lazy);
         let new_lazyMode = (new_lazy === true && (lazyMode === 'visible' || lazyMode === 'pre_visible')) ?
             lazyMode === 'visible' ? 'visible' : 'pre_visible' : defaults.lazyMode;
 
-        return { mode: new_mode, columns: new_columns, onMove: new_onMove, lazy: new_lazy, lazyMode: new_lazyMode, transition: new_transition }
+        return { mode: new_mode, /*columns: new_columns,*/ onMove: new_onMove, lazy: new_lazy, lazyMode: new_lazyMode, transition: new_transition }
     },
 
     validateTransition: function(transition){
@@ -89,7 +89,7 @@ export default {
         return valid_mode;
     },
 
-    childrenToAstridChildren: (items, scroll, columns, axis) => {
+    childrenToAstridChildren: (items, scroll,/* columns,*/ axis, type) => {
         const astridChildren = items.map((item, idx) => {
             const astridChildrenProps = {
                 key: idx,
@@ -108,12 +108,15 @@ export default {
         })   
         
         if (scroll === 'infinite') {
-            
+            if ( type === 'fade' ) {
+                return { children: astridChildren, columns: null, fixedScroll: 'returnable' };
+            }
+            const columns = Math.floor( astridChildren.length / 3 )
             const head = astridChildren.slice(0, -columns);
             const tail = astridChildren.slice(-columns);
-            return tail.concat(head);
+            return { children: tail.concat(head), columns };
         } else {
-            return astridChildren;
+            return { children: astridChildren, columns: null };
         }
     },
 

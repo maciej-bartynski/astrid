@@ -1,4 +1,5 @@
 import React, { Component, createContext } from 'react';
+import { findDOMNode } from 'react-dom'
 import library from './library';
 
 export let AstridDOMBoundaryData = createContext({
@@ -19,7 +20,7 @@ export default class AstridDOMBoundary extends Component {
         }
     }
 
-    slide_by = (by, th) => {   
+    slide_by = (by) => {   
        
         this.setState({
             by,

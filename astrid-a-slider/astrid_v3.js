@@ -12,12 +12,14 @@ class Astrid_v3 extends Component {
         fit_to: 'transverse', //view, both, none
         centering: false, //center, [number][unit: px, %]
       },
+      touch: true,
+      touch_sensibility: 2,
       transition: {
         time: 300, //milisec
         curve: 'linear', //all css curves
         type: 'transform' //fade
       },
-      columns: 2, //just logical value
+     
       //onMove: (currPos, domArr, visible_items, pre_visible_items, post_visible_items, view_frame) => {
       //  domArr[currPos].style.border = 'solid 1px red';
       //  visible_items.forEach((item)=>{
@@ -32,7 +34,7 @@ class Astrid_v3 extends Component {
 
     const config2 = {
       mode: {
-        scroll: 'returnable', //infinite, returnable
+        scroll: 'infinite', //infinite, returnable
         axis: 'vertical', //vertical
         size: '100%', //css
         margin: '0 auto', //css
@@ -44,8 +46,7 @@ class Astrid_v3 extends Component {
         time: 300, //milisec
         curve: 'linear', //all css curves
         type: 'fade', //'transform' //fade
-      },
-      columns: 3,
+      }
       //onMove: (currPos, domArr) => {
       //  domArr[currPos].style.border = 'solid 1px red';
       //}
@@ -65,7 +66,7 @@ class Astrid_v3 extends Component {
               config={config}
             >
               <div
-                style={{ border: 'solid 1px green', width: '60%' }}>
+                style={{ border: 'solid 1px green', width: '50%' }}>
                 <img
                   src='./media-gallery/animals.jpg'
                   style={{
@@ -75,27 +76,27 @@ class Astrid_v3 extends Component {
                 />
               </div>
               <div
-                style={{ border: 'solid 1px green', width: '30%' }}>
+                style={{ border: 'solid 1px green', width: '50%' }}>
                 <img src='./media-gallery/books.jpg' style={{ width: '100%', display: 'block' }} />
               </div>
               <div
-                style={{ border: 'solid 1px green', width: '70%' }}>
+                style={{ border: 'solid 1px green', width: '50%' }}>
                 <img src='./media-gallery/animals.jpg' style={{ width: '100%', display: 'block' }} />
               </div>
               <div
-                style={{ border: 'solid 1px green', width: '10%' }}>
+                style={{ border: 'solid 1px green', width: '50%' }}>
                 <img src='/media-gallery/business.jpg' style={{ width: '100%', display: 'block' }} />
               </div>
               <div
-                style={{ border: 'solid 1px green', width: '120px', height: 300 }}>
+                style={{ border: 'solid 1px green', width: '50%', height: 300 }}>
                 <img src='./media-gallery/coins.jpg' style={{ width: '100%', display: 'block' }} />
               </div>
               <div
-                style={{ border: 'solid 1px green', width: '50px', height: 400 }}>
+                style={{ border: 'solid 1px green', width: '50%', height: 400 }}>
                 <img src='./media-gallery/frog.jpg' style={{ width: '100%', display: 'block' }} />
               </div>
               <div
-                style={{ border: 'solid 1px green', width: '300px', height: 200 }}>
+                style={{ border: 'solid 1px green', width: '50%', height: 200 }}>
                 <img src='./media-gallery/girl.jpg' style={{ width: '100%', display: 'block' }} />
               </div>
             </AstridDOMCarousel>

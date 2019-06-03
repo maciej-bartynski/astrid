@@ -48,17 +48,17 @@ class MotionLayerFinite extends Component {
     getPosition = () => {
         let { columns, to_render, by, to, mode } = this.props;
         const { galleryItems_positions, galleryItems } = to_render;
-        
+
         if (mode === 'infinite') {
             to = library.getModifiedTo(columns, to, galleryItems_positions.length);
         }
 
-        if (typeof to === 'boolean' && typeof by === 'number' ) {
+        if (typeof to === 'boolean' && typeof by === 'number') {
             this.position += by;
-           
-        } else if ( typeof by === 'boolean' && typeof to === 'number') {
+
+        } else if (typeof by === 'boolean' && typeof to === 'number') {
             this.position = to;
-            
+
         }
         this.position = library.getValidCarouselPosition(this.position, galleryItems.length);
 
@@ -67,7 +67,7 @@ class MotionLayerFinite extends Component {
 
         const transitionPosition = -galleryItems_positions[this.position] + this.TRANSITION_UNIT;
 
-        if (this.transitionPosition === transitionPosition ) {
+        if (this.transitionPosition === transitionPosition) {
             /** react not rerender DOM if styles not changed */
             this.backToCurrentCssLeftWithoutTriggeringLogic();
         }
@@ -118,12 +118,12 @@ class MotionLayerFinite extends Component {
     }
 
     render = () => {
-        const { sizes_checked } = this.props; 
+        const { sizes_checked } = this.props;
         let cssPosition = sizes_checked ? this.getPosition() : this.position;
-        
+
         const translate = (this.props.axis === 'vertical') ?
             `translateY(${cssPosition})` : `translateX(${cssPosition})`;
-                  
+
         const dimension = (this.props.axis === 'vertical') ?
             'height' : 'width';
 
