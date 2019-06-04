@@ -1,6 +1,5 @@
 
 class TouchPanel {
-    //this.gallery_frame, this.dragSensibility, this.axis, this.props.slide_by, this.view_frame[this.offsetSize]
     constructor(gallery, sensibility, axis, slide_by, view) {
         this.gallery = gallery;
         this.axis = axis;
@@ -33,7 +32,7 @@ class TouchPanel {
         /** if gallery is not being dragged, return */
         if (!this.locked) return;
         /** potential stop position if drag is finished now */
-        let losePosition /*= this.axis === 'vertical' ? e.clientY : e.clientX*/;
+        let losePosition; /*= this.axis === 'vertical' ? e.clientY : e.clientX*/;
         if ( touch ) {
             losePosition = this.axis === 'vertical' ? e.touches[0].clientY : e.touches[0].clientX;
         } else {
@@ -68,7 +67,7 @@ class TouchPanel {
         /** if abs distance < 30, return to start position */
         const isShifted = (Math.abs(this.differencePx) > 30);
         if (!isShifted) {
-            this.backToCurrentCssLeftWithoutTriggeringLogic();
+            this.backToCurrentCssLeftWithoutTriggeringLogic()
             return;
         };
         /** format px distance to columns distance */
@@ -77,6 +76,8 @@ class TouchPanel {
         if (distanceColumns === 0) {
             distanceColumns = Math.sign(this.differencePx / this.columnWidthPx)
         }
+        /** reset differencePx to prevent future clicks and drags */
+        this.differencePx = 0;
         /** revert int to -int to prevent transition direction */
         this.slide_by(-distanceColumns)
     }
@@ -92,6 +93,7 @@ class TouchPanel {
     }    
 
     backToCurrentCssLeftWithoutTriggeringLogic = () => {
+        console.log('requested')
         const translate = this.axis === 'vertical' ? `translateY(${this.startingPoint}px)` : `translateX(${this.startingPoint}px)`;
         this.gallery.style.transform = translate;
         this.locked = false;

@@ -3,99 +3,55 @@ import { findDOMNode } from 'react-dom';
 import library from './library';
 import boundary from './boundary';
 import TouchPanel from './touchPanel';
+import Initialization from './initialization';
 
 class AstridDOMCarousel extends Component {
 
-    settingsToValidSettings = (props) => {
-        const {
-            mode: {
-                scroll,
-                axis,
-                size,
-                margin,
-                fit_to,
-                centering
-            },
-            transition: {
-                time,
-                curve,
-                type,
-            },
-            lazy,
-            lazyMode
-        } = library.replaceDefaultProps(props.config);
-
-        this.time = time;
-        this.curve = curve;
-        this.type = type;
-        this.centering = centering;
-        this.scroll = scroll;
-        this.fit_to = fit_to;
-        this.axis = axis;
-        this.onMove = this.props.config.onMove;
-        this.lazy = lazy;
-        this.lazyMode = lazyMode;
-        this.size = size;
-        this.margin = margin;
-        
-        const { children, columns, fixedScroll } = library.childrenToAstridChildren(this.props.children, scroll, axis, type)
-        this.children = children;
-        this.columns = columns;
-        this.scroll = fixedScroll ? fixedScroll : scroll;
-    }
-
-    constructor(props) {
+    constructor(props){
         super(props);
-        this.operationIsInitialization = true;
+        this.stage_initialize = true;
+        this.stage_progress = false;
+        this.stage_infiniteRebuild = false;
+        this.initialize = new Initialization(props);
+        this.view_styles = this.initialize.initialStyles.view;
+        this.gallery_styles = this.initialize.initialStyles.gallery;
+        this.position_logical = this.initialize.newMode.scroll === 'infinite' ? this.initialize.columns : 0 ;
 
-        this.settingsToValidSettings(props);
-
-        this.view_styles = {
-            overflow: 'hidden',
-            [(this.axis === 'vertical' ? 'height' : 'width')]: this.size,
-            display: (this.axis === 'vertical' ? 'inline-block' : 'block'),
-            margin: this.margin,
-            boxSizign: 'border-box',
-            transition: `${(this.axis === 'vertical' ? 'width' : 'height')} ${this.time + 'ms ' + this.curve}`,
-        }
-
-        this.gallery_styles = {
-            [(this.axis === 'vertical' ? 'height' : 'width')]: '100%',
-            display: (this.axis === 'vertical' ? 'inline-block' : 'block'),
-            whiteSpace: (this.axis === 'vertical' ? '' : 'nowrap'),
-            transition: `${this.time + 'ms ' + this.curve + ' ' + this.type}`,
-            transform: (this.axis === 'vertical' ? `translateY(0)` : `translateX(0)`),
-            boxSizign: 'border-box',
-        }
-
-        this.position_logical = 0;
-        this.position_translate = 0;
-
-        this.offsetSize = this.axis === 'horizontal' ? 'offsetWidth' : 'offsetHeight';
-        this.offsetBorder = this.axis === 'vertical' ? 'offsetTop' : 'offsetLeft';
+        this.children = this.initialize.newChildren;
+        this.time = this.initialize.newTransition.time;
+        this.curve = this.initialize.newTransition.curve;
+        this.type = this.initialize.newTransition.type;
+        this.centering = this.initialize.newMode.centering;
+        this.scroll = this.initialize.newMode.scroll;
+        this.fitTo = this.initialize.newMode.fitTo;
+        this.axis = this.initialize.newMode.axis;
+        this.onMove = this.initialize.onMove;
+        this.size = this.initialize.newMode.size;
+        this.margin = this.initialize.newMode.margin;
+        this.columns = this.initialize.columns;
+        
+        this.touchSensibility = this.initialize.touchSensibility;
+        this.navigatable = this.initialize.navigatable;
+        this.touch = this.initialize.touch
     }
 
     render = () => {
-        const { children, quietlyReset_infinite, operationIsInitialization } = this;
+        const { children } = this ;
+        const { stage_initialize, stage_progress, stage_infiniteRebuild } = this ;
 
-        if (!quietlyReset_infinite &&
-            !operationIsInitialization
-        ) {
+        if ( stage_progress ) {
             this.getPosition_gallery();
             this.setPosition_gallery();
-        } else if (!operationIsInitialization) {
+        } else if ( stage_infiniteRebuild ) {
             this.setPosition_gallery();
-        }
-
+        } 
+   
         return (
             <div
                 data-astrid-selector='view-frame'
                 style={{
                     ...this.view_styles
                 }}
-                //onTransitionEnd={
-                //    this.handleTransitionEnd
-               // }
             >
                 <div data-astrid-selector='gallery-frame'
                     style={{
@@ -112,13 +68,66 @@ class AstridDOMCarousel extends Component {
                 >
                     {children}
                 </div>
-
             </div>
         );
     }
 
+    componentDidMount = () => {
+        this.finishInitializeSlider();
+    }
+
+    finishInitializeSlider = () => {
+        const { axis } = this;
+        this.offsetSize = axis === 'horizontal' ? 'offsetWidth' : 'offsetHeight';
+        this.offsetBorder = axis === 'vertical' ? 'offsetTop' : 'offsetLeft';
+        this.getNodesAndReferences();
+        this.setEvents();
+        this.setInitialPositions();
+        this.setAnimationStyles();
+        this.stage_initialize = false;
+        this.stage_progress = true;
+    }
+
+    getNodesAndReferences = () => {
+        this.view_frame = findDOMNode(this);
+        this.gallery_frame = this.view_frame.querySelector('[data-astrid-selector="gallery-frame"]');
+        this.gallery_items = library.nodeListToArray(this.view_frame.querySelectorAll('[data-astrid-selector="astrid-child"]'));
+        this.lastItemReference = this.gallery_items[this.gallery_items.length - 1];
+    }
+
+    setEvents = () => {
+        const { touchSensibility, axis, touch, gallery_frame, view_frame, offsetSize } = this ;  
+        const { slide_by } = this.props;
+          
+        if (touch) {
+            this.dragLibrary = new TouchPanel(gallery_frame, touchSensibility, axis, slide_by, view_frame[offsetSize])
+        }
+    }
+
+    setInitialPositions = () => {
+        const { axis, columns } = this;
+        this.position_translate = 0 ;
+        
+        for ( let i = 0; i<columns; i++){
+            this.position_translate -= this.gallery_items[i][this.offsetSize];
+        }     
+        this.gallery_frame.style.transform = (axis === 'vertical' ? `translateY(${this.position_translate}px)` : `translateX(${this.position_translate}px)`);
+    }
+
+    setAnimationStyles = () => {
+        this.view_styles = {
+            ...this.view_styles,
+            ...this.initialize.animationStyles.view
+        }
+
+        this.gallery_styles = {
+            ...this.gallery_styles,
+            ...this.initialize.animationStyles.gallery
+        }
+    }
+
     handleDragEvents = (e, name) => {
-        if (this.dragEvents) {
+        if (this.dragLibrary) {
             this.dragLibrary[name](e, this.position_translate);
         }
     }
@@ -128,18 +137,12 @@ class AstridDOMCarousel extends Component {
             return;
         }
 
-        if (this.operationIsInitialization) {
-            this.operationIsInitialization = false;
-            return;
-        }
-
-        this.quietly = true;
-
-        this.quietlyReset_infinite = true;
+        this.stage_infiniteRebuild = true;
+        this.stage_progress = false;
 
         this.rebuildReactChildrenAndNodeArrays_infinite();
         this.children = this.newChildren;
-        this.position_logical = this.columns;
+        this.position_logical = this.initialize.columns;
         this.position_translate = 0;
 
         for (let i = 0; i < this.columns; i++) {
@@ -156,11 +159,7 @@ class AstridDOMCarousel extends Component {
     }
 
     componentDidUpdate = () => {
-        if (this.scroll !== 'infinite') {
-            this.operationIsInitialization = false
-        }
-
-        this.gallery_styles.transition = `${this.time + 'ms ' + this.curve + ' ' + this.type}`;
+        this.gallery_styles.transition = `${this.time + 'ms ' +this.curve + ' ' + this.type}`;
 
         if (this.type === 'fade') {
             this.gallery_frame.style.transition = 'none';
@@ -175,14 +174,14 @@ class AstridDOMCarousel extends Component {
                     })
                 }
             )
-
         }
 
         if (this.scroll === 'infinite') {
-            if (!this.quietly) {
+            if (!this.stage_infiniteRebuild) {
                 setTimeout(this.handleTransitionEnd, this.time);
             } {
-                this.quietly = false;
+                this.stage_infiniteRebuild = false;
+                this.stage_progress = true;
             }
         }
     }
@@ -201,8 +200,6 @@ class AstridDOMCarousel extends Component {
         this.gallery_styles.transform = this.axis === 'vertical' ?
             `translateY(${this.position_translate}px)`
             : `translateX(${this.position_translate}px)`;
-
-        this.quietlyReset_infinite = false;
     }
 
     finiteScroll_returnable = () => {
@@ -256,6 +253,10 @@ class AstridDOMCarousel extends Component {
         } else {
             this.by = 0;
         }
+
+        if (this.operationIsInitialization) {
+            this.getInitialBy();
+        }
     }
 
     getInitialBy = () => {
@@ -268,10 +269,6 @@ class AstridDOMCarousel extends Component {
 
     getPosition_gallery = () => {
         this.unifyToAndBy();
-
-        if (this.operationIsInitialization) {
-            this.getInitialBy();
-        }
 
         if (this.scroll === 'infinite') {
             this.scrollBy_loop(this.by)
@@ -294,23 +291,6 @@ class AstridDOMCarousel extends Component {
             this.position_translate = -this.gallery_items[this.position_logical][this.offsetBorder];
             this.finiteScroll_preventEdges()
         }
-    }
-
-    componentDidMount = () => {
-        this.view_frame = findDOMNode(this);
-        this.gallery_frame = this.view_frame.querySelector('[data-astrid-selector="gallery-frame"]');
-        this.gallery_items = library.nodeListToArray(this.view_frame.querySelectorAll('[data-astrid-selector="astrid-child"]'));
-        this.lastItemReference = this.gallery_items[this.gallery_items.length - 1];
-
-        this.dragEvents = !!this.props.config.touch;
-        this.dragSensibility = this.props.config.touch_sensibility;
-        if (this.dragEvents) {
-            this.dragLibrary = new TouchPanel(this.gallery_frame, this.dragSensibility, this.axis, this.props.slide_by, this.view_frame[this.offsetSize])
-        }
-
-        this.getPosition_gallery();
-        this.setPosition_gallery();
-        this.forceUpdate();
     }
 }
 
