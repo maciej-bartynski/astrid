@@ -43,7 +43,7 @@ class AstridDOMCarousel extends Component {
             this.getPosition_gallery();
             this.setPosition_gallery();
         } else if ( stage_infiniteRebuild ) {
-            this.setPosition_gallery();
+           this.setPosition_gallery();
         } 
    
         return (
@@ -142,7 +142,7 @@ class AstridDOMCarousel extends Component {
 
         this.rebuildReactChildrenAndNodeArrays_infinite();
         this.children = this.newChildren;
-        this.position_logical = this.initialize.columns;
+        this.position_logical = this.columns;
         this.position_translate = 0;
 
         for (let i = 0; i < this.columns; i++) {
@@ -156,6 +156,37 @@ class AstridDOMCarousel extends Component {
                 this.forceUpdate();
             }
         )
+    }
+
+    stageRebuild_handleTransitionEnd = () => {
+        /*if (this.scroll !== 'infinite') {
+            return;
+        }*/
+
+        /*this.stage_infiniteRebuild = true;
+        this.stage_progress = false;*/
+
+        this.rebuildReactChildrenAndNodeArrays_infinite();
+        
+        this.next_children = this.newChildren;
+        this.next_position_logical = this.columns;
+        this.next_position_translate = 0;
+        
+        for (let i = 0; i < this.columns; i++) {
+            this.next_position_translate -= this.next_gallery_items[i][this.offsetSize];
+        }
+
+        this.children = null;
+
+        //this.gallery_styles.transition = 'none';
+
+       // requestAnimationFrame(
+       //     () => {
+       //         this.getPosition_gallery();
+       //         requestAnimationFrame( 
+       //             ()=> this.setPosition_gallery());
+       //     }
+       // )
     }
 
     componentDidUpdate = () => {
@@ -184,6 +215,9 @@ class AstridDOMCarousel extends Component {
                 this.stage_progress = true;
             }
         }
+        //if (this.scroll === 'infinite') {
+        //    this.stageRebuild_handleTransitionEnd();
+       // }        
     }
 
     rebuildReactChildrenAndNodeArrays_infinite = () => {

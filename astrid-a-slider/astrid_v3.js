@@ -150,21 +150,21 @@ class Astrid_v3 extends Component {
             </AstridDOMCarousel>
           </div>
 
-          <AstridDOMNavigator slide={3}>
+          <AstridDOMNavigator slide={1}>
             <p style={{
               width: 100,
               height: 30,
               cursor: 'pointer',
               border: 'solid 1px red'
-            }}>+3</p>
+            }}>+1</p>
           </AstridDOMNavigator>
-          <AstridDOMNavigator slide={-2}>
+          <AstridDOMNavigator slide={-1}>
             <p style={{
               width: 100,
               height: 30,
               cursor: 'pointer',
               border: 'solid 1px red'
-            }}>-2</p>
+            }}>-1</p>
           </AstridDOMNavigator>
 
           <AstridDOMNavigator jump={4}>
