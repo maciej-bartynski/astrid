@@ -34,7 +34,7 @@ class Astrid_v3 extends Component {
 
     const config2 = {
       mode: {
-        scroll: 'infinite', //infinite, returnable
+        scroll: 'returnable', //infinite, returnable
         axis: 'vertical', //vertical
         size: '100%', //css
         margin: '0 auto', //css
@@ -42,8 +42,9 @@ class Astrid_v3 extends Component {
         centering: true, //center, [number][unit: px, %],
 
       },
+      touch: false,
       transition: {
-        time: 300, //milisec
+        time: 1300, //milisec
         curve: 'linear', //all css curves
         type: 'fade', //'transform' //fade
       }
@@ -113,7 +114,7 @@ class Astrid_v3 extends Component {
               config={config2}
             >
               <div
-                style={{ border: 'solid 1px green', height: '60%' }}>
+                style={{ border: 'solid 1px green', height: '100%' }}>
                 <img
                   src='./media-gallery/animals.jpg'
                   style={{
@@ -123,27 +124,27 @@ class Astrid_v3 extends Component {
                 />
               </div>
               <div
-                style={{ border: 'solid 1px green', height: '30%' }}>
+                style={{ border: 'solid 1px green', height: '100%' }}>
                 <img src='./media-gallery/books.jpg' style={{ width: '100%', display: 'block' }} />
               </div>
               <div
-                style={{ border: 'solid 1px green', height: '70%' }}>
+                style={{ border: 'solid 1px green', height: '100%' }}>
                 <img src='./media-gallery/animals.jpg' style={{ width: '100%', display: 'block' }} />
               </div>
               <div
-                style={{ border: 'solid 1px green', height: '10%' }}>
+                style={{ border: 'solid 1px green', height: '100%' }}>
                 <img src='/media-gallery/business.jpg' style={{ width: '100%', display: 'block' }} />
               </div>
               <div
-                style={{ border: 'solid 1px green', height: '120px', height: 300 }}>
+                style={{ border: 'solid 1px green', height: '100%', }}>
                 <img src='./media-gallery/coins.jpg' style={{ width: '100%', display: 'block' }} />
               </div>
               <div
-                style={{ border: 'solid 1px green', height: '50px', height: 400 }}>
+                style={{ border: 'solid 1px green', height: '100%', }}>
                 <img src='./media-gallery/frog.jpg' style={{ width: '100%', display: 'block' }} />
               </div>
               <div
-                style={{ border: 'solid 1px green', height: '300px', height: 200 }}>
+                style={{ border: 'solid 1px green', height: '100%' }}>
                 <img src='./media-gallery/girl.jpg' style={{ width: '100%', display: 'block' }} />
               </div>
 

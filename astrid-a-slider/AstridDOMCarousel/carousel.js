@@ -7,15 +7,16 @@ import Initialization from './initialization';
 
 class AstridDOMCarousel extends Component {
 
-    constructor(props){
+    constructor(props) {
         super(props);
+
         this.stage_initialize = true;
         this.stage_progress = false;
         this.stage_infiniteRebuild = false;
         this.initialize = new Initialization(props);
         this.view_styles = this.initialize.initialStyles.view;
         this.gallery_styles = this.initialize.initialStyles.gallery;
-        this.position_logical = this.initialize.newMode.scroll === 'infinite' ? this.initialize.columns : 0 ;
+        this.position_logical = this.initialize.newMode.scroll === 'infinite' ? this.initialize.columns : 0;
 
         this.children = this.initialize.newChildren;
         this.time = this.initialize.newTransition.time;
@@ -29,23 +30,48 @@ class AstridDOMCarousel extends Component {
         this.size = this.initialize.newMode.size;
         this.margin = this.initialize.newMode.margin;
         this.columns = this.initialize.columns;
-        
+
         this.touchSensibility = this.initialize.touchSensibility;
         this.navigatable = this.initialize.navigatable;
         this.touch = this.initialize.touch
     }
 
-    render = () => {
-        const { children } = this ;
-        const { stage_initialize, stage_progress, stage_infiniteRebuild } = this ;
+    getChildren = () => {
+        const { children } = this;
+        const { stage_progress, stage_infiniteRebuild } = this;
 
-        if ( stage_progress ) {
-            this.getPosition_gallery();
-            this.setPosition_gallery();
-        } else if ( stage_infiniteRebuild ) {
-           this.setPosition_gallery();
-        } 
-   
+        if (stage_infiniteRebuild) {
+            return children.map((child, idx) => {
+                return React.cloneElement(child, { active_position: this.position_logical, position: idx })
+            })
+        } else if (this.scroll !== 'infinite') {
+            return children.map((child, idx) => {
+                return React.cloneElement(child, { active_position: this.position_logical, position: idx })
+            })
+        } else {
+            return this.children
+        }
+    }
+
+    render = () => {
+        const { stage_progress, stage_infiniteRebuild } = this;
+
+        if (stage_progress) {
+            if (this.scroll !== 'infinite') {
+                this.getPosition_gallery();
+                this.setPosition_gallery();
+            } else {
+                if (!stage_infiniteRebuild) {
+                    this.getPosition_gallery();
+                    this.setPosition_gallery();
+                } else {
+                    this.setPosition_gallery();
+                }
+            }
+        }
+
+        this.children = this.getChildren();
+
         return (
             <div
                 data-astrid-selector='view-frame'
@@ -57,16 +83,16 @@ class AstridDOMCarousel extends Component {
                     style={{
                         ...this.gallery_styles,
                     }}
-                    onClickCapture={ (e)=> this.handleDragEvents(e, 'handleClickCapture')}
-                    onMouseDown={ (e)=> this.handleDragEvents(e,'handleLock')}
-                    onMouseMove={ (e)=> this.handleDragEvents(e,'handleMove')}
-                    onMouseUp={ (e)=> this.handleDragEvents(e,'handleMouseUp')}
-                    onMouseLeave={ (e)=> this.handleDragEvents(e,'handleMouseOut')}
-                    onTouchStart = {(e)=> this.handleDragEvents(e, 'handleTouchStart')}
-                    onTouchMove = {(e)=> this.handleDragEvents(e, 'handleTouchMove')}
-                    onTouchEnd = {(e)=> this.handleDragEvents(e, 'handleTouchEnd')}
+                    onClickCapture={(e) => this.handleDragEvents(e, 'handleClickCapture')}
+                    onMouseDown={(e) => this.handleDragEvents(e, 'handleLock')}
+                    onMouseMove={(e) => this.handleDragEvents(e, 'handleMove')}
+                    onMouseUp={(e) => this.handleDragEvents(e, 'handleMouseUp')}
+                    onMouseLeave={(e) => this.handleDragEvents(e, 'handleMouseOut')}
+                    onTouchStart={(e) => this.handleDragEvents(e, 'handleTouchStart')}
+                    onTouchMove={(e) => this.handleDragEvents(e, 'handleTouchMove')}
+                    onTouchEnd={(e) => this.handleDragEvents(e, 'handleTouchEnd')}
                 >
-                    {children}
+                    {this.children}
                 </div>
             </div>
         );
@@ -96,9 +122,9 @@ class AstridDOMCarousel extends Component {
     }
 
     setEvents = () => {
-        const { touchSensibility, axis, touch, gallery_frame, view_frame, offsetSize } = this ;  
+        const { touchSensibility, axis, touch, gallery_frame, view_frame, offsetSize } = this;
         const { slide_by } = this.props;
-          
+
         if (touch) {
             this.dragLibrary = new TouchPanel(gallery_frame, touchSensibility, axis, slide_by, view_frame[offsetSize])
         }
@@ -106,11 +132,11 @@ class AstridDOMCarousel extends Component {
 
     setInitialPositions = () => {
         const { axis, columns } = this;
-        this.position_translate = 0 ;
-        
-        for ( let i = 0; i<columns; i++){
+        this.position_translate = 0;
+
+        for (let i = 0; i < columns; i++) {
             this.position_translate -= this.gallery_items[i][this.offsetSize];
-        }     
+        }
         this.gallery_frame.style.transform = (axis === 'vertical' ? `translateY(${this.position_translate}px)` : `translateX(${this.position_translate}px)`);
     }
 
@@ -133,78 +159,37 @@ class AstridDOMCarousel extends Component {
     }
 
     handleTransitionEnd = () => {
-        if (this.scroll !== 'infinite') {
-            return;
-        }
-
         this.stage_infiniteRebuild = true;
-        this.stage_progress = false;
 
-        this.rebuildReactChildrenAndNodeArrays_infinite();
-        this.children = this.newChildren;
+        const head = this.children.slice(0, this.by);
+        const tail = this.children.slice(this.by);
+        this.children = tail.concat(head);
+
+        const node_head = this.gallery_items.slice(0, this.by);
+        const node_tail = this.gallery_items.slice(this.by);
+        this.gallery_items = node_tail.concat(node_head);
+
         this.position_logical = this.columns;
         this.position_translate = 0;
-
         for (let i = 0; i < this.columns; i++) {
             this.position_translate -= this.gallery_items[i][this.offsetSize];
         }
-
         this.gallery_styles.transition = 'none';
-
-        requestAnimationFrame(
-            () => {
-                this.forceUpdate();
-            }
-        )
-    }
-
-    stageRebuild_handleTransitionEnd = () => {
-        /*if (this.scroll !== 'infinite') {
-            return;
-        }*/
-
-        /*this.stage_infiniteRebuild = true;
-        this.stage_progress = false;*/
-
-        this.rebuildReactChildrenAndNodeArrays_infinite();
-        
-        this.next_children = this.newChildren;
-        this.next_position_logical = this.columns;
-        this.next_position_translate = 0;
-        
-        for (let i = 0; i < this.columns; i++) {
-            this.next_position_translate -= this.next_gallery_items[i][this.offsetSize];
-        }
-
-        this.children = null;
-
-        //this.gallery_styles.transition = 'none';
-
-       // requestAnimationFrame(
-       //     () => {
-       //         this.getPosition_gallery();
-       //         requestAnimationFrame( 
-       //             ()=> this.setPosition_gallery());
-       //     }
-       // )
+        this.forceUpdate();
     }
 
     componentDidUpdate = () => {
-        this.gallery_styles.transition = `${this.time + 'ms ' +this.curve + ' ' + this.type}`;
+        this.gallery_styles.transition = `${this.time + 'ms ' + this.curve + ' ' + this.type}`;
 
         if (this.type === 'fade') {
-            this.gallery_frame.style.transition = 'none';
-            requestAnimationFrame(
-                () => {
-                    this.gallery_frame.style.opacity = 0;
-                    requestAnimationFrame(() => {
-                        this.gallery_frame.style.transition = `${this.time}ms ${this.curve} opacity`;
-                        requestAnimationFrame(() => {
-                            this.gallery_frame.style.opacity = 1;
-                        })
-                    })
-                }
-            )
+            this.gallery_frame.style.opacity = 0;
+            requestAnimationFrame(() => {
+                this.gallery_frame.style.transition = `${this.time}ms ${this.curve} opacity`;
+                this.gallery_frame.style.opacity = 1;
+                requestAnimationFrame(() => {
+                    this.gallery_frame.style.transition = `${0}ms ${this.curve} opacity`;
+                })
+            })
         }
 
         if (this.scroll === 'infinite') {
@@ -212,12 +197,8 @@ class AstridDOMCarousel extends Component {
                 setTimeout(this.handleTransitionEnd, this.time);
             } {
                 this.stage_infiniteRebuild = false;
-                this.stage_progress = true;
             }
         }
-        //if (this.scroll === 'infinite') {
-        //    this.stageRebuild_handleTransitionEnd();
-       // }        
     }
 
     rebuildReactChildrenAndNodeArrays_infinite = () => {
@@ -307,6 +288,7 @@ class AstridDOMCarousel extends Component {
         if (this.scroll === 'infinite') {
             this.scrollBy_loop(this.by)
             this.position_translate = -this.gallery_items[this.position_logical][this.offsetBorder];
+            console.log(this.gallery_frame.style)
         }
 
         if (this.scroll === 'finite') {
