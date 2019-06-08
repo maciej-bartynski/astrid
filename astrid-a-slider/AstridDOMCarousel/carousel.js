@@ -33,7 +33,9 @@ class AstridDOMCarousel extends Component {
 
         this.touchSensibility = this.initialize.touchSensibility;
         this.navigatable = this.initialize.navigatable;
-        this.touch = this.initialize.touch
+        this.touch = this.initialize.touch;
+
+        this.centering = 'center' //MOCKED!
     }
 
     getChildren = () => {
@@ -64,8 +66,10 @@ class AstridDOMCarousel extends Component {
                 if (!stage_infiniteRebuild) {
                     this.getPosition_gallery();
                     this.setPosition_gallery();
+                    setTimeout(this.handleTransitionEnd, this.time);
                 } else {
                     this.setPosition_gallery();
+                    this.stage_infiniteRebuild = false;
                 }
             }
         }
@@ -170,10 +174,12 @@ class AstridDOMCarousel extends Component {
         this.gallery_items = node_tail.concat(node_head);
 
         this.position_logical = this.columns;
-        this.position_translate = 0;
+        
+        this.position_translate = 0 + this.positioning;
         for (let i = 0; i < this.columns; i++) {
             this.position_translate -= this.gallery_items[i][this.offsetSize];
         }
+
         this.gallery_styles.transition = 'none';
         this.forceUpdate();
     }
@@ -191,24 +197,6 @@ class AstridDOMCarousel extends Component {
                 })
             })
         }
-
-        if (this.scroll === 'infinite') {
-            if (!this.stage_infiniteRebuild) {
-                setTimeout(this.handleTransitionEnd, this.time);
-            } {
-                this.stage_infiniteRebuild = false;
-            }
-        }
-    }
-
-    rebuildReactChildrenAndNodeArrays_infinite = () => {
-        const head = this.children.slice(0, this.by);
-        const tail = this.children.slice(this.by);
-        this.newChildren = tail.concat(head);
-
-        const node_head = this.gallery_items.slice(0, this.by);
-        const node_tail = this.gallery_items.slice(this.by);
-        this.gallery_items = node_tail.concat(node_head);
     }
 
     setPosition_gallery = () => {
@@ -217,60 +205,53 @@ class AstridDOMCarousel extends Component {
             : `translateX(${this.position_translate}px)`;
     }
 
-    finiteScroll_returnable = () => {
-        const maxRightItem = this.gallery_items.length;
-        const demandedItem = this.position_logical + this.by;
-        if (demandedItem >= maxRightItem || demandedItem < 0) {
-            return Math.sign(this.by) > 0 ? demandedItem - maxRightItem : maxRightItem + demandedItem;
+    protectGalleryEnd = () => {
+        const maxRange = -(this.gallery_items[this.max_position][this.offsetBorder] + this.gallery_items[this.max_position][this.offsetSize]) + this.view_frame[this.offsetSize];
+        
+        this.position_translate = this.position_translate > 0 || this.position_translate < maxRange ? 
+            this.position_translate > 0 ? 0 : maxRange : this.position_translate;
+    }
+
+    findNextPosition = () => {
+        this.demanded_position = this.position_logical + this.by;
+        this.max_position = this.gallery_items.length - 1
+        this.position_logical = (this.demanded_position > this.max_position || this.demanded_position < 0) ?
+            this.demanded_position < 0 ?
+                0 : this.max_position : this.demanded_position;
+    }
+
+    findNextPosition_returnable = () => {
+        const incrementation = this.by > 0;
+        if (this.demanded_position > this.max_position || this.demanded_position < 0) {
+            this.position_logical = incrementation ?
+                this.demanded_position - 1 - this.max_position : this.max_position + 1 + this.demanded_position;
         }
-        return 'no return';
     }
 
-    finiteScroll_preventEdges = () => {
-        const maxRange = this.lastItemReference[this.offsetBorder] + this.lastItemReference[this.offsetSize];
-        const isOnRightEdge = this.gallery_items[this.position_logical][this.offsetBorder] > maxRange - this.view_frame[this.offsetSize]
-
-        if (isOnRightEdge) {
-            this.position_translate = -(this.lastItemReference[this.offsetBorder] + this.lastItemReference[this.offsetSize]) + this.view_frame[this.offsetSize]
-        }
-    }
-
-    scrollBy_loop = () => {
-        let loopFactor = this.by;
-        const loop_direction_logical = Math.sign(this.by);
-        const loop_direction_translate = -loop_direction_logical;
-        while (this.gallery_items[this.position_logical + loop_direction_logical] && loopFactor) {
-            loopFactor += loop_direction_translate;
-            this.position_logical += loop_direction_logical;
-        };
-    }
-
-    calculateValueOfBy = () => {
+    calculateBy = () => {
         let { to } = this.props;
-        let demandedGalleryItem = null;
-        this.gallery_items.forEach((item, idx) => {
-            const id = item.getAttribute('id');
-            if (id == to) {
-                demandedGalleryItem = idx;
 
+        let demandedGalleryItem = null;
+ 
+        for (let i = 0; i < this.gallery_items.length; i++) {
+            const id = this.gallery_items[i].getAttribute('id');
+            if (id == to) {
+                demandedGalleryItem = i;
+                break;
             }
-        })
-        return demandedGalleryItem - this.position_logical;
+        }
+
+        this.by = demandedGalleryItem - this.position_logical;
     }
 
     unifyToAndBy = () => {
         const { by, to } = this.props;
-
         if (typeof to === 'number') {
-            this.by = this.calculateValueOfBy();
+            this.calculateBy();
         } else if (typeof by === 'number') {
             this.by = by;
         } else {
             this.by = 0;
-        }
-
-        if (this.operationIsInitialization) {
-            this.getInitialBy();
         }
     }
 
@@ -282,31 +263,22 @@ class AstridDOMCarousel extends Component {
         }
     }
 
+    findNextTranslate = () => {
+        this.positioning = this.centering === 'center' ?
+            (this.view_frame[this.offsetSize] - this.gallery_items[this.position_logical][this.offsetSize]) / 2 :
+            this.centering;
+
+        this.position_translate = -(this.gallery_items[this.position_logical][this.offsetBorder]) + this.positioning;
+    }
+
     getPosition_gallery = () => {
         this.unifyToAndBy();
-
-        if (this.scroll === 'infinite') {
-            this.scrollBy_loop(this.by)
-            this.position_translate = -this.gallery_items[this.position_logical][this.offsetBorder];
-            console.log(this.gallery_frame.style)
-        }
-
-        if (this.scroll === 'finite') {
-            this.scrollBy_loop(this.by);
-            this.position_translate = -this.gallery_items[this.position_logical][this.offsetBorder];
-            this.finiteScroll_preventEdges()
-        }
-
+        this.findNextPosition();
         if (this.scroll === 'returnable') {
-            const returnTo = this.finiteScroll_returnable(this.by);
-            if (typeof returnTo !== 'number') {
-                this.scrollBy_loop(this.by);
-            } else {
-                this.position_logical = returnTo;
-            }
-            this.position_translate = -this.gallery_items[this.position_logical][this.offsetBorder];
-            this.finiteScroll_preventEdges()
+            this.findNextPosition_returnable();
         }
+        this.findNextTranslate();
+        this.protectGalleryEnd();
     }
 }
 
