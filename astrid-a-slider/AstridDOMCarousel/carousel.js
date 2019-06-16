@@ -164,22 +164,17 @@ class AstridDOMCarousel extends Component {
 
     handleTransitionEnd = () => {
         this.stage_infiniteRebuild = true;
-
         const head = this.children.slice(0, this.by);
         const tail = this.children.slice(this.by);
         this.children = tail.concat(head);
-
         const node_head = this.gallery_items.slice(0, this.by);
         const node_tail = this.gallery_items.slice(this.by);
         this.gallery_items = node_tail.concat(node_head);
-
         this.position_logical = this.columns;
-        
         this.position_translate = 0 + this.positioning;
         for (let i = 0; i < this.columns; i++) {
             this.position_translate -= this.gallery_items[i][this.offsetSize];
-        }
-
+        } 
         this.gallery_styles.transition = 'none';
         this.forceUpdate();
     }
