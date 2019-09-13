@@ -1,7 +1,7 @@
 import React, { Component } from 'react';
+import Astrid_v1 from './astrid_v1';
 import Astrid_v2 from './astrid_v2';
 import Astrid_v3 from './astrid_v3';
-import Astrid_v1 from './astrid_v1';
 
 const GALLERY_PATH = './media-gallery/';
 const FORMAT = '.jpg';
@@ -37,9 +37,9 @@ class App extends Component {
     const titles = getTitlesArray();
     return (
       <div>
-        {/* nope <Astrid_v1/>*/}
         {/*<Astrid_v2 { ...{images, titles} }/>*/}
-        <Astrid_v3 { ...{images, titles} }/>
+        {/*<Astrid_v3 { ...{images, titles} }/>*/}
+        <Astrid_v1/>
       </div>
     )
   }
